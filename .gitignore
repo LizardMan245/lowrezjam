@@ -1,0 +1,10 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Export presets can contain signing keys and store passwords
+export_presets.cfg
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
