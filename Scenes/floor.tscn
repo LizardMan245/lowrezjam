@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cprsg5ky0rqxy"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_441sn"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cny37"]
+albedo_color = Color(0.50576717, 0.5079013, 0.5280264, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ik5og"]
+size = Vector3(1, 0.001, 1)
+
+[node name="Floor" type="StaticBody3D" unique_id=923107463]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=523759562]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+mesh = SubResource("PlaneMesh_441sn")
+surface_material_override/0 = SubResource("StandardMaterial3D_cny37")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=294506356]
+transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
+shape = SubResource("BoxShape3D_ik5og")
