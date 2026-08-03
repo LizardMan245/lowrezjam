@@ -11,13 +11,18 @@ config_version=5
 [application]
 
 config/name="lowrezjam"
+run/main_scene="uid://k31kmerh852j"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [display]
 
-window/stretch/mode="canvas_items"
-window/stretch/aspect="expand"
+window/size/viewport_width=64
+window/size/viewport_height=64
+window/size/window_width_override=512
+window/size/window_height_override=512
+window/stretch/mode="viewport"
+window/stretch/scale_mode="integer"
 
 [physics]
 

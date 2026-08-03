@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://k31kmerh852j"]
+
+[ext_resource type="Script" uid="uid://dp0oqn6k4fxfq" path="res://cube.gd" id="1_pwfse"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_cny37"]
+
+[sub_resource type="Environment" id="Environment_cny37"]
+background_mode = 2
+ambient_light_source = 2
+ambient_light_color = Color(0.002988342, 0.20916215, 0.8318562, 1)
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.1
+glow_hdr_threshold = 0.9
+
+[node name="Main3d" type="Node3D" unique_id=1741938559]
+
+[node name="isocamera" type="Camera3D" parent="." unique_id=765908048]
+transform = Transform3D(1, 0, 0, 0, 0.99770725, 0.067677885, 0, -0.067677885, 0.99770725, 0, 0.6583687, 1.0036565)
+projection = 1
+
+[node name="cube" type="MeshInstance3D" parent="." unique_id=662614240]
+transform = Transform3D(0.4834951, -0.046199974, -0.11873528, 0, 0.465969, -0.18130884, 0.12740685, 0.17532386, 0.45058745, 0, 0.37496507, -2.3703914)
+mesh = SubResource("BoxMesh_cny37")
+script = ExtResource("1_pwfse")
+color = Color(0, 0, 0, 1)
+emission_energy = 1.0
+spin_speed = 0.10099999999999998
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=401419386]
+transform = Transform3D(0.7557405, 0, -0.65487117, 0.44614747, 0.7320274, 0.51486725, 0.47938365, -0.6812752, 0.5532228, -2.57461, 2.7874064, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=499222120]
+environment = SubResource("Environment_cny37")
