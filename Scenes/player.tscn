@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://dkqw88j11yato"]
+
+[ext_resource type="Script" uid="uid://b52ps008vqb53" path="res://Assets/Scripts/player.gd" id="1_cvnsp"]
+[ext_resource type="Texture2D" uid="uid://c4qw0beonlys1" path="res://Assets/Sprites/Placeholders/drones.png" id="1_v0iea"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_88646"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_v0iea")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_88646"]
+size = Vector2(16, 5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7rnak"]
+size = Vector2(6, 22)
+
+[node name="Player" type="CharacterBody2D" unique_id=2116629343]
+z_index = 1
+script = ExtResource("1_cvnsp")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1497543201]
+sprite_frames = SubResource("SpriteFrames_88646")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2056421101]
+position = Vector2(0, 5.5)
+shape = SubResource("RectangleShape2D_88646")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=825256225]
+
+[node name="Interactor" type="Area2D" parent="." unique_id=2073895922]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interactor" unique_id=2097160831]
+position = Vector2(0, -3)
+shape = SubResource("RectangleShape2D_7rnak")
