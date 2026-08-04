@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dp0oqn6k4fxfq" path="res://cube.gd" id="1_o8d2y"]
 [ext_resource type="PackedScene" uid="uid://cprsg5ky0rqxy" path="res://Scenes/floor.tscn" id="2_fnw00"]
-[ext_resource type="PackedScene" uid="uid://d4ngk1vwbohat" path="res://Scenes/Player.tscn" id="3_codwr"]
+[ext_resource type="PackedScene" uid="uid://d4ngk1vwbohat" path="res://Scenes/Player3D.tscn" id="3_codwr"]
 
 [sub_resource type="Environment" id="Environment_cny37"]
 background_mode = 2
