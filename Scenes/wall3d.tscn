@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://dr3ihyvr400uk"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_rldou"]
+
+[sub_resource type="Gradient" id="Gradient_qbgkv"]
+offsets = PackedFloat32Array(0, 0.29850745)
+colors = PackedColorArray(0.12388813, 0.19481453, 0.16209194, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ejscb"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_54gkc"]
+height = 2048
+noise = SubResource("FastNoiseLite_ejscb")
+color_ramp = SubResource("Gradient_qbgkv")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3gr67"]
+albedo_texture = SubResource("NoiseTexture2D_54gkc")
+metallic = 0.75
+metallic_specular = 0.1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cny37"]
+
+[node name="Wall3d" type="StaticBody3D" unique_id=1697904188]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1260904391]
+transform = Transform3D(1, 0, 0, 0, 2.5, 0, 0, 0, 10, 0, 1.25, 0)
+mesh = SubResource("BoxMesh_rldou")
+surface_material_override/0 = SubResource("StandardMaterial3D_3gr67")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1932187120]
+transform = Transform3D(1, 0, 0, 0, 2.5, 0, 0, 0, 10, 0, 1.25, 0)
+shape = SubResource("BoxShape3D_cny37")
