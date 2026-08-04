@@ -4,8 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://cprsg5ky0rqxy" path="res://Scenes/floor.tscn" id="2_fnw00"]
 [ext_resource type="PackedScene" uid="uid://d4ngk1vwbohat" path="res://Scenes/Player.tscn" id="3_codwr"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_cny37"]
-
 [sub_resource type="Environment" id="Environment_cny37"]
 background_mode = 2
 ambient_light_color = Color(0.002988342, 0.20916215, 0.8318562, 1)
@@ -14,14 +12,11 @@ glow_intensity = 2.0
 glow_bloom = 0.1
 glow_hdr_threshold = 0.9
 
-[node name="Main3d" type="Node3D" unique_id=1741938559]
+[sub_resource type="BoxMesh" id="BoxMesh_cny37"]
 
-[node name="cube" type="MeshInstance3D" parent="." unique_id=662614240]
-transform = Transform3D(0.94316304, -0.29572874, -0.15161793, 0.21333885, 0.88858914, -0.40607372, 0.2548137, 0.35064772, 0.9011749, 0, 1.2215734, -2.7526643)
-mesh = SubResource("BoxMesh_cny37")
-script = ExtResource("1_o8d2y")
-color = Color(1, 0, 0.34509805, 1)
-spin_speed = 0.10099999999999998
+[sub_resource type="BoxShape3D" id="BoxShape3D_cny37"]
+
+[node name="Main3d" type="Node3D" unique_id=1741938559]
 
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=401419386]
 transform = Transform3D(0.7557405, 0, -0.65487117, 0.44614747, 0.7320274, 0.51486725, 0.47938365, -0.6812752, 0.5532228, -2.57461, 7.269702, 0)
@@ -34,3 +29,15 @@ environment = SubResource("Environment_cny37")
 
 [node name="Player" parent="." unique_id=650448909 instance=ExtResource("3_codwr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.30474377, 0, 0.25018883)
+
+[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=1127142320]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6060381, -2.1427562)
+
+[node name="cube" type="MeshInstance3D" parent="RigidBody3D" unique_id=662614240]
+mesh = SubResource("BoxMesh_cny37")
+script = ExtResource("1_o8d2y")
+color = Color(1, 0, 0.34509805, 1)
+spin_speed = 0.10099999999999998
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=1223643739]
+shape = SubResource("BoxShape3D_cny37")
