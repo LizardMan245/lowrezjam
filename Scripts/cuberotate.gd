@@ -1,6 +1,5 @@
 extends RigidBody3D
 
-@export_range(0.0, 8.0) var emission_energy := 0.0
 @export_range(-4.0, 4.0) var spin_speed := 0.4
 
 var _origin := Vector3.ZERO
