@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bskevmh7aiu0a"]
 
-[ext_resource type="Texture2D" uid="uid://dhejogcriesmh" path="res://Assets/Sprites/Placeholders/door.png" id="1_w6aom"]
+[ext_resource type="Texture2D" uid="uid://dhejogcriesmh" path="res://Sprites/Placeholders/door.png" id="1_w6aom"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_88646"]
 animations = [{
