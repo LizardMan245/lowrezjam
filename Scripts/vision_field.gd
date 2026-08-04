@@ -1,40 +1,12 @@
 extends SubViewportContainer
 
-## Builds the robot's field of view and hands it to the composite shader on this
-## container.
-##
-## Every physics frame a fan of rays is cast across the mounted camera's cone and
-## the hit distances are baked into a 1D texture -- a visibility polygon. The
-## shader turns that into the mask, so walls throw shadows and corners hide what
-## sits behind them.
-##
-## Swapping this container's material for another shader that includes
-## vision_field.gdshaderinc gives a different vision mode (thermal, ...) driven by
-## the exact same field.
-
-## One ray per texel of the field. 128 across 45 degrees is well under a pixel
-## wide at 64x64, so shadow edges land where the geometry does.
 const RAY_COUNT := 128
 
-## Extra distance past whatever a ray hits, so the surface the robot is looking
-## at stays visible instead of the shadow starting on its front face.
 @export_range(0.0, 2.0, 0.01) var wall_bleed := 0.35
-## Feathering on the two edges of the cone, in degrees.
 @export_range(0.0, 20.0) var edge_softness_degrees := 3.0
-## How much of the far end of the cone fades out instead of cutting off, in units.
 @export_range(0.0, 10.0) var distance_fade := 1.5
-## How far a shadow edge fades, in world units. The fade starts at the occluder
-## and runs into it, so the surface being looked at stays lit and goes dark as it
-## carries on into the object. Keep it near the thickness of your walls: past
-## that the gradient runs out the back and onto the floor behind.
 @export_range(0.0, 4.0, 0.01) var shadow_softness := 0.25
-## Extra sideways penumbra per world unit behind a corner. Only silhouettes have
-## anything to spread, so this widens shadows cast around corners the further
-## they reach without touching the shadow directly behind a wall. Feathers
-## backwards only -- the sharp traced edge is as far forward as a shadow reaches,
-## whatever the softness.
 @export_range(0.0, 2.0, 0.01) var shadow_spread := 0.35
-## Which physics layers block the robot's view.
 @export_flags_3d_physics var occluder_mask := 1
 
 var _viewport: SubViewport
@@ -48,8 +20,6 @@ var _eye_dir := Vector2(0.0, 1.0)
 
 
 func _ready() -> void:
-	# After camera_rig.gd has moved the camera for this frame, so the mask is
-	# built against where the camera actually ends up.
 	process_priority = 50
 	_viewport = get_child(0) as SubViewport
 	_material = material as ShaderMaterial
@@ -83,7 +53,6 @@ func _process(_delta: float) -> void:
 	_push_cone()
 
 
-## Casts the fan and records how far the view reaches at each angle.
 func _cast_fan() -> void:
 	_eye = _player.get_eye_position()
 	_eye_dir = _player.facing
@@ -94,7 +63,6 @@ func _cast_fan() -> void:
 	var centre := atan2(_eye_dir.x, _eye_dir.y)
 
 	for i in RAY_COUNT:
-		# Aim at texel centres so the shader's lookup lines up with the fan.
 		var angle := centre - half + (float(i) + 0.5) / float(RAY_COUNT) * 2.0 * half
 		_query.from = _eye
 		_query.to = _eye + Vector3(sin(angle), 0.0, cos(angle)) * reach
@@ -106,9 +74,6 @@ func _bake_image() -> Image:
 	return Image.create_from_data(RAY_COUNT, 1, false, Image.FORMAT_RF, _ranges.to_byte_array())
 
 
-## The shader maps screen pixels back onto the ground plane itself, which needs
-## the game camera. Orthographic only -- a perspective camera would need the ray
-## direction to vary per pixel.
 func _push_camera(camera: Camera3D) -> void:
 	var basis := camera.global_transform.basis
 	var half_height := camera.size * 0.5
@@ -124,8 +89,6 @@ func _push_camera(camera: Camera3D) -> void:
 
 
 func _push_cone() -> void:
-	# Paired with the fan, not with the player's current position, so the mask
-	# and the shadows in it always describe the same instant.
 	_material.set_shader_parameter("eye_pos", Vector2(_eye.x, _eye.z))
 	_material.set_shader_parameter("eye_dir", _eye_dir)
 	_material.set_shader_parameter("half_angle", deg_to_rad(_player.vision_angle_degrees) * 0.5)

@@ -1,14 +1,8 @@
 extends Light3D
 
-## Unsteady station lighting. Layered waves for a constant unease plus the odd
-## brown-out. Drives a light rather than the environment's ambient so the world
-## and the player overlay flicker together.
-
 @export var base_energy := 0.25
-## How far the wobble swings, as a fraction of base_energy.
 @export_range(0.0, 1.0) var flicker_depth := 0.35
 @export_range(0.1, 20.0) var flicker_speed := 6.0
-## Chance per frame of a short brown-out.
 @export_range(0.0, 0.05, 0.001) var dropout_chance := 0.004
 
 var _time := 0.0
