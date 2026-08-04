@@ -1,9 +1,8 @@
 [gd_scene format=3 uid="uid://cprsg5ky0rqxy"]
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_441sn"]
+[ext_resource type="Script" uid="uid://c7rj7eq50g4bi" path="res://Scripts/station_floor.gd" id="1_nvnu3"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cny37"]
-albedo_color = Color(0.50576717, 0.5079013, 0.5280264, 1)
+[sub_resource type="PlaneMesh" id="PlaneMesh_441sn"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ik5og"]
 size = Vector3(1, 0.001, 1)
@@ -13,7 +12,15 @@ size = Vector3(1, 0.001, 1)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=523759562]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 mesh = SubResource("PlaneMesh_441sn")
-surface_material_override/0 = SubResource("StandardMaterial3D_cny37")
+script = ExtResource("1_nvnu3")
+plane_size = Vector2(2, 2)
+panel_size = 0.2
+panels_per_tile = 4
+stagger_rows = false
+texture_resolution = 512
+grime_amount = 0.643
+scratch_amount = 0.778
+bolt_radius = 0.05
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=294506356]
 transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 0, 0)
