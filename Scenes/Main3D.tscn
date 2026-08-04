@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://k31kmerh852j"]
 
-[ext_resource type="Script" uid="uid://dp0oqn6k4fxfq" path="res://cube.gd" id="1_o8d2y"]
 [ext_resource type="PackedScene" uid="uid://cprsg5ky0rqxy" path="res://Scenes/floor.tscn" id="2_fnw00"]
 [ext_resource type="PackedScene" uid="uid://d4ngk1vwbohat" path="res://Scenes/Player3D.tscn" id="3_codwr"]
+[ext_resource type="Script" uid="uid://di3d6o3p8ckml" path="res://Scripts/cuberotate.gd" id="3_fnw00"]
+[ext_resource type="Script" uid="uid://dp0oqn6k4fxfq" path="res://Scripts/cubematerial.gd" id="4_codwr"]
 
 [sub_resource type="Environment" id="Environment_cny37"]
 background_mode = 2
@@ -32,12 +33,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.30474377, 0, 0.25018883)
 
 [node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=1127142320]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6060381, -2.1427562)
+script = ExtResource("3_fnw00")
 
 [node name="cube" type="MeshInstance3D" parent="RigidBody3D" unique_id=662614240]
 mesh = SubResource("BoxMesh_cny37")
-script = ExtResource("1_o8d2y")
-color = Color(1, 0, 0.34509805, 1)
-spin_speed = 0.10099999999999998
+script = ExtResource("4_codwr")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=1223643739]
 shape = SubResource("BoxShape3D_cny37")
