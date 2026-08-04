@@ -4,40 +4,146 @@
 [ext_resource type="PackedScene" uid="uid://d4ngk1vwbohat" path="res://Scenes/Player3D.tscn" id="3_codwr"]
 [ext_resource type="Script" uid="uid://di3d6o3p8ckml" path="res://Scripts/cuberotate.gd" id="3_fnw00"]
 [ext_resource type="Script" uid="uid://dp0oqn6k4fxfq" path="res://Scripts/cubematerial.gd" id="4_codwr"]
+[ext_resource type="PackedScene" uid="uid://dr3ihyvr400uk" path="res://Scenes/wall3d.tscn" id="5_codwr"]
+[ext_resource type="Shader" uid="uid://bdt3w78h42rk2" path="res://Shaders/vision_composite.gdshader" id="6_comp"]
+[ext_resource type="Script" uid="uid://2w717bxpil07" path="res://Scripts/vision_field.gd" id="7_field"]
+[ext_resource type="Script" uid="uid://dmtdlh3v7vxl4" path="res://Scripts/overlay_camera.gd" id="8_overlay"]
+[ext_resource type="Script" uid="uid://b3we63lcv60gm" path="res://Scripts/light_flicker.gd" id="9_flicker"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vision"]
+shader = ExtResource("6_comp")
+shader_parameter/eye_pos = Vector2(0, 0)
+shader_parameter/eye_dir = Vector2(0, 1)
+shader_parameter/half_angle = 0.3926991
+shader_parameter/edge_softness = 0.0523599
+shader_parameter/view_distance = 7.0
+shader_parameter/distance_fade = 1.5
+shader_parameter/shadow_softness = 0.12
+shader_parameter/shadow_spread = 0.35
+shader_parameter/cam_pos = Vector3(0, 10, 0)
+shader_parameter/cam_right = Vector3(1, 0, 0)
+shader_parameter/cam_up = Vector3(0, 0, -1)
+shader_parameter/cam_forward = Vector3(0, -1, 0)
+shader_parameter/cam_half_extents = Vector2(5, 5)
+shader_parameter/ground_height = 0.0
+shader_parameter/mask_color = Color(0, 0, 0, 1)
 
 [sub_resource type="Environment" id="Environment_cny37"]
-background_mode = 2
+background_mode = 1
+background_color = Color(0.007843138, 0.015686275, 0.039215688, 1)
+background_energy_multiplier = 0.0
+ambient_light_source = 2
 ambient_light_color = Color(0.002988342, 0.20916215, 0.8318562, 1)
-glow_enabled = true
-glow_intensity = 2.0
-glow_bloom = 0.1
-glow_hdr_threshold = 0.9
+ambient_light_energy = 0.0
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+glow_intensity = 1.0
+glow_bloom = 0.2
 
 [sub_resource type="BoxMesh" id="BoxMesh_cny37"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cny37"]
 
+[sub_resource type="Environment" id="Environment_overlay"]
+ambient_light_source = 2
+ambient_light_color = Color(0.002988342, 0.20916215, 0.8318562, 1)
+ambient_light_energy = 0.15
+
 [node name="Main3d" type="Node3D" unique_id=1741938559]
 
-[node name="Sun" type="DirectionalLight3D" parent="." unique_id=401419386]
-transform = Transform3D(0.7557405, 0, -0.65487117, 0.44614747, 0.7320274, 0.51486725, 0.47938365, -0.6812752, 0.5532228, -2.57461, 7.269702, 0)
-light_energy = 0.4
+[node name="Render" type="CanvasLayer" parent="." unique_id=531473880]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=499222120]
+[node name="WorldLayer" type="SubViewportContainer" parent="Render" unique_id=85882524]
+material = SubResource("ShaderMaterial_vision")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+script = ExtResource("7_field")
+wall_bleed = 0.0
+edge_softness_degrees = 10.0
+shadow_softness = 1.0
+shadow_spread = 0.5
+
+[node name="World" type="SubViewport" parent="Render/WorldLayer" unique_id=1807412844]
+handle_input_locally = false
+size = Vector2i(64, 64)
+render_target_update_mode = 4
+
+[node name="Sun" type="DirectionalLight3D" parent="Render/WorldLayer/World" unique_id=401419386]
+transform = Transform3D(0.8469697, 0.19404553, -0.4949635, 0.38611257, 0.4154737, 0.82358897, 0.36545804, -0.88866645, 0.27697033, -2.57461, 7.269702, 0)
+layers = 3
+light_color = Color(0.79607844, 1, 1, 1)
+light_energy = 0.05
+shadow_blur = 0.5
+script = ExtResource("9_flicker")
+dropout_chance = 0.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Render/WorldLayer/World" unique_id=499222120]
 environment = SubResource("Environment_cny37")
 
-[node name="Floor" parent="." unique_id=1238709529 instance=ExtResource("2_fnw00")]
+[node name="Floor" parent="Render/WorldLayer/World" unique_id=1238709529 instance=ExtResource("2_fnw00")]
 
-[node name="Player" parent="." unique_id=650448909 instance=ExtResource("3_codwr")]
+[node name="Wall3d" parent="Render/WorldLayer/World/Floor" unique_id=1697904188 instance=ExtResource("5_codwr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.9151726, 0, 0.3196497)
+
+[node name="Wall3d2" parent="Render/WorldLayer/World/Floor" unique_id=1122704035 instance=ExtResource("5_codwr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6844616, 0, 0.20118523)
+
+[node name="Wall3d3" parent="Render/WorldLayer/World/Floor" unique_id=358558259 instance=ExtResource("5_codwr")]
+transform = Transform3D(0.13738762, 0, -0.9905174, 0, 1, 0, 0.9905174, 0, 0.13738762, -9.359151, 0, 5.6187887)
+
+[node name="Wall3d4" parent="Render/WorldLayer/World/Floor" unique_id=1143123745 instance=ExtResource("5_codwr")]
+transform = Transform3D(-0.26264012, 0, 0.9648939, 0, 1, 0, -0.9648939, 0, -0.26264012, -2.7065694, 0, 7.271028)
+
+[node name="Wall3d5" parent="Render/WorldLayer/World/Floor" unique_id=1688426787 instance=ExtResource("5_codwr")]
+transform = Transform3D(0.47858772, 0, -0.8780397, 0, 1, 0, 0.8780397, 0, 0.47858772, 8.102875, 0, 7.8702216)
+
+[node name="Player" parent="Render/WorldLayer/World" unique_id=650448909 instance=ExtResource("3_codwr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.30474377, 0, 0.25018883)
+turn_speed = 6.0
+vision_angle_degrees = 90.0
+view_distance = 20.0
+eye_height = 2.0
 
-[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=1127142320]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6060381, -2.1427562)
+[node name="RigidBody3D" type="RigidBody3D" parent="Render/WorldLayer/World" unique_id=1127142320]
+transform = Transform3D(0.71660274, -0.34173715, 0.6080265, 0.2605777, 0.93979555, 0.22109622, -0.6469774, 0, 0.76250917, 0, 1, -2.143)
+gravity_scale = 0.0
+freeze = true
 script = ExtResource("3_fnw00")
 
-[node name="cube" type="MeshInstance3D" parent="RigidBody3D" unique_id=662614240]
+[node name="cube" type="MeshInstance3D" parent="Render/WorldLayer/World/RigidBody3D" unique_id=662614240]
 mesh = SubResource("BoxMesh_cny37")
 script = ExtResource("4_codwr")
+color = Color(1, 0, 0, 1)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=1223643739]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Render/WorldLayer/World/RigidBody3D" unique_id=1223643739]
 shape = SubResource("BoxShape3D_cny37")
+
+[node name="PlayerLayer" type="SubViewportContainer" parent="Render" unique_id=696722328]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+
+[node name="Overlay" type="SubViewport" parent="Render/PlayerLayer" unique_id=5815921]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(64, 64)
+render_target_update_mode = 4
+
+[node name="OverlayCamera" type="Camera3D" parent="Render/PlayerLayer/Overlay" unique_id=2136534656]
+transform = Transform3D(1, 0, 0, 0, -4.3711385e-08, 0.99999994, 0, -0.99999994, -4.3711385e-08, 0, 10, 0)
+cull_mask = 2
+environment = SubResource("Environment_overlay")
+projection = 1
+current = true
+size = 10.0
+script = ExtResource("8_overlay")
