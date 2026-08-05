@@ -1,7 +1,7 @@
 extends Area2D
 
-var data: String = "first_door"
+@export var data: String = ""
+@export var size: int = 0
 
-func _on_body_entered(body: Node2D) -> void:
-	var inventory = $"../Inventory"
-	inventory.picked_up_data(data)
+func _on_body_entered(_body: Node2D) -> void:
+	$"../Inventory".data_pickup(data, size)

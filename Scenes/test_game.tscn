@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://ccax1i6rhhgan" path="res://Assets/Scripts/inventory.gd" id="3_yfcg5"]
 [ext_resource type="PackedScene" uid="uid://qyq417mluyom" path="res://Scenes/data.tscn" id="5_kqj1b"]
 [ext_resource type="PackedScene" uid="uid://e1nynwgw8r26" path="res://Scenes/terminal.tscn" id="6_rfmi8"]
+[ext_resource type="PackedScene" uid="uid://dsxcvjdfgw0hc" path="res://Scenes/ui.tscn" id="7_pi72t"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_bfjqa"]
 normal = Vector2(-1, 0)
@@ -116,10 +117,19 @@ shape = SubResource("WorldBoundaryShape2D_dnx06")
 z_index = -2
 texture = SubResource("GradientTexture2D_rfmi8")
 
-[node name="Data" parent="." unique_id=883078055 instance=ExtResource("5_kqj1b")]
+[node name="DoorData" parent="." unique_id=883078055 instance=ExtResource("5_kqj1b")]
 position = Vector2(-111, 57)
+data = "first_door"
+size = 5
+
+[node name="Door2Data" parent="." unique_id=1756120596 instance=ExtResource("5_kqj1b")]
+position = Vector2(-49, 57)
+data = "second_door"
+size = 3
 
 [node name="terminal" parent="." unique_id=1930171211 instance=ExtResource("6_rfmi8")]
 position = Vector2(16, -81)
 
-[connection signal="body_entered" from="Data" to="Inventory" method="_on_data_body_entered"]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1119173373]
+
+[node name="UI" parent="CanvasLayer" unique_id=525582842 instance=ExtResource("7_pi72t")]

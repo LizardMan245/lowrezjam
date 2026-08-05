@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://dsxcvjdfgw0hc"]
+
+[ext_resource type="Script" uid="uid://dsvps1equ0ala" path="res://Assets/Scripts/ui.gd" id="1_jxero"]
+
+[node name="UI" type="Control" unique_id=525582842]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_jxero")
+
+[node name="Data" type="Label" parent="." unique_id=1615512831]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 8
+text = "picked up data:"
+
+[node name="Ram" type="Label" parent="." unique_id=2017476449]
+layout_mode = 0
+offset_top = 53.0
+offset_right = 40.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 8
+text = "RAM: 0"
