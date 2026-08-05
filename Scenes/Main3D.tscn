@@ -1,14 +1,14 @@
 [gd_scene format=3 uid="uid://k31kmerh852j"]
 
 [ext_resource type="PackedScene" uid="uid://cprsg5ky0rqxy" path="res://Scenes/floor.tscn" id="2_fnw00"]
+[ext_resource type="Script" uid="uid://2w717bxpil07" path="res://Assets/Scripts/vision_field.gd" id="2_muwp2"]
+[ext_resource type="Script" uid="uid://b3we63lcv60gm" path="res://Assets/Scripts/light_flicker.gd" id="3_54gkc"]
 [ext_resource type="PackedScene" uid="uid://d4ngk1vwbohat" path="res://Scenes/Player3D.tscn" id="3_codwr"]
-[ext_resource type="Script" uid="uid://di3d6o3p8ckml" path="res://Scripts/cuberotate.gd" id="3_fnw00"]
-[ext_resource type="Script" uid="uid://dp0oqn6k4fxfq" path="res://Scripts/cubematerial.gd" id="4_codwr"]
 [ext_resource type="PackedScene" uid="uid://dr3ihyvr400uk" path="res://Scenes/wall3d.tscn" id="5_codwr"]
 [ext_resource type="Shader" uid="uid://bdt3w78h42rk2" path="res://Shaders/vision_composite.gdshader" id="6_comp"]
-[ext_resource type="Script" uid="uid://2w717bxpil07" path="res://Scripts/vision_field.gd" id="7_field"]
-[ext_resource type="Script" uid="uid://dmtdlh3v7vxl4" path="res://Scripts/overlay_camera.gd" id="8_overlay"]
-[ext_resource type="Script" uid="uid://b3we63lcv60gm" path="res://Scripts/light_flicker.gd" id="9_flicker"]
+[ext_resource type="Script" uid="uid://di3d6o3p8ckml" path="res://Assets/Scripts/cuberotate.gd" id="7_ejscb"]
+[ext_resource type="Script" uid="uid://dp0oqn6k4fxfq" path="res://Assets/Scripts/cubematerial.gd" id="8_qbgkv"]
+[ext_resource type="Script" uid="uid://dmtdlh3v7vxl4" path="res://Assets/Scripts/overlay_camera.gd" id="9_d7535"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vision"]
 shader = ExtResource("6_comp")
@@ -63,7 +63,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 stretch = true
-script = ExtResource("7_field")
+script = ExtResource("2_muwp2")
 wall_bleed = 0.0
 edge_softness_degrees = 10.0
 shadow_softness = 1.0
@@ -80,7 +80,7 @@ layers = 3
 light_color = Color(0.79607844, 1, 1, 1)
 light_energy = 0.05
 shadow_blur = 0.5
-script = ExtResource("9_flicker")
+script = ExtResource("3_54gkc")
 dropout_chance = 0.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Render/WorldLayer/World" unique_id=499222120]
@@ -114,11 +114,11 @@ eye_height = 2.0
 transform = Transform3D(0.71660274, -0.34173715, 0.6080265, 0.2605777, 0.93979555, 0.22109622, -0.6469774, 0, 0.76250917, 0, 1, -2.143)
 gravity_scale = 0.0
 freeze = true
-script = ExtResource("3_fnw00")
+script = ExtResource("7_ejscb")
 
 [node name="cube" type="MeshInstance3D" parent="Render/WorldLayer/World/RigidBody3D" unique_id=662614240]
 mesh = SubResource("BoxMesh_cny37")
-script = ExtResource("4_codwr")
+script = ExtResource("8_qbgkv")
 color = Color(1, 0, 0, 1)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Render/WorldLayer/World/RigidBody3D" unique_id=1223643739]
@@ -146,4 +146,4 @@ environment = SubResource("Environment_overlay")
 projection = 1
 current = true
 size = 10.0
-script = ExtResource("8_overlay")
+script = ExtResource("9_d7535")

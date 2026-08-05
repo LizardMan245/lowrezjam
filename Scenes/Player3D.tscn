@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://d4ngk1vwbohat"]
 
-[ext_resource type="Script" uid="uid://ba5jaya2x0vdl" path="res://Scripts/player.gd" id="1_rpqav"]
-[ext_resource type="Texture2D" uid="uid://c4qw0beonlys1" path="res://Sprites/Placeholders/drones.png" id="2_8ffsa"]
-[ext_resource type="Script" uid="uid://badm5ftuk8c6x" path="res://Scripts/camera_rig.gd" id="2_rig"]
+[ext_resource type="Script" uid="uid://ba5jaya2x0vdl" path="res://Assets/Scripts/player.gd" id="1_8ffsa"]
+[ext_resource type="Texture2D" uid="uid://c4qw0beonlys1" path="res://Assets/Sprites/Placeholders/drones.png" id="2_8ffsa"]
+[ext_resource type="Script" uid="uid://badm5ftuk8c6x" path="res://Assets/Scripts/camera_rig.gd" id="3_qxy1y"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rldou"]
 
@@ -14,7 +14,7 @@ emission_enabled = true
 emission = Color(0, 0, 1, 1)
 
 [node name="Player" type="CharacterBody3D" unique_id=248580682 groups=["player"]]
-script = ExtResource("1_rpqav")
+script = ExtResource("1_8ffsa")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1989597804]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -51,7 +51,7 @@ spot_angle = 32.0
 spot_angle_attenuation = 1.2
 
 [node name="CameraRig" type="Node3D" parent="." unique_id=116848774]
-script = ExtResource("2_rig")
+script = ExtResource("3_qxy1y")
 look_ahead = 3.5
 glide_speed = 4.0
 
