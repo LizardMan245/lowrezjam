@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 300" role="img" aria-labelledby="t d">
+  <title id="t">The vision_ranges distance texture</title>
+  <desc id="d">A horizontal strip of thirteen cells, each holding the distance in metres at which sight stops for one ray angle. Most hold 20.0, the full view distance; four consecutive cells hold shorter values because those rays hit a wall.</desc>
+  <style>
+    .bg    { fill: #ffffff; }
+    .txt   { fill: #1f2328; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .mut   { fill: #656d76; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .occt  { fill: #a04a06; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .acct  { fill: #1a5fd0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .inks  { stroke: #1f2328; }
+    .muts  { stroke: #656d76; }
+    .acc   { stroke: #2f6fed; }
+    .accf  { fill: #2f6fed; }
+    .occ   { fill: #b35309; }
+    .occs  { stroke: #b35309; }
+    .shade { fill: #1f2328; fill-opacity: 0.10; }
+    .cell  { fill: #ffffff; }
+    @media (prefers-color-scheme: dark) {
+      .bg    { fill: #0d1117; }
+      .txt   { fill: #e6edf3; }
+      .mut   { fill: #9aa4ae; }
+      .occt  { fill: #e0913f; }
+      .acct  { fill: #6ea8ff; }
+      .inks  { stroke: #e6edf3; }
+      .muts  { stroke: #9aa4ae; }
+      .acc   { stroke: #6ea8ff; }
+      .accf  { fill: #6ea8ff; }
+      .occ   { fill: #e0913f; }
+      .occs  { stroke: #e0913f; }
+      .shade { fill: #e6edf3; fill-opacity: 0.10; }
+      .cell  { fill: #0d1117; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto-start-end">
+      <path class="accf" d="M 0 0 L 10 5 L 0 10 z"/>
+    </marker>
+    <marker id="marrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto-start-end">
+      <path class="mut" d="M 0 0 L 10 5 L 0 10 z"/>
+    </marker>
+    <marker id="tick" viewBox="0 0 10 10" refX="5" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto-start-end">
+      <path class="inks" fill="none" stroke-width="1.6" d="M 5 0.5 L 5 9.5"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="700" height="300"/>
+  <text class="txt" x="16" y="30" font-size="14.5" text-anchor="start" font-weight="600">vision_ranges — a 128 x 1 FORMAT_RF texture</text>
+  <text class="mut" x="16" y="51" font-size="12.5" text-anchor="start">One 32-bit float per texel: the distance in metres at which sight stops for that angle.</text>
+  <text class="mut" x="16" y="69" font-size="12.5" text-anchor="start">13 of the 128 texels shown, matching the rays in the previous diagram.</text>
+  <rect class="cell" x="46" y="118" width="44" height="52"/>
+  <rect class="accf" fill-opacity="0.1" x="46" y="118" width="44" height="52"/>
+  <rect class="muts" fill="none" stroke-width="1" x="46" y="118" width="44" height="52"/>
+  <text class="txt" x="68" y="149" font-size="13" text-anchor="middle">20.0</text>
+  <rect class="cell" x="90" y="118" width="44" height="52"/>
+  <rect class="accf" fill-opacity="0.32" x="90" y="118" width="44" height="52"/>
+  <rect class="muts" fill="none" stroke-width="1" x="90" y="118" width="44" height="52"/>
+  <text class="txt" x="112" y="149" font-size="13" text-anchor="middle">12.1</text>
+  <rect class="cell" x="134" y="118" width="44" height="52"/>
+  <rect class="accf" fill-opacity="0.35" x="134" y="118" width="44" height="52"/>
+  <rect class="muts" fill="none" stroke-width="1" x="134" y="118" width="44" height="52"/>
+  <text class="txt" x="156" y="149" font-size="13" text-anchor="middle">11.1</text>
+  <rect class="cell" x="178" y="118" width="44" height="52"/>
+  <rect class="accf" fill-opacity="0.36" x="178" y="118" width="44" height="52"/>
+  <rect class="muts" fill="none" stroke-width="1" x="178" y="118" width="44" height="52"/>
+  <text class="txt" x="200" y="149" font-size="13" text-anchor="middle">10.4</text>
+  <rect class="cell" x="222" y="118" width="44" height="52"/>
+  <rect class="accf" fill-opacity="0.38" x="222" y="118" width="44" height="52"/>
+  <rect class="muts" fill="none" stroke-width="1" x="222" y="118" width="44" height="52"/>
+  <text class="txt" x="244" y="149" font-size="13" text-anchor="middle">9.9</text>
+  <rect class="cell" x="266" y="118" width="44" height="52"/>
+  <rect class="accf" fill-opacity="0.1" x="266" y="118" width="44" height="52"/>
+  <rect class="muts" fill="none" stroke-width="1" x="266" y="118" width="44" height="52"/>
+  <text class="txt" x="288" y="149" font-size="13" text-anchor="middle">20.0</text>
+  <rect class="cell" x="310" y="118" width="44" height="52"/>
+  <rect class="accf" fill-opacity="0.1" x="310" y="118" width="44" height="52"/>
+  <rect class="muts" fill="none" stroke-width="1" x="310" y="118" width="44" height="52"/>
+  <text class="txt" x="332" y="149" font-size="13" text-anchor="middle">20.0</text>
+  <rect class="cell" x="354" y="118" width="44" height="52"/>
+  <rect class="accf" fill-opacity="0.1" x="354" y="118" width="44" height="52"/>
+  <rect class="muts" fill="none" stroke-width="1" x="354" y="118" width="44" height="52"/>
+  <text class="txt" x="376" y="149" font-size="13" text-anchor="middle">20.0</text>
+  <rect class="cell" x="398" y="118" width="44" height="52"/>
+  <rect class="accf" fill-opacity="0.1" x="398" y="118" width="44" height="52"/>
+  <rect class="muts" fill="none" stroke-width="1" x="398" y="118" width="44" height="52"/>
+  <text class="txt" x="420" y="149" font-size="13" text-anchor="middle">20.0</text>
+  <rect class="cell" x="442" y="118" width="44" height="52"/>
+  <rect class="accf" fill-opacity="0.1" x="442" y="118" width="44" height="52"/>
+  <rect class="muts" fill="none" stroke-width="1" x="442" y="118" width="44" height="52"/>
+  <text class="txt" x="464" y="149" font-size="13" text-anchor="middle">20.0</text>
+  <rect class="cell" x="486" y="118" width="44" height="52"/>
+  <rect class="accf" fill-opacity="0.1" x="486" y="118" width="44" height="52"/>
+  <rect class="muts" fill="none" stroke-width="1" x="486" y="118" width="44" height="52"/>
+  <text class="txt" x="508" y="149" font-size="13" text-anchor="middle">20.0</text>
+  <rect class="cell" x="530" y="118" width="44" height="52"/>
+  <rect class="accf" fill-opacity="0.1" x="530" y="118" width="44" height="52"/>
+  <rect class="muts" fill="none" stroke-width="1" x="530" y="118" width="44" height="52"/>
+  <text class="txt" x="552" y="149" font-size="13" text-anchor="middle">20.0</text>
+  <rect class="cell" x="574" y="118" width="44" height="52"/>
+  <rect class="accf" fill-opacity="0.1" x="574" y="118" width="44" height="52"/>
+  <rect class="muts" fill="none" stroke-width="1" x="574" y="118" width="44" height="52"/>
+  <text class="txt" x="596" y="149" font-size="13" text-anchor="middle">20.0</text>
+  <text class="mut" x="46" y="106" font-size="12.5" text-anchor="start">texel 0</text>
+  <text class="mut" x="618" y="106" font-size="12.5" text-anchor="end">texel 127</text>
+  <line class="muts" x1="46" y1="204" x2="618" y2="204" stroke-width="1.2"/>
+  <line class="muts" x1="46" y1="199" x2="46" y2="209" stroke-width="1.2"/>
+  <text class="mut" x="46" y="226" font-size="12.5" text-anchor="start">angle = −45°</text>
+  <text class="mut" x="46" y="192" font-size="12.5" text-anchor="start">u = 0.0</text>
+  <line class="muts" x1="332" y1="199" x2="332" y2="209" stroke-width="1.2"/>
+  <text class="mut" x="332" y="226" font-size="12.5" text-anchor="middle">0°</text>
+  <text class="mut" x="332" y="192" font-size="12.5" text-anchor="middle">u = 0.5</text>
+  <line class="muts" x1="618" y1="199" x2="618" y2="209" stroke-width="1.2"/>
+  <text class="mut" x="618" y="226" font-size="12.5" text-anchor="end">+45°</text>
+  <text class="mut" x="618" y="192" font-size="12.5" text-anchor="end">u = 1.0</text>
+  <path class="occs" fill="none" stroke-width="1.6" d="M 90 254 L 90 246 L 266 246 L 266 254"/>
+  <text class="occt" x="178" y="274" font-size="13" text-anchor="middle">texels whose ray hit the wall</text>
+  <text class="mut" x="618" y="274" font-size="12.5" text-anchor="end">u = (angle + half_angle) / (2 · half_angle)</text>
+</svg>
