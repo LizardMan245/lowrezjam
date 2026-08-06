@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c4qw0beonlys1"
-path.s3tc="res://.godot/imported/drones.png-c403d5f774ca918e2121db8a3f3b6b5f.s3tc.ctex"
+uid="uid://cmmp6b0pklxv4"
+path.s3tc="res://.godot/imported/enemy.webp-ec9e809e9ffa7849992edda7c7368272.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Sprites/Placeholders/drones.png"
-dest_files=["res://.godot/imported/drones.png-c403d5f774ca918e2121db8a3f3b6b5f.s3tc.ctex"]
+source_file="res://Assets/Sprites/Placeholders/enemy.webp"
+dest_files=["res://.godot/imported/enemy.webp-ec9e809e9ffa7849992edda7c7368272.s3tc.ctex"]
 
 [params]
 

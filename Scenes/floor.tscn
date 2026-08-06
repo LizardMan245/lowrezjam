@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cprsg5ky0rqxy"]
 
-[ext_resource type="Script" uid="uid://c7rj7eq50g4bi" path="res://Scripts/station_floor.gd" id="1_nvnu3"]
+[ext_resource type="Script" uid="uid://c7rj7eq50g4bi" path="res://Assets/Scripts/station_floor.gd" id="1_nvnu3"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_441sn"]
 

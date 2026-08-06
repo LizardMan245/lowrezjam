@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bcap7bikpxwxw"]
+
+[ext_resource type="Texture2D" uid="uid://cmmp6b0pklxv4" path="res://Assets/Sprites/Placeholders/enemy.webp" id="1_8vmum"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cny37"]
+
+[node name="Basicenemy" type="CharacterBody3D" unique_id=1377881211]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=215603961]
+transform = Transform3D(1.7, 0, 0, 0, 1, 0, 0, 0, 1.7, 0, 0, 0)
+shape = SubResource("BoxShape3D_cny37")
+
+[node name="Sprite3D" type="Sprite3D" parent="." unique_id=1868556659]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5490232, 0)
+pixel_size = 0.1
+axis = 1
+texture_filter = 0
+texture = ExtResource("1_8vmum")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=829769888]
