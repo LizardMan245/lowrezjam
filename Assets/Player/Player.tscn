@@ -17,7 +17,7 @@ emission = Color(0, 0, 1, 1)
 script = ExtResource("1_rpqav")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1989597804]
-transform = Transform3D(1.7, 0, 0, 0, 1, 0, 0, 0, 1.7, 0, 1, 0)
+transform = Transform3D(1.4, 0, 0, 0, 1, 0, 0, 0, 1.4, 0, 1, 0)
 shape = SubResource("BoxShape3D_skutr")
 
 [node name="Visual" type="Node3D" parent="." unique_id=421183302]
@@ -57,7 +57,7 @@ glide_speed = 4.0
 
 [node name="Camera3D" type="Camera3D" parent="CameraRig" unique_id=638345522 groups=["game_camera"]]
 transform = Transform3D(1, 0, 0, 0, -4.3711385e-08, 0.99999994, 0, -0.99999994, -4.3711385e-08, 0, 10, 0)
-cull_mask = 1048573
+cull_mask = 1048569
 projection = 1
 current = true
-size = 10.0
+size = 12.0

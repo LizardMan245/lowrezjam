@@ -1,0 +1,89 @@
+[gd_scene format=3 uid="uid://bcap7bikpxwxw"]
+
+[ext_resource type="Texture2D" uid="uid://cmmp6b0pklxv4" path="res://Assets/Sprites/Placeholders/enemy.webp" id="1_8vmum"]
+[ext_resource type="Script" uid="uid://hhivxkcywgcs" path="res://Assets/Scripts/Enemies/enemy_actor.gd" id="2_actor"]
+[ext_resource type="Script" uid="uid://dvircusdp5mr5" path="res://Assets/Scripts/Debug/enemy_debug_view.gd" id="3_debug"]
+[ext_resource type="Script" uid="uid://bm32cghgkj3uu" path="res://Assets/Scripts/Enemies/enemy_state_machine.gd" id="4_machine"]
+[ext_resource type="Script" uid="uid://cyvrtlfgus5v2" path="res://Assets/Scripts/Enemies/States/roam_walk_state.gd" id="5_walk"]
+[ext_resource type="Script" uid="uid://4etnb6ep6tdg" path="res://Assets/Scripts/Enemies/States/roam_idle_state.gd" id="6_idle"]
+[ext_resource type="Script" uid="uid://cgipgc0gtm5px" path="res://Assets/Scripts/Enemies/States/alert_state.gd" id="7_alert"]
+[ext_resource type="Script" uid="uid://crpahmsxdljhq" path="res://Assets/Scripts/Enemies/States/chase_state.gd" id="8_chase"]
+[ext_resource type="Script" uid="uid://bt5bbwk4fpqka" path="res://Assets/Scripts/Enemies/States/search_state.gd" id="9_search"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_body"]
+height = 1.0
+radius = 0.4
+
+[node name="Basicenemy" type="CharacterBody3D" unique_id=1377881211 groups=["enemy"]]
+collision_layer = 4
+script = ExtResource("2_actor")
+detection_time = 0.55
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=215603961]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("CylinderShape3D_body")
+
+[node name="Visual" type="Node3D" parent="." unique_id=1024778311]
+
+[node name="Sprite3D" type="Sprite3D" parent="Visual" unique_id=1868556659]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0.5490232, 0)
+pixel_size = 0.1
+axis = 1
+texture_filter = 0
+texture = ExtResource("1_8vmum")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=829769888]
+path_desired_distance = 0.4
+target_desired_distance = 0.5
+path_height_offset = 0.5
+radius = 0.4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1466118383]
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1975332894]
+
+[node name="StateMachine" type="Node" parent="." unique_id=1119538764]
+script = ExtResource("4_machine")
+initial_state = &"RoamIdle"
+
+[node name="RoamWalk" type="Node" parent="StateMachine" unique_id=1274935182]
+script = ExtResource("5_walk")
+speed = 1.2
+radius = 10.0
+animation = &"walk"
+next_states = Array[StringName]([&"RoamWalk", &"RoamIdle"])
+next_state_weights = Array[float]([0.7, 0.3])
+
+[node name="RoamIdle" type="Node" parent="StateMachine" unique_id=1810249447]
+script = ExtResource("6_idle")
+maximum_time = 2.0
+animation = &"idle"
+next_states = Array[StringName]([&"RoamWalk", &"RoamIdle"])
+next_state_weights = Array[float]([0.8, 0.2])
+
+[node name="Alert" type="Node" parent="StateMachine" unique_id=1592043260]
+script = ExtResource("7_alert")
+fallback_duration = 1.0
+animation = &"roar"
+interrupt_on_detection = false
+
+[node name="Chase" type="Node" parent="StateMachine" unique_id=2038741539]
+script = ExtResource("8_chase")
+start_speed = 1.0
+top_speed = 7.0
+acceleration = 1.0
+animation = &"run"
+interrupt_on_detection = false
+
+[node name="Search" type="Node" parent="StateMachine" unique_id=1352220885]
+script = ExtResource("9_search")
+speed = 3.0
+glances_max = 6
+pause = 0.6
+animation = &"walk"
+detection_state = &"Chase"
+next_states = Array[StringName]([&"RoamWalk", &"RoamIdle"])
+
+[node name="DebugView" type="MeshInstance3D" parent="." unique_id=1590023477]
+layers = 4
+script = ExtResource("3_debug")
