@@ -1,7 +1,7 @@
 shader_type canvas_item;
 render_mode unshaded;
 
-#include "res://Shaders/vision_field.gdshaderinc"
+#include "res://Assets/Shaders/vision_field.gdshaderinc"
 
 uniform vec4 mask_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);
 
