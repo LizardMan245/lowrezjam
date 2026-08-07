@@ -1,17 +1,18 @@
 [gd_scene format=3 uid="uid://k31kmerh852j"]
 
-[ext_resource type="PackedScene" uid="uid://cprsg5ky0rqxy" path="res://Scenes/floor.tscn" id="2_fnw00"]
-[ext_resource type="PackedScene" uid="uid://d4ngk1vwbohat" path="res://Scenes/Player3D.tscn" id="3_codwr"]
-[ext_resource type="Script" uid="uid://di3d6o3p8ckml" path="res://Assets/Scripts/cuberotate.gd" id="3_fnw00"]
-[ext_resource type="Script" uid="uid://dp0oqn6k4fxfq" path="res://Assets/Scripts/cubematerial.gd" id="4_codwr"]
-[ext_resource type="PackedScene" uid="uid://dr3ihyvr400uk" path="res://Scenes/wall3d.tscn" id="5_codwr"]
-[ext_resource type="Shader" uid="uid://bdt3w78h42rk2" path="res://Assets/Shaders/vision_composite.gdshader" id="6_comp"]
-[ext_resource type="Script" uid="uid://2w717bxpil07" path="res://Assets/Scripts/vision_field.gd" id="7_field"]
-[ext_resource type="Script" uid="uid://dmtdlh3v7vxl4" path="res://Assets/Scripts/overlay_camera.gd" id="8_overlay"]
-[ext_resource type="Script" uid="uid://b3we63lcv60gm" path="res://Assets/Scripts/light_flicker.gd" id="9_flicker"]
+[ext_resource type="Shader" uid="uid://bdt3w78h42rk2" path="res://Assets/Shaders/vision_composite.gdshader" id="1_vy5pj"]
+[ext_resource type="Script" uid="uid://2w717bxpil07" path="res://Assets/Scripts/vision_field.gd" id="2_bmxlf"]
+[ext_resource type="Script" uid="uid://b3we63lcv60gm" path="res://Assets/Scripts/light_flicker.gd" id="3_4kpch"]
+[ext_resource type="PackedScene" uid="uid://cprsg5ky0rqxy" path="res://Assets/Map/Floor.tscn" id="4_grg3l"]
+[ext_resource type="PackedScene" uid="uid://dr3ihyvr400uk" path="res://Assets/Map/Wall.tscn" id="5_frkhe"]
+[ext_resource type="PackedScene" uid="uid://cfg55vg4burfp" path="res://Assets/Map/Testcube.tscn" id="6_1p5hy"]
+[ext_resource type="PackedScene" uid="uid://d4ngk1vwbohat" path="res://Assets/Player/Player.tscn" id="7_h1m7h"]
+[ext_resource type="PackedScene" uid="uid://bcap7bikpxwxw" path="res://Assets/Enemies/BasicEnemy.tscn" id="8_erwvk"]
+[ext_resource type="Script" uid="uid://dmtdlh3v7vxl4" path="res://Assets/Scripts/overlay_camera.gd" id="9_2w5on"]
+[ext_resource type="PackedScene" path="res://Assets/Debug/DebugMapWindow.tscn" id="10_monitor"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vision"]
-shader = ExtResource("6_comp")
+shader = ExtResource("1_vy5pj")
 shader_parameter/eye_pos = Vector2(0, 0)
 shader_parameter/eye_dir = Vector2(0, 1)
 shader_parameter/half_angle = 0.3926991
@@ -48,10 +49,6 @@ vertices = PackedVector3Array(-9.630432, 0.49, -4, -5.880432, 0.49, -3.75, -5.88
 polygons = [PackedInt32Array(2, 1, 0), PackedInt32Array(4, 3, 2), PackedInt32Array(4, 2, 5), PackedInt32Array(5, 2, 0), PackedInt32Array(8, 7, 6), PackedInt32Array(8, 6, 9), PackedInt32Array(9, 6, 10), PackedInt32Array(4, 10, 3), PackedInt32Array(9, 10, 11), PackedInt32Array(11, 10, 12), PackedInt32Array(12, 10, 4), PackedInt32Array(15, 14, 13), PackedInt32Array(13, 11, 15), PackedInt32Array(15, 11, 12), PackedInt32Array(15, 12, 16), PackedInt32Array(16, 17, 15), PackedInt32Array(19, 18, 20), PackedInt32Array(22, 20, 21), PackedInt32Array(21, 20, 18), PackedInt32Array(25, 24, 23), PackedInt32Array(17, 16, 26), PackedInt32Array(26, 16, 27), PackedInt32Array(23, 22, 25), PackedInt32Array(25, 22, 21), PackedInt32Array(25, 21, 29), PackedInt32Array(25, 29, 28), PackedInt32Array(29, 26, 28), PackedInt32Array(28, 26, 27), PackedInt32Array(32, 31, 30), PackedInt32Array(32, 30, 33), PackedInt32Array(1, 35, 0), PackedInt32Array(0, 35, 34), PackedInt32Array(37, 36, 38), PackedInt32Array(38, 36, 39), PackedInt32Array(41, 40, 19), PackedInt32Array(42, 38, 39), PackedInt32Array(7, 41, 6), PackedInt32Array(6, 41, 43), PackedInt32Array(43, 41, 19), PackedInt32Array(42, 39, 44), PackedInt32Array(45, 13, 14), PackedInt32Array(45, 14, 40), PackedInt32Array(40, 14, 19), PackedInt32Array(19, 14, 18), PackedInt32Array(19, 44, 43), PackedInt32Array(19, 42, 44), PackedInt32Array(48, 47, 46)]
 agent_height = 1.0
 
-[sub_resource type="BoxMesh" id="BoxMesh_cny37"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_cny37"]
-
 [sub_resource type="Environment" id="Environment_overlay"]
 ambient_light_source = 2
 ambient_light_color = Color(0.002988342, 0.20916215, 0.8318562, 1)
@@ -70,7 +67,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 stretch = true
-script = ExtResource("7_field")
+script = ExtResource("2_bmxlf")
 wall_bleed = 0.0
 edge_softness_degrees = 10.0
 shadow_softness = 1.0
@@ -87,7 +84,7 @@ layers = 3
 light_color = Color(0.79607844, 1, 1, 1)
 light_energy = 0.05
 shadow_blur = 0.5
-script = ExtResource("9_flicker")
+script = ExtResource("3_4kpch")
 dropout_chance = 0.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Render/WorldLayer/World" unique_id=499222120]
@@ -96,43 +93,41 @@ environment = SubResource("Environment_cny37")
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="Render/WorldLayer/World" unique_id=1244899461]
 navigation_mesh = SubResource("NavigationMesh_rldou")
 
-[node name="Floor" parent="Render/WorldLayer/World/NavigationRegion3D" unique_id=1238709529 instance=ExtResource("2_fnw00")]
+[node name="Floor" parent="Render/WorldLayer/World/NavigationRegion3D" unique_id=1238709529 instance=ExtResource("4_grg3l")]
 
-[node name="Wall3d" parent="Render/WorldLayer/World/NavigationRegion3D/Floor" unique_id=1697904188 instance=ExtResource("5_codwr")]
+[node name="Wall3d" parent="Render/WorldLayer/World/NavigationRegion3D/Floor" unique_id=1697904188 instance=ExtResource("5_frkhe")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.9151726, 0, 0.3196497)
 
-[node name="Wall3d2" parent="Render/WorldLayer/World/NavigationRegion3D/Floor" unique_id=1122704035 instance=ExtResource("5_codwr")]
+[node name="Wall3d2" parent="Render/WorldLayer/World/NavigationRegion3D/Floor" unique_id=1122704035 instance=ExtResource("5_frkhe")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6844616, 0, 0.20118523)
 
-[node name="Wall3d3" parent="Render/WorldLayer/World/NavigationRegion3D/Floor" unique_id=358558259 instance=ExtResource("5_codwr")]
+[node name="Wall3d3" parent="Render/WorldLayer/World/NavigationRegion3D/Floor" unique_id=358558259 instance=ExtResource("5_frkhe")]
 transform = Transform3D(0.13738762, 0, -0.9905174, 0, 1, 0, 0.9905174, 0, 0.13738762, -9.359151, 0, 5.6187887)
 
-[node name="Wall3d4" parent="Render/WorldLayer/World/NavigationRegion3D/Floor" unique_id=1143123745 instance=ExtResource("5_codwr")]
+[node name="Wall3d4" parent="Render/WorldLayer/World/NavigationRegion3D/Floor" unique_id=1143123745 instance=ExtResource("5_frkhe")]
 transform = Transform3D(-0.26264012, 0, 0.9648939, 0, 1, 0, -0.9648939, 0, -0.26264012, -2.7065694, 0, 7.271028)
 
-[node name="Wall3d5" parent="Render/WorldLayer/World/NavigationRegion3D/Floor" unique_id=1688426787 instance=ExtResource("5_codwr")]
+[node name="Wall3d5" parent="Render/WorldLayer/World/NavigationRegion3D/Floor" unique_id=1688426787 instance=ExtResource("5_frkhe")]
 transform = Transform3D(0.47858772, 0, -0.8780397, 0, 1, 0, 0.8780397, 0, 0.47858772, 8.102875, 0, 7.8702216)
 
-[node name="RigidBody3D" type="RigidBody3D" parent="Render/WorldLayer/World/NavigationRegion3D" unique_id=1127142320]
-transform = Transform3D(0.71660274, -0.34173715, 0.6080265, 0.2605777, 0.93979555, 0.22109622, -0.6469774, 0, 0.76250917, 0, 1, -2.143)
-gravity_scale = 0.0
-freeze = true
-script = ExtResource("3_fnw00")
+[node name="Testcube" parent="Render/WorldLayer/World/NavigationRegion3D" unique_id=794711445 instance=ExtResource("6_1p5hy")]
+transform = Transform3D(0.7166027, -0.34173712, 0.6080265, 0.2605777, 0.9397955, 0.22109623, -0.6469774, 0, 0.7625091, 0, 1, -2.143)
+collision_layer = 4
 
-[node name="cube" type="MeshInstance3D" parent="Render/WorldLayer/World/NavigationRegion3D/RigidBody3D" unique_id=662614240]
-mesh = SubResource("BoxMesh_cny37")
-script = ExtResource("4_codwr")
-color = Color(1, 0, 0, 1)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Render/WorldLayer/World/NavigationRegion3D/RigidBody3D" unique_id=1223643739]
-shape = SubResource("BoxShape3D_cny37")
-
-[node name="Player" parent="Render/WorldLayer/World" unique_id=650448909 instance=ExtResource("3_codwr")]
+[node name="Player" parent="Render/WorldLayer/World" unique_id=650448909 instance=ExtResource("7_h1m7h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.30474377, 0, 0.25018883)
 turn_speed = 6.0
 vision_angle_degrees = 90.0
 view_distance = 20.0
-eye_height = 2.0
+eye_height = 1.0
+
+[node name="Basicenemy" parent="Render/WorldLayer/World" unique_id=1364594077 instance=ExtResource("8_erwvk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -6)
+vision_angle_degrees = 160.0
+view_distance = 10.0
+detection_time = 0.3
+detection_decay_rate = 3.0
+turn_speed = 3.0
 
 [node name="PlayerLayer" type="SubViewportContainer" parent="Render" unique_id=696722328]
 anchors_preset = 15
@@ -155,5 +150,8 @@ cull_mask = 2
 environment = SubResource("Environment_overlay")
 projection = 1
 current = true
-size = 10.0
-script = ExtResource("8_overlay")
+size = 12.0
+script = ExtResource("9_2w5on")
+
+[node name="DebugMapWindow" parent="." unique_id=276062607 instance=ExtResource("10_monitor")]
+title = "Enemy Monitor"
