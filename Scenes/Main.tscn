@@ -19,7 +19,7 @@ shader_parameter/half_angle = 0.3926991
 shader_parameter/edge_softness = 0.0523599
 shader_parameter/view_distance = 7.0
 shader_parameter/distance_fade = 1.5
-shader_parameter/shadow_softness = 0.12
+shader_parameter/shadow_softness = 0.25
 shader_parameter/shadow_spread = 0.35
 shader_parameter/cam_pos = Vector3(0, 10, 0)
 shader_parameter/cam_right = Vector3(1, 0, 0)
@@ -59,7 +59,7 @@ ambient_light_energy = 0.15
 [node name="Render" type="CanvasLayer" parent="." unique_id=531473880]
 
 [node name="WorldLayer" type="SubViewportContainer" parent="Render" unique_id=85882524]
-material = SubResource("ShaderMaterial_vision")
+material = SubResource("ShaderMaterial_muwp2")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
