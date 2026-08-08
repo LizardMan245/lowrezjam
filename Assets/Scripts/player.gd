@@ -1,7 +1,7 @@
 extends CharacterBody3D
 
 
-const SPEED = 5.0
+const SPEED = 4.0
 
 @export_range(1.0, 30.0) var turn_speed := 7.0
 @export_range(5.0, 180.0) var vision_angle_degrees := 45.0
