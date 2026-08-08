@@ -6,13 +6,6 @@
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_skutr"]
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_cny37"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fnw00"]
-albedo_color = Color(0, 0, 1, 1)
-emission_enabled = true
-emission = Color(0, 0, 1, 1)
-
 [node name="Player" type="CharacterBody3D" unique_id=248580682 groups=["player"]]
 script = ExtResource("1_rpqav")
 vision_angle_degrees = 90.0
@@ -22,13 +15,6 @@ transform = Transform3D(1.4, 0, 0, 0, 1, 0, 0, 0, 1.4, 0, 1, 0)
 shape = SubResource("BoxShape3D_skutr")
 
 [node name="Visual" type="Node3D" parent="." unique_id=421183302]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Visual" unique_id=720019004]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-visible = false
-layers = 2
-mesh = SubResource("CapsuleMesh_cny37")
-surface_material_override/0 = SubResource("StandardMaterial3D_fnw00")
 
 [node name="Sprite3D" type="Sprite3D" parent="Visual" unique_id=2049362324]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3225617, 0)

@@ -168,32 +168,48 @@ world units so the boundary is not a hard pixel edge:
 float hard = 1.0 - smoothstep(traced, traced + fade, dist);
 ```
 
-### 5. Widen the penumbra behind occluders
+### 5. Open a wedge from each silhouette edge
 
-A single lookup gives a shadow with a uniformly sharp edge. Real shadows spread
-the further you get behind the thing casting them, so the shader takes 32 extra
-taps across a window of nearby angles and averages them with triangular
-weights:
+A hard shadow that ends on a knife edge reads as a rendering artefact rather
+than as darkness. Real vision lets you see a little *past* a corner, and the
+further you stand from the thing casting the shadow the more you get.
+
+That "more with distance" is why the extra vision is measured as an **angle**
+and never as a distance. An angular wedge opening from the silhouette corner
+widens as it travels, so it draws a triangle; a fixed number of metres would be
+a constant-width band hugging the shadow edge, which is what an earlier version
+did and why it never looked like anything.
+
+The sweep walks outward in angle from the pixel's own bearing, asking each
+direction how lit it is at this exact distance:
 
 ```glsl
-float behind = max(dist - traced, 0.0);
-float window = min((fade + shadow_spread * behind) / max(dist, 0.001), 2.0 * half_angle);
+float angular = 1.0 - smoothstep(0.0, span, offset);
+float lit = max(
+    1.0 - smoothstep(plus,  plus  + fade, dist),
+    1.0 - smoothstep(minus, minus + fade, dist));
+unblocked = max(unblocked, angular * lit);
 ```
 
-`behind` is how far past the occluder this pixel sits. The numerator is a width
-in world units that grows with it; dividing by `dist` converts that width into
-an *angle*, because the same world-space blur subtends a smaller angle the
-further out you go. The clamp stops the window from exceeding the whole cone.
+`angular` is how much a direction at that offset may contribute, falling to zero
+at `silhouette_angle`. `lit` is that direction's own radial fade over
+`shadow_softness`. Multiplying them is what keeps the two edges consistent: the
+wedge dies into a second occluder through the same softening that governs that
+occluder's own shadow, instead of snapping to black.
 
-![A sight line from the eye grazes the edge of a wall. Beyond the wall the
-blurred shadow boundary is drawn as a band that starts narrow and fans out with
-distance, with sample taps marked across it at two
-depths.](diagrams/vision-penumbra.svg)
+Two properties fall out of this rather than needing extra code:
 
-The blurred and sharp results are combined with `max(soft, hard)`
-(`Shaders/vision_field.gdshaderinc:67`), so blurring can only ever *add*
-brightness — a pixel with clear line of sight stays fully lit even if its
-angular neighbours are shadowed.
+- **Re-occlusion is automatic.** The test reads `vision_range_at` for each swept
+  direction, so a direction whose ray is stopped short by another wall reports
+  as unlit and contributes nothing. The wedge is clipped by the next occluder
+  without a second pass.
+- **The radial edge is the same expression.** Iteration `i = 0` has `angular` of
+  1.0 and `lit` equal to the plain distance fade at the pixel's own bearing, so
+  one loop covers both the shadow's near edge and its silhouette.
+
+The cost is that the loop cannot exit early, since the maximum has to be taken
+over the whole sweep. It is always `SHADOW_TAPS + 1` iterations with two texture
+fetches each, roughly 270k fetches per frame at 64x64.
 
 ### 6. Apply the wedge and fade out
 
@@ -287,8 +303,9 @@ Script exports on `Render/WorldLayer`, with the values `Main3D.tscn` sets:
 | `wall_bleed` | `0.35` | `0.0` | Metres added to each hit distance, pushing the boundary past the wall face so the face reads as lit. Raise if walls look black-fronted. |
 | `edge_softness_degrees` | `3.0` | `10.0` | Angular fade at the two edges of the wedge. |
 | `distance_fade` | `1.5` | `1.5` | Metres of fade before `view_distance`. |
-| `shadow_softness` | `0.25` | `1.0` | Base blur width in metres at the shadow boundary. |
-| `shadow_spread` | `0.35` | `0.5` | How fast the penumbra widens with distance behind the occluder. `0` gives a constant-width edge. |
+| `shadow_softness` | `0.25` | `1.0` | Metres over which a shadow fades in, both at its near edge and where a silhouette wedge dies into another occluder. |
+| `silhouette_angle_degrees` | `6.0` | `6.0` | Extra vision past a shadow's silhouette, as an angle from the corner. Widens with distance, so it reads as a triangle. `0` gives hard silhouettes. |
+| `mask_color` | black | black | Colour the hidden area is mixed toward. |
 | `occluder_mask` | layer 1 | layer 1 | Physics layers the rays collide with. |
 
 On the player (`Scenes/Player3D.tscn`, overridden in `Main3D.tscn`):
@@ -305,11 +322,13 @@ the resolution of the visibility polygon, taps are the quality of the blur.
 
 ## Gotchas
 
-- **The `ShaderMaterial`'s inspector values are dead.** `Main3D.tscn` stores
-  `shadow_softness = 0.12` on the material sub-resource, but `_push_cone()`
-  overwrites every cone uniform each frame from the script's exports (which say
-  `1.0`). Editing the material in the inspector appears to do nothing. Tune on
-  the `WorldLayer` node instead.
+- **Every vision setting lives on the script, in one group.** `_push_cone()`
+  overwrites the material's uniforms every frame, so the `ShaderMaterial` used
+  to carry a second set of controls that looked live and could never take
+  effect. Those duplicate `shader_parameter/` entries are now stripped from
+  `Main.tscn`; the only two left on the material, `gradient` and `mix_amount`,
+  belong to the tonemap pass rather than to vision. Tune everything on the
+  `Render/WorldLayer` node, under the **Player vision** group.
 - **Rays are cast at eye height, the mask is evaluated on the floor.** With
   `eye_height = 2.0`, anything shorter than 2 m is invisible to the fan and
   casts no shadow at all, even though it is plainly on the ground. Crates and
@@ -331,3 +350,53 @@ the resolution of the visibility polygon, taps are the quality of the blur.
 - **A fresh `Image` is allocated every physics frame.** `_bake_image()` builds a
   new `Image` for each `update()` (`Scripts/vision_field.gd:73`). Harmless at
   128 texels, but it is per-frame garbage if the ray count ever grows.
+
+## The previous shadow model
+
+Kept here so the old look can be restored without unpicking a whole commit. It
+lived in `vision_visibility()` in `Assets/Shaders/vision_field.gdshaderinc`.
+
+It blurred visibility by averaging 32 binary taps across an angular window that
+grew with depth behind the occluder, then took the larger of that and the plain
+radial fade:
+
+```glsl
+float fade = max(shadow_softness, 0.0001);
+float traced = vision_range_at(angle);
+float hard = 1.0 - smoothstep(traced, traced + fade, dist);
+
+float behind = max(dist - traced, 0.0);
+float window = min((fade + shadow_spread * behind) / max(dist, 0.001), 2.0 * half_angle);
+float step_angle = window / float(SHADOW_TAPS - 1);
+
+float soft = 0.0;
+float total_weight = 0.0;
+for (int i = 0; i < SHADOW_TAPS; i++) {
+    float offset = float(i) - float(SHADOW_TAPS - 1) * 0.5;
+    float weight = 1.0 - abs(offset) / (float(SHADOW_TAPS - 1) * 0.5 + 1.0);
+    float limit = vision_range_at(angle + offset * step_angle);
+    soft += weight * (1.0 - smoothstep(limit, limit + fade, dist));
+    total_weight += weight;
+}
+soft /= total_weight;
+
+float unblocked = max(soft, hard);
+```
+
+It needed `uniform float shadow_spread = 0.35;` in the include, an
+`@export_range(0.0, 2.0, 0.01) var shadow_spread := 0.35` on
+`Assets/Scripts/vision_field.gd`, and a matching
+`_material.set_shader_parameter("shadow_spread", shadow_spread)` at the end of
+`_push_cone()`.
+
+**To restore only the vision, not whole files:** paste the block above over
+everything between `float fade` and `float wedge` inside `vision_visibility()`,
+rename the `silhouette_angle` uniform back to `shadow_spread`, and put the
+export and the `set_shader_parameter` line back. Nothing else in the project
+reads either name, so no other file has to change.
+
+Its two faults, since they are why it went: `max(soft, hard)` leaves a kink
+where the two curves cross, so the gradient begins somewhere inside the shadow
+rather than at the silhouette and reads as a hard edge however high
+`shadow_spread` goes; and the window is measured in metres, so the extra vision
+is a constant-width band instead of widening with distance.
