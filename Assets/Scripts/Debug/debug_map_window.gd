@@ -20,7 +20,7 @@ func _ready() -> void:
 		return
 
 	get_tree().root.gui_embed_subwindows = false
-	title = "Enemy AI monitor"
+	title = "Enemy Monitor"
 	size = window_size
 	min_size = Vector2i(256, 256)
 	transient = false
