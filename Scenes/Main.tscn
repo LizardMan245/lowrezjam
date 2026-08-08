@@ -59,7 +59,7 @@ occluder_mask = 16
 edge_softness_degrees = 13.0
 distance_fade = 10.0
 wall_bleed = 0.0
-shadow_softness = 0.4
+shadow_softness = 0.0
 silhouette_angle_degrees = 10.0
 
 [node name="World" type="SubViewport" parent="Render/WorldLayer" unique_id=1807412844]
