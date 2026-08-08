@@ -48,3 +48,7 @@ func _apply_facing() -> void:
 
 func get_eye_position() -> Vector3:
 	return global_position + Vector3(0.0, eye_height, 0.0)
+
+
+func get_noise_level() -> float:
+	return clampf(Vector2(velocity.x, velocity.z).length() / SPEED, 0.0, 1.0)

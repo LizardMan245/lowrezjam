@@ -4,15 +4,17 @@
 [ext_resource type="Script" uid="uid://hhivxkcywgcs" path="res://Assets/Scripts/Enemies/enemy_actor.gd" id="2_actor"]
 [ext_resource type="Script" uid="uid://dvircusdp5mr5" path="res://Assets/Scripts/Debug/enemy_debug_view.gd" id="3_debug"]
 [ext_resource type="Script" uid="uid://bm32cghgkj3uu" path="res://Assets/Scripts/Enemies/enemy_state_machine.gd" id="4_machine"]
-[ext_resource type="Script" uid="uid://cyvrtlfgus5v2" path="res://Assets/Scripts/Enemies/States/roam_walk_state.gd" id="5_walk"]
-[ext_resource type="Script" uid="uid://4etnb6ep6tdg" path="res://Assets/Scripts/Enemies/States/roam_idle_state.gd" id="6_idle"]
-[ext_resource type="Script" uid="uid://cgipgc0gtm5px" path="res://Assets/Scripts/Enemies/States/alert_state.gd" id="7_alert"]
-[ext_resource type="Script" uid="uid://crpahmsxdljhq" path="res://Assets/Scripts/Enemies/States/chase_state.gd" id="8_chase"]
-[ext_resource type="Script" uid="uid://bt5bbwk4fpqka" path="res://Assets/Scripts/Enemies/States/search_state.gd" id="9_search"]
+[ext_resource type="Script" uid="uid://cyvrtlfgus5v2" path="res://Assets/Scripts/Enemies/StateMachine/roam_walk_state.gd" id="5_walk"]
+[ext_resource type="Script" uid="uid://4etnb6ep6tdg" path="res://Assets/Scripts/Enemies/StateMachine/roam_idle_state.gd" id="6_idle"]
+[ext_resource type="AudioStream" uid="uid://bi6tmacm7533m" path="res://Assets/Audio/Placeholders/roar.wav" id="7_0s84d"]
+[ext_resource type="Script" uid="uid://cgipgc0gtm5px" path="res://Assets/Scripts/Enemies/StateMachine/alert_state.gd" id="7_alert"]
+[ext_resource type="Script" uid="uid://crpahmsxdljhq" path="res://Assets/Scripts/Enemies/StateMachine/chase_state.gd" id="8_chase"]
+[ext_resource type="Script" uid="uid://bt5bbwk4fpqka" path="res://Assets/Scripts/Enemies/StateMachine/search_state.gd" id="9_search"]
+[ext_resource type="Script" uid="uid://8v01qveaa76y" path="res://Assets/Scripts/Enemies/StateMachine/glance_state.gd" id="10_glance"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_body"]
 height = 1.0
-radius = 0.4
+radius = 1.0
 
 [node name="Basicenemy" type="CharacterBody3D" unique_id=1377881211 groups=["enemy"]]
 collision_layer = 4
@@ -41,6 +43,7 @@ radius = 0.4
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1466118383]
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1975332894]
+attenuation_model = 1
 
 [node name="StateMachine" type="Node" parent="." unique_id=1119538764]
 script = ExtResource("4_machine")
@@ -48,7 +51,7 @@ initial_state = &"RoamIdle"
 
 [node name="RoamWalk" type="Node" parent="StateMachine" unique_id=1274935182]
 script = ExtResource("5_walk")
-speed = 1.2
+max_speed = 3.0
 radius = 10.0
 animation = &"walk"
 next_states = Array[StringName]([&"RoamWalk", &"RoamIdle"])
@@ -56,14 +59,14 @@ next_state_weights = Array[float]([0.7, 0.3])
 
 [node name="RoamIdle" type="Node" parent="StateMachine" unique_id=1810249447]
 script = ExtResource("6_idle")
-maximum_time = 2.0
 animation = &"idle"
 next_states = Array[StringName]([&"RoamWalk", &"RoamIdle"])
 next_state_weights = Array[float]([0.8, 0.2])
 
 [node name="Alert" type="Node" parent="StateMachine" unique_id=1592043260]
 script = ExtResource("7_alert")
-fallback_duration = 1.0
+default_duration = 1.0
+sound = ExtResource("7_0s84d")
 animation = &"roar"
 interrupt_on_detection = false
 
@@ -74,16 +77,24 @@ top_speed = 7.0
 acceleration = 1.0
 animation = &"run"
 interrupt_on_detection = false
+interrupt_on_noise = false
 
 [node name="Search" type="Node" parent="StateMachine" unique_id=1352220885]
 script = ExtResource("9_search")
 speed = 3.0
-glances_max = 6
-pause = 0.6
+segments_min = 10
+segments_max = 10
+pause_time = 0.6
+segment_timeout = 2.0
 animation = &"walk"
-detection_state = &"Chase"
 next_states = Array[StringName]([&"RoamWalk", &"RoamIdle"])
+
+[node name="Glance" type="Node" parent="StateMachine" unique_id=1688732872]
+script = ExtResource("10_glance")
+hold_time = 0.85
+animation = &"glance"
 
 [node name="DebugView" type="MeshInstance3D" parent="." unique_id=1590023477]
 layers = 4
 script = ExtResource("3_debug")
+fallback_color = Color(0.31431612, 0.31431612, 0.3143161, 1)

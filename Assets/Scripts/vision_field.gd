@@ -25,7 +25,7 @@ func _ready() -> void:
 	_material = material as ShaderMaterial
 	_player = get_tree().get_first_node_in_group("player") as Node3D
 	if _viewport == null or _material == null or _player == null:
-		push_warning("VisionField needs a SubViewport child, a ShaderMaterial and a node in the \"player\" group.")
+		push_warning("visionfield needs subviewport, shadermatertial a node in the \"player\" group")
 		set_process(false)
 		set_physics_process(false)
 		return

@@ -28,6 +28,7 @@ const METER_BACKING := Color(0.05, 0.05, 0.08, 0.75)
 	&"Alert": Color(1.0, 1.0, 1.0),
 	&"Chase": Color(1.0, 0.15, 0.1),
 	&"Search": Color(1.0, 0.75, 0.1),
+	&"Glance": Color(0.812, 0.0, 0.765, 1.0),
 }
 
 var _enemy: EnemyActor
@@ -40,7 +41,7 @@ var _toggle_held := false
 func _ready() -> void:
 	_enemy = get_parent() as EnemyActor
 	if _enemy == null:
-		push_warning("EnemyDebugView expects to be a child of an enemy actor.")
+		push_warning("enemydebugview expects to be a child of an enemy actor")
 		set_physics_process(false)
 		return
 
