@@ -5,6 +5,8 @@ const EnemyActor = preload("res://Assets/Scripts/Enemies/enemy_actor.gd")
 @export var animation: StringName = &""
 @export var interrupt_on_detection := true
 @export var detection_state: StringName = &"Alert"
+@export var interrupt_on_noise := true
+@export var noise_state: StringName = &"Glance"
 @export var next_states: Array[StringName] = []
 @export var next_state_weights: Array[float] = []
 
@@ -35,7 +37,7 @@ func go_to(next: StringName) -> void:
 
 func go_to_next_state() -> void:
 	if next_states.is_empty():
-		push_warning("State \"%s\" has no next_states to fall back to." % name)
+		push_warning("State %s has no next_states set." % name)
 		return
 	machine.transition_to(_pick_next_state())
 

@@ -13,6 +13,7 @@ var current: EnemyState
 
 var _states := {}
 var _transition_depth := 0
+var _resume_state: StringName = &""
 
 
 func setup(owner_actor) -> void:
@@ -20,7 +21,7 @@ func setup(owner_actor) -> void:
 	for child in get_children():
 		var state := child as EnemyState
 		if state == null:
-			push_warning("Child \"%s\" of the state machine is not an enemy state." % child.name)
+			push_warning("Child %s is not a state, so it was skipped." % child.name)
 			continue
 		_states[StringName(child.name)] = state
 		state.setup(actor, self)
@@ -36,13 +37,14 @@ func start() -> void:
 
 func transition_to(next: StringName) -> void:
 	if not _states.has(next):
-		push_warning("Enemy state machine has no state named \"%s\"." % next)
+		push_warning("There is no state called %s." % next)
 		return
 	if _transition_depth >= MAX_CHAINED_TRANSITIONS:
-		push_warning("Enemy state machine hit a transition loop while entering \"%s\"." % next)
+		push_warning("Too many state changes at once while entering %s." % next)
 		return
 
 	_transition_depth += 1
+	_resume_state = &""
 	var previous := get_state_name()
 	if current != null:
 		current.exit()
@@ -52,11 +54,32 @@ func transition_to(next: StringName) -> void:
 	_transition_depth -= 1
 
 
+func interrupt_with(next: StringName) -> void:
+	var interrupted := get_state_name()
+	transition_to(next)
+	if get_state_name() == next:
+		_resume_state = interrupted
+
+
+func resume_previous() -> void:
+	var back := _resume_state
+	_resume_state = &""
+	if back != &"" and _states.has(back):
+		transition_to(back)
+		return
+	if _states.has(initial_state):
+		transition_to(initial_state)
+
+
 func physics_tick(delta: float) -> void:
 	if current == null:
 		return
 	if current.interrupt_on_detection and actor.has_detected_player():
 		transition_to(current.detection_state)
+	elif current.interrupt_on_noise and get_state_name() != current.noise_state and actor.wants_to_glance():
+		actor.use_glance()
+		if _states.has(current.noise_state):
+			interrupt_with(current.noise_state)
 	current.physics_tick(delta)
 
 

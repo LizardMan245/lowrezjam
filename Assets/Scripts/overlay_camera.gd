@@ -7,7 +7,7 @@ func _ready() -> void:
 	process_priority = 100
 	_source = get_tree().get_first_node_in_group("game_camera") as Camera3D
 	if _source == null:
-		push_warning("OverlayCamera found no node in the \"game_camera\" group.")
+		push_warning("overlaycamera found no node in the \"game_camera\" group")
 		set_process(false)
 
 
