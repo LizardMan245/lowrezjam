@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://k31kmerh852j"]
 
 [ext_resource type="Shader" uid="uid://bdt3w78h42rk2" path="res://Assets/Shaders/vision_composite.gdshader" id="1_vy5pj"]
+[ext_resource type="Texture2D" uid="uid://c4ekybrg3gjx3" path="res://tonemap.tres" id="2_4kpch"]
 [ext_resource type="Script" uid="uid://2w717bxpil07" path="res://Assets/Scripts/vision_field.gd" id="2_bmxlf"]
 [ext_resource type="Script" uid="uid://b3we63lcv60gm" path="res://Assets/Scripts/light_flicker.gd" id="3_4kpch"]
 [ext_resource type="PackedScene" uid="uid://cprsg5ky0rqxy" path="res://Assets/Map/Floor.tscn" id="4_grg3l"]
@@ -28,21 +29,19 @@ shader_parameter/cam_forward = Vector3(0, -1, 0)
 shader_parameter/cam_half_extents = Vector2(5, 5)
 shader_parameter/ground_height = 0.0
 shader_parameter/mask_color = Color(0, 0, 0, 1)
+shader_parameter/gradient = ExtResource("2_4kpch")
+shader_parameter/mix_amount = 0.0
 
 [sub_resource type="Environment" id="Environment_cny37"]
 background_mode = 1
-background_color = Color(0.007843138, 0.015686275, 0.039215688, 1)
-background_energy_multiplier = 0.0
-ambient_light_source = 2
-ambient_light_color = Color(0.002988342, 0.20916215, 0.8318562, 1)
-ambient_light_energy = 0.0
+tonemap_mode = 3
 ssr_enabled = true
 ssao_enabled = true
 ssil_enabled = true
 glow_enabled = true
-glow_normalized = true
-glow_intensity = 1.0
-glow_bloom = 0.2
+glow_hdr_threshold = 0.8
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.02
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_rldou"]
 vertices = PackedVector3Array(-5.630432, 0.49, -6, -4.630432, 0.49, -6, -4.630432, 0.49, -9, -6.380432, 0.49, -5.25, -9.130432, 0.49, -9, -9.130432, 0.49, 4, -6.380432, 0.49, 3.5, -3.1304321, 0.49, -2, -1.8804321, 0.49, -2, -1.8804321, 0.49, -2.75, -3.1304321, 0.49, -5.25, -0.6304321, 0.49, -4, 0.36956787, 0.49, -4, 0.36956787, 0.49, -9, -3.8804321, 0.49, -6, 1.8695679, 0.49, -2.75, 1.8695679, 0.49, -2, 4.369568, 0.49, -2, 4.369568, 0.49, -6, 4.869568, 0.49, -6.5, 4.619568, 0.49, -9, 6.869568, 0.49, 5.5, 5.869568, 0.49, 5.5, 6.119568, 0.49, 7, 9.119568, 0.49, 5.5, 7.619568, 0.49, 4.75, 9.119568, 0.49, -9, 6.869568, 0.49, -6.75, 7.619568, 0.49, -6, 1.3695679, 0.49, 8.5, 0.8695679, 0.49, 9, 2.8695679, 0.49, 9, 5.119568, 0.49, 5.5, 1.3695679, 0.49, 7.25, 4.369568, 0.49, 4.75, 0.36956787, 0.49, 6, -0.6304321, 0.49, -0.25, -3.1304321, 0.49, 5.75, -1.1304321, 0.49, 6, -4.380432, 0.49, 6.75, -9.130432, 0.49, 8.25, 0.6195679, 0.49, -0.25, -9.130432, 0.49, 7.25)
@@ -126,7 +125,6 @@ eye_height = 1.0
 [node name="Basicenemy" parent="Render/WorldLayer/World" unique_id=1364594077 instance=ExtResource("8_erwvk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -6)
 vision_angle_degrees = 180.0
-view_distance = 10.0
 detection_time = 0.6
 detection_decay_rate = 3.0
 turn_speed = 3.0
