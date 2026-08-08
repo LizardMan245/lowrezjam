@@ -74,10 +74,10 @@ func _ready() -> void:
 	_player = get_tree().get_first_node_in_group("player") as Node3D
 
 	if _agent == null or _machine == null or _visual == null:
-		push_warning("Enemy is missing a NavigationAgent3D, StateMachine or Visual node.")
+		push_warning("enemy is missing a NavigationAgent3D, StateMachine or visual node")
 		return
 	if _player == null:
-		push_warning("No player found, so the enemy will just walk around.")
+		push_warning("no player found, the enemy will just walk around")
 
 	_rng.randomize()
 	_sight_query.collision_mask = sight_mask
@@ -112,7 +112,7 @@ func _wait_for_navigation() -> void:
 		if _navigation_is_ready():
 			return
 		await get_tree().physics_frame
-	push_warning("The navigation map did not load in time.")
+	push_warning("the navigation map did not load in time")
 
 
 func _navigation_is_ready() -> bool:

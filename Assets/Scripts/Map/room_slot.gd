@@ -1,6 +1,7 @@
 extends Node3D
 
 @export var tiles := Vector2i(3, 3)
+@export var role: StringName = &""
 
 
 func get_door_markers() -> Array[Marker3D]:

@@ -37,7 +37,7 @@ func go_to(next: StringName) -> void:
 
 func go_to_next_state() -> void:
 	if next_states.is_empty():
-		push_warning("State %s has no next_states set." % name)
+		push_warning("state %s has no next_states set" % name)
 		return
 	machine.transition_to(_pick_next_state())
 

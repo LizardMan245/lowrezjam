@@ -21,7 +21,7 @@ func setup(owner_actor) -> void:
 	for child in get_children():
 		var state := child as EnemyState
 		if state == null:
-			push_warning("Child %s is not a state, so it was skipped." % child.name)
+			push_warning("child %s is not a state, skipped" % child.name)
 			continue
 		_states[StringName(child.name)] = state
 		state.setup(actor, self)
@@ -37,10 +37,10 @@ func start() -> void:
 
 func transition_to(next: StringName) -> void:
 	if not _states.has(next):
-		push_warning("There is no state called %s." % next)
+		push_warning("there is no state called %s" % next)
 		return
 	if _transition_depth >= MAX_CHAINED_TRANSITIONS:
-		push_warning("Too many state changes at once while entering %s." % next)
+		push_warning("too many state changes at once while entering %s" % next)
 		return
 
 	_transition_depth += 1

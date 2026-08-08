@@ -3,40 +3,50 @@ extends Node3D
 const DungeonLayout = preload("res://Assets/Scripts/Map/dungeon_layout.gd")
 const RoomSlot = preload("res://Assets/Scripts/Map/room_slot.gd")
 
-const WALL_NAMES := ["WallNorth", "WallEast", "WallSouth", "WallWest"]
-
-const DEAD_END_MASK := 1
-const STRAIGHT_MASK := 5
-const CORNER_MASK := 3
-const JUNCTION_MASK := 11
+const OPEN_MASK := 0
+const JUNCTION_MASK := 4
+const STRAIGHT_MASK := 10
+const CORNER_MASK := 12
+const DEAD_END_MASK := 14
 
 signal generated(rooms: int, corridors: int)
 
 @export_group("Pieces")
 @export_dir var rooms_folder := "res://Assets/Map/Rooms"
-@export var dead_end_piece: PackedScene
+@export var open_piece: PackedScene
+@export var junction_piece: PackedScene
 @export var straight_piece: PackedScene
 @export var corner_piece: PackedScene
-@export var junction_piece: PackedScene
+@export var dead_end_piece: PackedScene
 
 @export_group("Layout")
-@export var grid_size := Vector2i(24, 24)
-@export_range(1.0, 16.0, 0.5) var tile_size := 4.0
-@export_range(1, 400) var room_attempts := 120
+@export var grid_size := Vector2i(20, 20)
+@export_range(1.0, 16.0, 0.5) var tile_size := 5.0
+@export_range(1, 400) var room_attempts := 200
 @export_range(1, 32) var max_rooms := 6
 @export_range(0, 4) var room_margin := 1
-@export_range(0.0, 1.0, 0.05) var dead_end_trim := 0.55
+@export_range(1, 24) var main_path_rooms := 5
+@export_range(0, 16) var branch_rooms := 4
+@export_range(1, 10) var run_min := 2
+@export_range(1, 16) var run_max := 6
+@export_range(0.0, 1.0, 0.05) var wide_corridor_chance := 0.7
 @export var random_seed := 0
 @export var randomise_on_start := true
 @export var regenerate_action: StringName = &""
 
+@export_group("Spawning")
+@export var player_group: StringName = &"player"
+@export var enemy_group: StringName = &"enemy"
+@export_range(0.0, 8.0, 0.1) var spawn_height := 1.0
+
 @export_group("Navigation")
 @export var bake_navigation := true
-@export_range(0.1, 4.0, 0.05) var agent_radius := 0.5
+@export_range(0.1, 4.0, 0.05) var agent_radius := 1.0
 @export_range(0.5, 6.0, 0.1) var agent_height := 1.5
 
 var layout
 
+var _rng := RandomNumberGenerator.new()
 var _room_defs := []
 var _region: NavigationRegion3D
 var _rooms_root: Node3D
@@ -60,19 +70,18 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func generate() -> void:
 	_clear()
+	_rng.seed = random_seed
 
 	layout = DungeonLayout.new()
 	layout.setup(grid_size, random_seed)
 
-	var placements: Array = layout.place_rooms(_room_defs, room_attempts, max_rooms, room_margin)
-	layout.open_doors(placements, _room_defs)
-	layout.carve_maze()
-	layout.connect_regions()
-	layout.trim_dead_ends(dead_end_trim)
+	layout.build(_room_defs, main_path_rooms, branch_rooms, run_min, run_max, wide_corridor_chance)
+	var placements: Array = layout.placements
 
 	_build_rooms(placements)
 	var corridors := _build_corridors()
 	_bake_navigation()
+	_place_spawn_nodes()
 
 	generated.emit(placements.size(), corridors)
 
@@ -127,7 +136,7 @@ func _load_room_defs() -> void:
 		var doors := _read_doors(slot)
 		if doors.is_empty():
 			push_warning("room %s has no door markers" % scene_name)
-		_room_defs.append({"scene": scene, "tiles": slot.tiles, "doors": doors})
+		_room_defs.append({"scene": scene, "tiles": slot.tiles, "doors": doors, "role": slot.role})
 		probe.free()
 	if _room_defs.is_empty():
 		push_warning("no usable rooms found in %s" % rooms_folder)
@@ -183,28 +192,40 @@ func _build_corridors() -> int:
 			var cell := Vector2i(x, y)
 			if layout.get_cell(cell) != DungeonLayout.CORRIDOR:
 				continue
-			var mask: int = layout.openings_at(cell)
+			var mask: int = layout.wall_mask(cell)
 			var scene := _piece_for(mask)
 			if scene == null:
 				continue
-			var turns := _turns_for(mask)
 			var piece: Node3D = scene.instantiate()
 			piece.position = cell_to_world(cell)
-			piece.rotation.y = -turns * PI * 0.5
+			piece.rotation.y = -_turns_for(mask) * PI * 0.5
 			_corridors_root.add_child(piece)
-			_merge_walls(piece, cell, mask, turns)
 			built += 1
 	return built
 
 
 func _piece_for(mask: int) -> PackedScene:
-	match _opening_count(mask):
-		0, 1:
-			return dead_end_piece
+	match _wall_count(mask):
+		0:
+			return open_piece
+		1:
+			return junction_piece
 		2:
 			return straight_piece if _is_straight(mask) else corner_piece
 		_:
-			return junction_piece
+			return dead_end_piece
+
+
+func _canonical_for(mask: int) -> int:
+	match _wall_count(mask):
+		0:
+			return OPEN_MASK
+		1:
+			return JUNCTION_MASK
+		2:
+			return STRAIGHT_MASK if _is_straight(mask) else CORNER_MASK
+		_:
+			return DEAD_END_MASK
 
 
 func _turns_for(mask: int) -> int:
@@ -213,16 +234,6 @@ func _turns_for(mask: int) -> int:
 		if _rotate_mask(canonical, turns) == mask:
 			return turns
 	return 0
-
-
-func _canonical_for(mask: int) -> int:
-	match _opening_count(mask):
-		0, 1:
-			return DEAD_END_MASK
-		2:
-			return STRAIGHT_MASK if _is_straight(mask) else CORNER_MASK
-		_:
-			return JUNCTION_MASK
 
 
 func _rotate_mask(mask: int, turns: int) -> int:
@@ -237,7 +248,7 @@ func _is_straight(mask: int) -> bool:
 	return mask == 5 or mask == 10
 
 
-func _opening_count(mask: int) -> int:
+func _wall_count(mask: int) -> int:
 	var count := 0
 	for dir in 4:
 		if mask & (1 << dir):
@@ -245,16 +256,74 @@ func _opening_count(mask: int) -> int:
 	return count
 
 
-func _merge_walls(piece: Node3D, cell: Vector2i, mask: int, turns: int) -> void:
-	for dir in 4:
-		var open := (mask & (1 << dir)) != 0
-		var shared: bool = layout.get_cell(cell + DungeonLayout.STEPS[dir]) == DungeonLayout.ROOM
-		if not open and not shared:
+func _entrance_rect() -> Rect2i:
+	if layout.entrance_index < 0:
+		return Rect2i(-1, -1, 0, 0)
+	return layout.room_rect(layout.entrance_index)
+
+
+func _entrance_spot() -> Vector3:
+	var rect := _entrance_rect()
+	if rect.size == Vector2i.ZERO:
+		return to_global(Vector3.ZERO)
+	var middle := rect.position + rect.size / 2
+	return to_global(cell_to_world(middle))
+
+
+func _spawn_candidates() -> Array:
+	var rect := _entrance_rect()
+	var rooms := []
+	var corridors := []
+	for y in grid_size.y:
+		for x in grid_size.x:
+			var cell := Vector2i(x, y)
+			if rect.has_point(cell):
+				continue
+			match layout.get_cell(cell):
+				DungeonLayout.ROOM:
+					rooms.append(cell)
+				DungeonLayout.CORRIDOR:
+					corridors.append(cell)
+	return rooms if not rooms.is_empty() else corridors
+
+
+func _spread_cell(spots: Array, used: Array) -> Vector2i:
+	if used.is_empty():
+		return spots[_rng.randi_range(0, spots.size() - 1)]
+	var best: Vector2i = spots[0]
+	var best_gap := -1.0
+	for entry in spots:
+		var cell: Vector2i = entry
+		var gap := INF
+		for taken in used:
+			var other: Vector2i = taken
+			gap = minf(gap, Vector2(cell - other).length())
+		if gap > best_gap:
+			best_gap = gap
+			best = cell
+	return best
+
+
+func _place_spawn_nodes() -> void:
+	var entrance := _entrance_spot()
+	for node in get_tree().get_nodes_in_group(player_group):
+		var body := node as Node3D
+		if body != null:
+			body.global_position = entrance + Vector3(0.0, spawn_height, 0.0)
+
+	var spots := _spawn_candidates()
+	if spots.is_empty():
+		return
+	var rect := _entrance_rect()
+	var used := [rect.position + rect.size / 2]
+	for node in get_tree().get_nodes_in_group(enemy_group):
+		var body := node as Node3D
+		if body == null:
 			continue
-		var local_dir := (dir - turns + 4) % 4
-		var wall := piece.get_node_or_null(WALL_NAMES[local_dir])
-		if wall != null:
-			wall.free()
+		var cell := _spread_cell(spots, used)
+		used.append(cell)
+		var spot := to_global(cell_to_world(cell))
+		body.global_position = Vector3(spot.x, spot.y + spawn_height, spot.z)
 
 
 func _bake_navigation() -> void:

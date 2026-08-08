@@ -15,6 +15,7 @@ emission = Color(0, 0, 1, 1)
 
 [node name="Player" type="CharacterBody3D" unique_id=248580682 groups=["player"]]
 script = ExtResource("1_rpqav")
+vision_angle_degrees = 90.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1989597804]
 transform = Transform3D(1.4, 0, 0, 0, 1, 0, 0, 0, 1.4, 0, 1, 0)
@@ -56,8 +57,8 @@ look_ahead = 3.5
 glide_speed = 4.0
 
 [node name="Camera3D" type="Camera3D" parent="CameraRig" unique_id=638345522 groups=["game_camera"]]
-transform = Transform3D(1, 0, 0, 0, -4.3711385e-08, 0.99999994, 0, -0.99999994, -4.3711385e-08, 0, 10, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 10, 0)
 cull_mask = 1048569
 projection = 1
 current = true
-size = 12.0
+size = 10.0

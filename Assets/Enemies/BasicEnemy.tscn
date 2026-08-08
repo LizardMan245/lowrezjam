@@ -16,9 +16,20 @@
 height = 1.0
 radius = 1.0
 
+[sub_resource type="BoxMesh" id="BoxMesh_cny37"]
+size = Vector3(0.18615723, 0.14892578, 0.18269348)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rldou"]
+albedo_color = Color(0, 0, 0, 0)
+emission_enabled = true
+emission = Color(1, 0, 0, 1)
+emission_energy_multiplier = 5.0
+disable_receive_shadows = true
+
 [node name="Basicenemy" type="CharacterBody3D" unique_id=1377881211 groups=["enemy"]]
 collision_layer = 4
 script = ExtResource("2_actor")
+view_distance = 10.0
 detection_time = 0.55
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=215603961]
@@ -27,10 +38,23 @@ shape = SubResource("CylinderShape3D_body")
 
 [node name="Visual" type="Node3D" parent="." unique_id=1024778311]
 
+[node name="eye" type="MeshInstance3D" parent="Visual" unique_id=457549527]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.3042958, 0.6161619, -0.9745818)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_cny37")
+surface_material_override/0 = SubResource("StandardMaterial3D_rldou")
+
+[node name="eye2" type="MeshInstance3D" parent="Visual" unique_id=8998904]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.29870483, 0.6161619, -0.9745818)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_cny37")
+surface_material_override/0 = SubResource("StandardMaterial3D_rldou")
+
 [node name="Sprite3D" type="Sprite3D" parent="Visual" unique_id=1868556659]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0.5490232, 0)
-pixel_size = 0.1
+pixel_size = 0.15
 axis = 1
+shaded = true
 texture_filter = 0
 texture = ExtResource("1_8vmum")
 
@@ -51,7 +75,8 @@ initial_state = &"RoamIdle"
 
 [node name="RoamWalk" type="Node" parent="StateMachine" unique_id=1274935182]
 script = ExtResource("5_walk")
-max_speed = 3.0
+min_speed = 2.0
+max_speed = 4.0
 radius = 10.0
 animation = &"walk"
 next_states = Array[StringName]([&"RoamWalk", &"RoamIdle"])
@@ -72,9 +97,10 @@ interrupt_on_detection = false
 
 [node name="Chase" type="Node" parent="StateMachine" unique_id=2038741539]
 script = ExtResource("8_chase")
-start_speed = 1.0
+start_speed = 4.0
 top_speed = 7.0
 acceleration = 1.0
+give_up_time = 10.0
 animation = &"run"
 interrupt_on_detection = false
 interrupt_on_noise = false
@@ -82,10 +108,8 @@ interrupt_on_noise = false
 [node name="Search" type="Node" parent="StateMachine" unique_id=1352220885]
 script = ExtResource("9_search")
 speed = 3.0
-segments_min = 10
-segments_max = 10
+segments_max = 6
 pause_time = 0.6
-segment_timeout = 2.0
 animation = &"walk"
 next_states = Array[StringName]([&"RoamWalk", &"RoamIdle"])
 
