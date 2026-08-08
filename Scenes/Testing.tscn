@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://2w717bxpil07" path="res://Assets/Scripts/vision_field.gd" id="3_22721"]
 [ext_resource type="Script" uid="uid://b3we63lcv60gm" path="res://Assets/Scripts/light_flicker.gd" id="4_sj1v7"]
 [ext_resource type="PackedScene" uid="uid://bcap7bikpxwxw" path="res://Assets/Enemies/BasicEnemy.tscn" id="4_y53xc"]
+[ext_resource type="Environment" uid="uid://b3ulhtijha0iy" path="res://env.tres" id="5_pdd2q"]
 [ext_resource type="Script" uid="uid://dmtdlh3v7vxl4" path="res://Assets/Scripts/overlay_camera.gd" id="8_gc7rg"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vhqah"]
@@ -19,6 +20,7 @@ shader_parameter/view_distance = 7.0
 shader_parameter/distance_fade = 1.5
 shader_parameter/shadow_softness = 0.25
 shader_parameter/shadow_spread = 0.35
+shader_parameter/shadow_growth = 0.35
 shader_parameter/cam_pos = Vector3(0, 10, 0)
 shader_parameter/cam_right = Vector3(1, 0, 0)
 shader_parameter/cam_up = Vector3(0, 0, -1)
@@ -28,18 +30,9 @@ shader_parameter/ground_height = 0.0
 shader_parameter/mask_color = Color(0, 0, 0, 1)
 shader_parameter/gradient = ExtResource("2_pdd2q")
 shader_parameter/mix_amount = 0.0
-
-[sub_resource type="Environment" id="Environment_wdaas"]
-background_mode = 1
-tonemap_mode = 3
-ssr_enabled = true
-ssao_enabled = true
-ssil_enabled = true
-glow_enabled = true
-glow_intensity = 8.0
-glow_strength = 2.0
-glow_hdr_threshold = 0.8
-volumetric_fog_density = 0.02
+shader_parameter/bloom_threshold = 0.85
+shader_parameter/bloom_strength = 1.4
+shader_parameter/bloom_radius = 1.5
 
 [sub_resource type="Environment" id="Environment_v3ldo"]
 ambient_light_source = 2
@@ -82,12 +75,11 @@ script = ExtResource("4_sj1v7")
 dropout_chance = 0.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Render/WorldLayer/World" unique_id=300796498]
-environment = SubResource("Environment_wdaas")
+environment = ExtResource("5_pdd2q")
 
 [node name="Player" parent="Render/WorldLayer/World" unique_id=248580682 instance=ExtResource("3_4y0hx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.30474377, 0, 0.25018883)
 turn_speed = 6.0
-vision_angle_degrees = 90.0
 view_distance = 20.0
 eye_height = 1.0
 

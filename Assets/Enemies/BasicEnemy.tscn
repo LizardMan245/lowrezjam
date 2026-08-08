@@ -23,7 +23,7 @@ size = Vector3(0.18615723, 0.14892578, 0.18269348)
 albedo_color = Color(0, 0, 0, 0)
 emission_enabled = true
 emission = Color(1, 0, 0, 1)
-emission_energy_multiplier = 5.0
+emission_energy_multiplier = 6.0
 disable_receive_shadows = true
 
 [node name="Basicenemy" type="CharacterBody3D" unique_id=1377881211 groups=["enemy"]]
