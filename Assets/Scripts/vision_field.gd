@@ -2,12 +2,14 @@ extends SubViewportContainer
 
 const RAY_COUNT := 128
 
-@export_range(0.0, 2.0, 0.01) var wall_bleed := 0.35
+@export_group("Player vision")
+@export var mask_color := Color(0.0, 0.0, 0.0, 1.0)
+@export_flags_3d_physics var occluder_mask := 1
 @export_range(0.0, 20.0) var edge_softness_degrees := 3.0
 @export_range(0.0, 10.0) var distance_fade := 1.5
+@export_range(0.0, 2.0, 0.01) var wall_bleed := 0.35
 @export_range(0.0, 4.0, 0.01) var shadow_softness := 0.25
-@export_range(0.0, 2.0, 0.01) var shadow_spread := 0.35
-@export_flags_3d_physics var occluder_mask := 1
+@export_range(0.0, 45.0, 0.5) var silhouette_angle_degrees := 6.0
 
 var _viewport: SubViewport
 var _player: Node3D
@@ -96,4 +98,5 @@ func _push_cone() -> void:
 	_material.set_shader_parameter("view_distance", _player.view_distance)
 	_material.set_shader_parameter("distance_fade", distance_fade)
 	_material.set_shader_parameter("shadow_softness", shadow_softness)
-	_material.set_shader_parameter("shadow_spread", shadow_spread)
+	_material.set_shader_parameter("silhouette_angle", deg_to_rad(silhouette_angle_degrees))
+	_material.set_shader_parameter("mask_color", mask_color)

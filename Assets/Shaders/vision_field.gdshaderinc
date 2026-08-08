@@ -7,7 +7,7 @@ uniform float edge_softness = 0.0523599;
 uniform float view_distance = 7.0;
 uniform float distance_fade = 1.5;
 uniform float shadow_softness = 0.25;
-uniform float shadow_spread = 0.35;
+uniform float silhouette_angle = 0.10472;
 
 const int SHADOW_TAPS = 32;
 
@@ -45,26 +45,20 @@ float vision_visibility(vec2 uv) {
 		dot(eye_dir, to_pixel));
 
 	float fade = max(shadow_softness, 0.0001);
+	float span = min(silhouette_angle, 2.0 * half_angle);
+	float step_angle = span / float(SHADOW_TAPS);
 
-	float traced = vision_range_at(angle);
-	float hard = 1.0 - smoothstep(traced, traced + fade, dist);
-
-	float behind = max(dist - traced, 0.0);
-	float window = min((fade + shadow_spread * behind) / max(dist, 0.001), 2.0 * half_angle);
-	float step_angle = window / float(SHADOW_TAPS - 1);
-
-	float soft = 0.0;
-	float total_weight = 0.0;
-	for (int i = 0; i < SHADOW_TAPS; i++) {
-		float offset = float(i) - float(SHADOW_TAPS - 1) * 0.5;
-		float weight = 1.0 - abs(offset) / (float(SHADOW_TAPS - 1) * 0.5 + 1.0);
-		float limit = vision_range_at(angle + offset * step_angle);
-		soft += weight * (1.0 - smoothstep(limit, limit + fade, dist));
-		total_weight += weight;
+	float unblocked = 0.0;
+	for (int i = 0; i <= SHADOW_TAPS; i++) {
+		float offset = step_angle * float(i);
+		float angular = 1.0 - smoothstep(0.0, span, offset);
+		float plus = vision_range_at(angle + offset);
+		float minus = vision_range_at(angle - offset);
+		float lit = max(
+			1.0 - smoothstep(plus, plus + fade, dist),
+			1.0 - smoothstep(minus, minus + fade, dist));
+		unblocked = max(unblocked, angular * lit);
 	}
-	soft /= total_weight;
-
-	float unblocked = max(soft, hard);
 
 	float wedge = 1.0 - smoothstep(half_angle - edge_softness, half_angle, abs(angle));
 	float in_range = 1.0 - smoothstep(view_distance - distance_fade, view_distance, dist);
