@@ -1,93 +1,71 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400" role="img" aria-labelledby="t d">
-  <title id="t">Penumbra widening behind an occluder</title>
-  <desc id="d">A horizontal sight line from the eye grazes the bottom edge of a wall. Beyond the wall the blurred shadow boundary is drawn as a band that starts narrow and fans out with distance, with nine sample taps marked across it at two depths.</desc>
+  <title id="t">Umbra and penumbra from a seven-origin aperture</title>
+  <desc id="d">Seven ray origins on the left each cast their own shadow of one narrow occluder. The seven shadow bands are drawn overlapping; where all seven coincide, close behind the occluder, a small dark umbra triangle forms and comes to a point. Past that point no full shadow remains, only overlapping partial bands that spread and lighten with distance.</desc>
   <style>
     .bg    { fill: #ffffff; }
     .txt   { fill: #1f2328; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
     .mut   { fill: #656d76; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
-    .occt  { fill: #a04a06; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
     .acct  { fill: #1a5fd0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .occt  { fill: #a04a06; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
     .inks  { stroke: #1f2328; }
     .muts  { stroke: #656d76; }
-    .acc   { stroke: #2f6fed; }
     .accf  { fill: #2f6fed; }
     .occ   { fill: #b35309; }
-    .occs  { stroke: #b35309; }
-    .shade { fill: #1f2328; fill-opacity: 0.10; }
-    .cell  { fill: #ffffff; }
+    .band  { fill: #1f2328; fill-opacity: 0.11; }
+    .umbra { fill: #1f2328; fill-opacity: 0.30; }
     @media (prefers-color-scheme: dark) {
       .bg    { fill: #0d1117; }
       .txt   { fill: #e6edf3; }
       .mut   { fill: #9aa4ae; }
-      .occt  { fill: #e0913f; }
       .acct  { fill: #6ea8ff; }
+      .occt  { fill: #e0913f; }
       .inks  { stroke: #e6edf3; }
       .muts  { stroke: #9aa4ae; }
-      .acc   { stroke: #6ea8ff; }
       .accf  { fill: #6ea8ff; }
       .occ   { fill: #e0913f; }
-      .occs  { stroke: #e0913f; }
-      .shade { fill: #e6edf3; fill-opacity: 0.10; }
-      .cell  { fill: #0d1117; }
+      .band  { fill: #e6edf3; fill-opacity: 0.10; }
+      .umbra { fill: #e6edf3; fill-opacity: 0.26; }
     }
   </style>
-  <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
-            markerWidth="6" markerHeight="6" orient="auto-start-end">
-      <path class="accf" d="M 0 0 L 10 5 L 0 10 z"/>
-    </marker>
-    <marker id="marrow" viewBox="0 0 10 10" refX="9" refY="5"
-            markerWidth="6" markerHeight="6" orient="auto-start-end">
-      <path class="mut" d="M 0 0 L 10 5 L 0 10 z"/>
-    </marker>
-    <marker id="tick" viewBox="0 0 10 10" refX="5" refY="5"
-            markerWidth="6" markerHeight="6" orient="auto-start-end">
-      <path class="inks" fill="none" stroke-width="1.6" d="M 5 0.5 L 5 9.5"/>
-    </marker>
-  </defs>
   <rect class="bg" x="0" y="0" width="700" height="400"/>
-  <text class="txt" x="16" y="30" font-size="14.5" text-anchor="start" font-weight="600">Why the shadow edge widens with distance</text>
-  <text class="mut" x="16" y="51" font-size="12.5" text-anchor="start">32 taps are averaged across an angular window; 9 shown per bracket.</text>
-  <text class="mut" x="16" y="69" font-size="12.5" text-anchor="start">The window grows the further a pixel sits behind the occluder.</text>
-  <path class="shade" d="M 250 232 L 610 232 L 610 96 L 250 96 Z"/>
-  <path class="shade" d="M 250 226.5 L 610 154.5 L 610 309.5 L 250 237.5 Z"/>
-  <line class="muts" x1="250" y1="226.5" x2="610" y2="154.5" stroke-width="1.3" stroke-dasharray="5 4"/>
-  <line class="muts" x1="250" y1="237.5" x2="610" y2="309.5" stroke-width="1.3" stroke-dasharray="5 4"/>
-  <line class="acc" x1="60" y1="232" x2="250" y2="232" stroke-width="1.8"/>
-  <line class="muts" x1="250" y1="232" x2="610" y2="232" stroke-width="1.3" stroke-dasharray="3 3"/>
-  <circle class="accf" cx="60" cy="232" r="6"/>
-  <text class="txt" x="54" y="258" font-size="14" text-anchor="start">eye</text>
-  <text class="mut" x="76" y="220" font-size="12.5" text-anchor="start">grazing sight line</text>
-  <rect class="occ" x="245" y="96" width="10" height="136" rx="2"/>
-  <text class="occt" x="240" y="84" font-size="14" text-anchor="middle">occluder</text>
-  <rect class="bg" x="259" y="101.38" width="210.62" height="16" rx="3"/>
-  <text class="mut" x="264" y="112" font-size="12.5" text-anchor="start">traced = distance to this edge</text>
-  <rect class="bg" x="355.45" y="130.95" width="149.1" height="16.64" rx="3"/>
-  <text class="mut" x="430" y="142" font-size="13" text-anchor="middle">umbra — fully hidden</text>
-  <line class="muts" x1="250" y1="328" x2="616" y2="328" stroke-width="1.2" marker-end="url(#marrow)"/>
-  <text class="mut" x="262" y="322" font-size="12.5" text-anchor="start">behind = dist − traced</text>
-  <line class="inks" x1="340" y1="208.5" x2="340" y2="255.5" stroke-width="1.6" marker-start="url(#tick)" marker-end="url(#tick)"/>
-  <circle class="accf" fill-opacity="0.8" cx="340" cy="208.5" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="340" cy="214.38" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="340" cy="220.25" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="340" cy="226.12" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="340" cy="232" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="340" cy="237.88" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="340" cy="243.75" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="340" cy="249.62" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="340" cy="255.5" r="2"/>
-  <text class="txt" x="340" y="277.5" font-size="13" text-anchor="middle">narrow</text>
-  <line class="inks" x1="580" y1="160.5" x2="580" y2="303.5" stroke-width="1.6" marker-start="url(#tick)" marker-end="url(#tick)"/>
-  <circle class="accf" fill-opacity="0.8" cx="580" cy="160.5" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="580" cy="178.38" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="580" cy="196.25" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="580" cy="214.12" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="580" cy="232" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="580" cy="249.88" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="580" cy="267.75" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="580" cy="285.62" r="2"/>
-  <circle class="accf" fill-opacity="0.8" cx="580" cy="303.5" r="2"/>
-  <text class="txt" x="580" y="148.5" font-size="13" text-anchor="middle">wide</text>
-  <text class="txt" x="16" y="356" font-size="13" text-anchor="start">window = (shadow_softness + shadow_spread · behind) / dist</text>
-  <text class="mut" x="16" y="376" font-size="12.5" text-anchor="start">Dividing by dist turns a width in metres into an angle — the same blur subtends less the further out it is.</text>
+  <text class="txt" x="16" y="26" font-size="14.5" font-weight="600">Soft shadow is not blurred — it is counted</text>
+  <text class="mut" x="16" y="46" font-size="12.5">Each origin casts one hard shadow. A pixel's brightness is how many of the seven miss it.</text>
+
+  <path class="band" d="M 300 185 L 650 243.33 L 650 323.33 L 300 215 Z"/>
+  <path class="band" d="M 300 185 L 650 215.56 L 650 295.56 L 300 215 Z"/>
+  <path class="band" d="M 300 185 L 650 187.78 L 650 267.78 L 300 215 Z"/>
+  <path class="band" d="M 300 185 L 650 160.00 L 650 240.00 L 300 215 Z"/>
+  <path class="band" d="M 300 185 L 650 132.22 L 650 212.22 L 300 215 Z"/>
+  <path class="band" d="M 300 185 L 650 104.44 L 650 184.44 L 300 215 Z"/>
+  <path class="band" d="M 300 185 L 650 76.67 L 650 156.67 L 300 215 Z"/>
+  <path class="umbra" d="M 300 185 L 390 200 L 300 215 Z"/>
+
+  <line class="muts" x1="90" y1="150" x2="650" y2="243.33" stroke-width="1.1" stroke-dasharray="5 4"/>
+  <line class="muts" x1="90" y1="250" x2="650" y2="156.67" stroke-width="1.1" stroke-dasharray="5 4"/>
+
+  <line class="inks" x1="90" y1="150" x2="90" y2="250" stroke-width="2.2"/>
+  <circle class="accf" cx="90" cy="150" r="4.5"/>
+  <circle class="accf" cx="90" cy="166.67" r="4.5"/>
+  <circle class="accf" cx="90" cy="183.33" r="4.5"/>
+  <circle class="accf" cx="90" cy="200" r="4.5"/>
+  <circle class="accf" cx="90" cy="216.67" r="4.5"/>
+  <circle class="accf" cx="90" cy="233.33" r="4.5"/>
+  <circle class="accf" cx="90" cy="250" r="4.5"/>
+  <text class="acct" x="90" y="272" font-size="13" text-anchor="middle">7 origins</text>
+  <text class="mut" x="90" y="290" font-size="12" text-anchor="middle">aperture_width</text>
+
+  <rect class="occ" x="295" y="185" width="10" height="30" rx="2"/>
+  <text class="occt" x="300" y="176" font-size="13" text-anchor="middle">prop</text>
+
+  <circle class="inks" fill="none" cx="390" cy="200" r="4" stroke-width="1.5"/>
+  <text class="txt" x="404" y="196" font-size="12.5" text-anchor="start">umbra ends here</text>
+  <text class="mut" x="404" y="212" font-size="11.5" text-anchor="start">the outer two shadows stop overlapping</text>
+
+  <text class="txt" x="322" y="205" font-size="11" text-anchor="start" font-weight="600"> </text>
+  <text class="txt" x="656" y="204" font-size="12" text-anchor="start">3 of 7</text>
+  <text class="txt" x="656" y="150" font-size="12" text-anchor="start">1 of 7</text>
+  <text class="txt" x="656" y="262" font-size="12" text-anchor="start">1 of 7</text>
+
+  <text class="txt" x="16" y="358" font-size="13">A prop narrower than the aperture loses its umbra entirely past b = W·a / (W − O).</text>
+  <text class="mut" x="16" y="378" font-size="12.5">With aperture 1.4 m, a 0.4 m crate 4 m away casts full shadow only out to 5.6 m — then it is a smudge.</text>
 </svg>

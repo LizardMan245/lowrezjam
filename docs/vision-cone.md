@@ -1,9 +1,14 @@
 # Raycast vision cone
 
-The robot can only see a wedge of the station in front of it. Everything
-outside that wedge — behind it, past its sight range, or hidden around a corner
-— is painted flat black. Walls cast real shadows that sweep as the robot turns,
-and those shadows soften with distance so a corner blurs rather than snapping.
+The robot can only see a wedge of the station in front of it. Everything outside
+that wedge — behind it, past its sight range, or hidden around a corner — is
+painted flat black. Walls cast real shadows that sweep as the robot turns, and
+those shadows have soft edges that widen with distance.
+
+Nothing in the shader blurs them. The eye is a **bar rather than a point**: rays
+leave from seven origins spread across the robot's shoulders, and a pixel's
+brightness is simply how many of those origins can see it. Umbra, penumbra and
+the ability to peek round a corner all fall out of that one fact.
 
 ## The problem it solves
 
@@ -13,22 +18,23 @@ robot and this pixel?" — a fragment shader has no access to the scene geometry
 Marching each pixel through the world to find out would mean a raymarch per
 pixel per frame.
 
-The trick is that the answer only varies with **angle**. For a given direction
-out of the robot's eye, there is exactly one distance at which sight stops. So
-the whole visibility problem collapses to a 1D function of angle, which the
-physics engine can sample with 128 real raycasts once per physics frame. The
-shader then just looks up that function and compares distances.
+The trick is that from **one** point, the answer only varies with angle. For a
+given direction out of a given origin, there is exactly one distance at which
+sight stops, so visibility collapses to a 1D function of angle that the physics
+engine can sample with real raycasts. That is the classic *visibility polygon*.
 
-That is the classic *visibility polygon*, stored as a 128×1 float texture.
+An area light is then just that trick repeated. Seven origins give seven
+visibility polygons, stored as the seven rows of a 128×7 float texture, and the
+shader asks each of them the same question about the same pixel.
 
 ## Overview
 
 ```mermaid
 flowchart LR
-    P["Player<br/>eye pos + facing"] --> R["vision_field.gd<br/>128 raycasts"]
-    R --> T["128x1 RF texture<br/>hit distance per angle"]
-    W["World SubViewport<br/>64x64, robot culled"] --> C
-    T --> C["vision_composite.gdshader<br/>mask the ground plane"]
+    P["Player<br/>eye pos + facing"] --> R["vision_field.gd<br/>7 × 128 raycasts"]
+    R --> T["128×7 RF texture<br/>one row per origin"]
+    W["World SubViewport<br/>64×64, robot culled"] --> C
+    T --> C["vision_composite.gdshader<br/>count origins per pixel"]
     C --> S["Screen"]
     O["Overlay SubViewport<br/>robot only, transparent"] --> S
 ```
@@ -43,86 +49,109 @@ itself.
 
 | File | Job |
 | --- | --- |
-| `Scripts/vision_field.gd` | Casts the ray fan, bakes the distance texture, pushes all shader uniforms |
-| `Shaders/vision_field.gdshaderinc` | The mask itself — `vision_visibility(uv)` returns 0…1 per pixel |
-| `Shaders/vision_composite.gdshader` | Thin wrapper: blends the world image toward `mask_color` by that value |
-| `Scripts/overlay_camera.gd` | Copies the game camera's transform and projection into the overlay viewport |
-| `Scripts/player.gd` | Owns `facing`, `vision_angle_degrees`, `view_distance`, `get_eye_position()` |
-| `Scenes/Main3D.tscn` | Wires the two viewport layers, the render-layer split, and the tuning values |
+| `Assets/Scripts/vision_field.gd` | Casts the fans, bakes the range texture, pushes every shader uniform |
+| `Assets/Shaders/vision_field.gdshaderinc` | The mask itself — `vision_visibility(uv)` returns 0…1 per pixel |
+| `Assets/Shaders/vision_composite.gdshader` | Blends the world image toward `mask_color`, then maps it through the palette gradient |
+| `Assets/Scripts/overlay_camera.gd` | Copies the game camera's transform and projection into the overlay viewport |
+| `Assets/Scripts/player.gd` | Owns `facing`, `vision_angle_degrees`, `view_distance`, `get_eye_position()` |
+| `Scenes/Main.tscn` | Wires the two viewport layers, the render-layer split, and the tuning values |
 
 The mask lives in a `.gdshaderinc` rather than in the composite shader so a
 second vision mode is just another shader with the same `#include`.
 
 ## How it works
 
-### 1. Fan out the rays
+### 1. Place the origins
 
-Every physics frame, `_cast_fan()` (`Scripts/vision_field.gd:56`) reads the
-robot's eye position and 2D facing vector, then walks 128 evenly spaced angles
-across the cone:
+`_cast_fan()` (`Assets/Scripts/vision_field.gd:68`) builds a right vector by
+rotating `facing` 90°, then spaces `ORIGIN_COUNT` origins evenly along it,
+centred on the robot's eye:
 
 ```gdscript
-var centre := atan2(_eye_dir.x, _eye_dir.y)
-var angle := centre - half + (float(i) + 0.5) / float(RAY_COUNT) * 2.0 * half
+_eye_right = Vector2(_eye_dir.y, -_eye_dir.x)
+var origin := _eye + right * (_origin_offset(k) * aperture_width)
+```
+
+`_origin_offset()` returns −0.5…+0.5, so with an odd count the middle origin sits
+exactly on the eye. The bar is perpendicular to facing and turns with the robot,
+so the aperture is always presented broadside to whatever is being looked at.
+
+![Seven dots spread along a horizontal bar at the robot's eye, each casting its
+own fan of rays upward. The centre fan is drawn in full and the two outer fans as
+outlines, showing they are offset copies covering the same angular span. A dashed
+pair of lines marks the fan span, wider than the authored
+cone.](diagrams/vision-cone-fan.svg)
+
+### 2. Fan out the rays
+
+Each origin walks `RAY_COUNT` evenly spaced angles:
+
+```gdscript
+var angle := centre - fan_half + (float(i) + 0.5) / float(RAY_COUNT) * 2.0 * fan_half
 ```
 
 Angles use the convention `atan2(x, z)` — measured from +Z toward +X — which is
 why the ray direction is built as `Vector3(sin(angle), 0, cos(angle))` and not
 the usual `cos/sin`. The `+ 0.5` puts each ray at the *centre* of its slice
-rather than its edge, which is what makes the texel mapping in step 3 line up
+rather than its edge, which is what makes the texel mapping in step 5 line up
 exactly.
 
-![A 90° cone spreading right from the robot's eye. Thirteen evenly spaced rays
-reach the 20 m outer arc, except four that stop at a wall; the wedge behind the
-wall is shaded as shadow.](diagrams/vision-cone-fan.svg)
+Every fan spans the **same absolute angles**, centred on facing rather than on
+its own origin. That is what lets all seven share one texture with a single `u`
+mapping. It also means each fan has to reach wider than the authored cone: an
+origin 0.7 m off-centre sees a pixel 2 m away at a bearing roughly 20° from where
+the centre origin sees it, and without that headroom the lookup would run off the
+end of the row. `fan_margin_degrees` is that headroom
+(`Assets/Scripts/vision_field.gd:90`).
 
-Each ray is an `intersect_ray` against the physics space. What gets stored is
-the **distance**, not the hit point:
+What gets stored is the **distance**, not the hit point, and it is measured from
+*that origin*:
 
 ```gdscript
-_ranges[i] = reach if hit.is_empty() else _eye.distance_to(hit.position) + wall_bleed
+_ranges[row + i] = reach if hit.is_empty() else origin.distance_to(hit.position) + wall_bleed
 ```
 
 A miss stores the full `view_distance`, so the cone has a clean rounded outer
-edge instead of a gap. `wall_bleed` pushes the recorded distance slightly
-*past* the surface that was hit — without it the visibility boundary sits
-exactly on the wall's front face, so the face itself falls on the dark side of
-the comparison.
+edge instead of a gap. `wall_bleed` pushes the recorded distance slightly *past*
+the surface that was hit — without it the visibility boundary sits exactly on the
+wall's front face, so the face itself falls on the dark side of the comparison.
 
 The query is built once in `_ready()` with `_query.exclude = [_player.get_rid()]`
-(`Scripts/vision_field.gd:39`) so the robot's own collision capsule never
-blocks its first ray.
+(`Assets/Scripts/vision_field.gd:45`) so the robot's own collider never blocks
+its first ray.
 
-### 2. Bake the distances into a texture
+### 3. Bake the rows into a texture
 
 `_bake_image()` reinterprets the `PackedFloat32Array` as raw bytes and wraps it
 in a single-channel float image:
 
 ```gdscript
-Image.create_from_data(RAY_COUNT, 1, false, Image.FORMAT_RF, _ranges.to_byte_array())
+Image.create_from_data(RAY_COUNT, ORIGIN_COUNT, false, Image.FORMAT_RF, _ranges.to_byte_array())
 ```
 
-`FORMAT_RF` is one 32-bit float per texel, which is exactly the memory layout
-of a `PackedFloat32Array` — no conversion, just a reinterpretation. The result
-is a 128×1 strip where reading left to right sweeps the cone right to left:
+`FORMAT_RF` is one 32-bit float per texel, which is exactly the memory layout of
+a `PackedFloat32Array` — no conversion, just a reinterpretation. Origin `k`
+occupies the contiguous slice `_ranges[k * RAY_COUNT .. k * RAY_COUNT + 127]`,
+which lands as row `k`.
 
-![A strip of thirteen cells, each holding the distance in metres at which sight
-stops for one ray angle. Most hold 20.0, the full view distance; four
-consecutive cells hold shorter values because those rays hit a
-wall.](diagrams/vision-ranges-texture.svg)
+![A grid with seven rows, one per origin, and nine of its 128 columns. Most cells
+hold 20.0, the full view distance. In each row a shaded pair of cells holds about
+6 where that origin's rays hit a prop, and the pair drifts one column right every
+couple of rows.](diagrams/vision-ranges-texture.svg)
+
+That drift is the entire effect. Where the rows agree, every origin sees the same
+thing and the pixel is fully lit or fully dark. Where they disagree, the pixel is
+in penumbra.
 
 The texture is created once and `update()`d in place each physics frame
-(`Scripts/vision_field.gd:45`) rather than reallocated on the GPU. It is
-sampled with `filter_linear`, so directions falling between two rays get an
-interpolated distance — this is what keeps shadow edges from stair-stepping at
-only 128 samples.
+(`Assets/Scripts/vision_field.gd:51`) rather than reallocated on the GPU.
 
-### 3. Find each pixel's place on the ground plane
+### 4. Find each pixel's place on the ground plane
 
-The composite shader runs in screen space, so before it can ask "how far is
-this pixel from the eye?" it has to get back to world coordinates.
-`vision_ground_point()` (`Shaders/vision_field.gdshaderinc:21`) rebuilds the
-camera ray from uniforms and intersects it with the ground plane:
+The composite shader runs in screen space, so before it can ask "how far is this
+pixel from an origin?" it has to get back to world coordinates.
+`vision_ground_point()` (`Assets/Shaders/vision_field.gdshaderinc:25`) rebuilds
+the camera ray from uniforms and intersects it with the ground plane:
 
 ```glsl
 vec3 origin = cam_pos + cam_right * (ndc.x * cam_half_extents.x)
@@ -133,101 +162,115 @@ return (origin + cam_forward * t).xz;
 
 This is an *orthographic* unprojection — the offset is applied to the ray's
 origin, not its direction, which is only correct because the game camera is
-orthographic (`projection = 1`, `size = 10.0`). `_push_camera()` feeds it the
-camera's basis vectors and half-extents every frame
-(`Scripts/vision_field.gd:77`), so the mask follows the gliding camera rig
-without the shader knowing anything about it.
+orthographic (`projection = 1`). `_push_camera()` feeds it the camera's basis
+vectors and half-extents every frame (`Assets/Scripts/vision_field.gd:99`), so
+the mask follows the gliding camera rig without the shader knowing anything about
+it.
 
-### 4. Compare angle and distance
+### 5. Ask one origin whether it sees the pixel
 
-With a ground point in hand, `vision_visibility()` takes the vector from the
-eye to that point and needs its angle *relative to the facing direction*.
-Rather than two `atan2` calls and a wrap-around fix, it uses the 2D cross and
-dot products directly:
+`vision_origin_sees()` (`Assets/Shaders/vision_field.gdshaderinc:48`)
+reconstructs origin `k` from the same arithmetic the script used, takes the
+vector from it to the pixel, and needs that vector's angle *relative to facing*.
+Rather than two `atan2` calls and a wrap-around fix, it uses the 2D cross and dot
+products directly:
 
 ```glsl
-float angle = atan(eye_dir.y * to_pixel.x - eye_dir.x * to_pixel.y,
-                   dot(eye_dir, to_pixel));
+return atan(eye_dir.y * direction.x - eye_dir.x * direction.y,
+            dot(eye_dir, direction));
 ```
 
 For unit vectors the cross term is `sin(p − c)` and the dot is `cos(p − c)`, so
-the `atan` returns the signed difference `p − c` in one shot, already wrapped
-to −π…π. That value maps straight onto the texture:
+the `atan` returns the signed difference in one shot, already wrapped to −π…π.
+
+Then comes the per-fan angle constraint:
 
 ```glsl
-float u = (angle + half_angle) / (2.0 * half_angle);
+if (abs(angle) > fan_half_angle) {
+    return 0.0;
+}
 ```
 
-which puts relative angle −`half_angle` at u = 0 and +`half_angle` at u = 1 —
-the exact inverse of the fan in step 1, including the half-texel offset.
+An out-of-fan pixel reports **not seen**, rather than clamping `u` to the end of
+the row and reading a range that belongs to a completely different bearing. This
+is the one place the model can quietly go wrong, and it is why the check is a
+hard early-out rather than a `clamp`.
 
-The hard visibility test is then one comparison, softened over `shadow_softness`
-world units so the boundary is not a hard pixel edge:
+Otherwise it maps the angle onto the row and compares:
 
 ```glsl
-float hard = 1.0 - smoothstep(traced, traced + fade, dist);
+float u = (angle + fan_half_angle) / (2.0 * fan_half_angle);
+float v = (float(index) + 0.5) / float(count);
+float traced = texture(vision_ranges, vec2(u, v)).r;
+return 1.0 - smoothstep(traced, traced + max(shadow_softness, 0.0001), dist);
 ```
 
-### 5. Open a wedge from each silhouette edge
+`u` is the exact inverse of the fan in step 2, including the half-texel offset.
+`v` lands on a row centre, which matters: the sampler is `filter_linear`, and
+blending origin 3's range with origin 4's range would be meaningless. Hitting the
+centre exactly means the vertical filter returns one row untouched while the
+horizontal filter still interpolates between adjacent rays, which is what keeps
+shadow edges from stair-stepping at only 128 samples.
 
-A hard shadow that ends on a knife edge reads as a rendering artefact rather
-than as darkness. Real vision lets you see a little *past* a corner, and the
-further you stand from the thing casting the shadow the more you get.
+### 6. Count the origins
 
-That "more with distance" is why the extra vision is measured as an **angle**
-and never as a distance. An angular wedge opening from the silhouette corner
-widens as it travels, so it draws a triangle; a fixed number of metres would be
-a constant-width band hugging the shadow edge, which is what an earlier version
-did and why it never looked like anything.
-
-The sweep walks outward in angle from the pixel's own bearing, asking each
-direction how lit it is at this exact distance:
+`vision_visibility()` (`Assets/Shaders/vision_field.gdshaderinc:67`) is then just
+an average:
 
 ```glsl
-float angular = 1.0 - smoothstep(0.0, span, offset);
-float lit = max(
-    1.0 - smoothstep(plus,  plus  + fade, dist),
-    1.0 - smoothstep(minus, minus + fade, dist));
-unblocked = max(unblocked, angular * lit);
+int count = textureSize(vision_ranges, 0).y;
+for (int i = 0; i < count; i++) {
+    unblocked += vision_origin_sees(point, i, count);
+}
+unblocked /= float(count);
 ```
 
-`angular` is how much a direction at that offset may contribute, falling to zero
-at `silhouette_angle`. `lit` is that direction's own radial fade over
-`shadow_softness`. Multiplying them is what keeps the two edges consistent: the
-wedge dies into a second occluder through the same softening that governs that
-occluder's own shadow, instead of snapping to black.
+![Seven origins on the left each cast their own hard shadow of one narrow prop.
+The seven bands overlap; where all seven coincide, close behind the prop, a dark
+umbra triangle forms and comes to a point. Past that point only overlapping
+partial bands remain, spreading and lightening with
+distance.](diagrams/vision-penumbra.svg)
 
-Two properties fall out of this rather than needing extra code:
+Three things come out of this for free:
 
-- **Re-occlusion is automatic.** The test reads `vision_range_at` for each swept
-  direction, so a direction whose ray is stopped short by another wall reports
-  as unlit and contributes nothing. The wedge is clipped by the next occluder
-  without a second pass.
-- **The radial edge is the same expression.** Iteration `i = 0` has `angular` of
-  1.0 and `lit` equal to the plain distance fade at the pixel's own bearing, so
-  one loop covers both the shadow's near edge and its silhouette.
+- **Umbra and penumbra are geometric.** A pixel hidden from every origin is
+  black; one hidden from three of seven is 4⁄7 lit. There is no softening term
+  to tune, and the penumbra widens with distance because the origins' shadows
+  diverge — not because anything was told to widen.
+- **Thin props stop casting.** An occluder narrower than the aperture loses its
+  umbra entirely past `b = W·a / (W − O)`, where `W` is the aperture, `O` the
+  occluder width and `a` its distance. At the current 1.4 m aperture a 0.4 m
+  crate 4 m away casts full shadow only to 5.6 m and is a smudge beyond that.
+  This is the main gameplay consequence of the knob.
+- **Corner peeking works.** Standing at a corner, the outboard origins genuinely
+  see past it while the centre one does not, so a sliver of the far side lights
+  up as the robot edges out. This is the point of the whole model, not a side
+  effect.
 
-The cost is that the loop cannot exit early, since the maximum has to be taken
-over the whole sweep. It is always `SHADOW_TAPS + 1` iterations with two texture
-fetches each, roughly 270k fetches per frame at 64x64.
+### 7. Apply the wedge and fade out
 
-### 6. Apply the wedge and fade out
-
-Two more falloffs multiply in: `wedge` fades the cone's angular edges over
-`edge_softness`, and `in_range` fades the last `distance_fade` metres before
-`view_distance`. The composite then blends the rendered world toward black by
-whatever is left over:
+The cone itself is measured from the **centre** eye only, so its shape stays
+authored rather than softening with aperture: `wedge` fades the angular edges
+over `edge_softness`, and `in_range` fades the last `distance_fade` metres before
+`view_distance`. The composite then blends the rendered world toward `mask_color`
+and maps the result through the palette gradient
+(`Assets/Shaders/vision_composite.gdshader:17`):
 
 ```glsl
 float hidden = (1.0 - vision_visibility(UV)) * mask_color.a;
-COLOR = vec4(mix(world, mask_color.rgb, hidden), 1.0);
+vec4 input_color = vec4(mix(world, mask_color.rgb, hidden), 1.0);
+float greyscale_value = dot(input_color.rgb, vec3(0.299, 0.587, 0.114));
+COLOR.rgb = mix(input_color.rgb, texture(gradient, vec2(greyscale_value, 0.0)).rgb, mix_amount);
 ```
 
-### 7. Keep the robot out of its own shadow
+`mix_amount` is `0.0` in `Main.tscn`, so the gradient pass is wired but inert
+until the palette is settled.
+
+### 8. Keep the robot out of its own shadow
 
 If the robot were in the masked image, the mask would darken it too — its own
-sprite sits at distance 0, inside the cone, but the surrounding floor is what
-the shader actually samples. Instead the scene splits by render layer:
+sprite sits at distance 0, inside the cone, but the surrounding floor is what the
+shader actually samples. Instead the scene splits by render layer:
 
 ```mermaid
 flowchart TD
@@ -236,18 +279,21 @@ flowchart TD
     R --> PL["PlayerLayer — SubViewportContainer<br/>no shader, drawn on top"]
     WL --> WV["World — SubViewport 64×64"]
     WV --> PN["Player<br/>Visual meshes on layer 2 — culled here"]
-    PN --> CM["Camera3D<br/>cull_mask = 1048573<br/>all layers except 2"]
-    WV --> SC["Floor, Wall3d ×5,<br/>Sun, WorldEnvironment"]
+    PN --> CM["Camera3D<br/>cull_mask = 1048569<br/>all layers except 2 and 3"]
+    WV --> SC["Dungeon, enemies,<br/>Sun, WorldEnvironment"]
     PL --> OV["Overlay — SubViewport 64×64<br/>transparent_bg"]
     OV --> OC["OverlayCamera<br/>cull_mask = 2<br/>only layer 2"]
 ```
 
 The robot's `Sprite3D` and mesh are on visual layer 2. The game camera's cull
-mask has that one bit cleared, so they never reach the masked image; the
-overlay camera's mask is *only* that bit, so it renders the robot and nothing
-else onto a transparent background. `overlay_camera.gd` copies the game
-camera's transform, projection, size and clip planes every frame so the two
-64×64 images register pixel-for-pixel.
+mask has that bit cleared, so they never reach the masked image; the overlay
+camera's mask is *only* that bit, so it renders the robot and nothing else onto a
+transparent background. `overlay_camera.gd` copies the game camera's transform,
+projection, size and clip planes every frame so the two 64×64 images register
+pixel-for-pixel.
+
+Enemies are deliberately **not** given that exemption. They live in the masked
+image, so an enemy standing in the dark is genuinely invisible.
 
 The `Headlight` spotlight is on layers 1 **and** 2 (`layers = 3`) so it lights
 both halves of the split.
@@ -259,144 +305,144 @@ sequenceDiagram
     participant Rig as camera_rig.gd<br/>(priority 0)
     participant VF as vision_field.gd<br/>(priority 50)
     participant OC as overlay_camera.gd<br/>(priority 100)
-    Note over VF: _physics_process: cast 128 rays, update texture
+    Note over VF: _physics_process: cast 7 × 128 rays, update texture
     Rig->>Rig: _process — glide toward look-ahead offset
     VF->>VF: _process — push camera + cone uniforms
     OC->>OC: _process — mirror the now-final camera
 ```
 
 The priorities are load-bearing. `vision_field.gd` sets `process_priority = 50`
-and `overlay_camera.gd` sets `100` (`Scripts/overlay_camera.gd:7`), so both run
-after the rig has moved the camera for this frame. Reading the camera before it
-glides would make the mask lag the image by a frame.
+and `overlay_camera.gd` sets `100`, so both run after the rig has moved the
+camera for this frame. Reading the camera before it glides would make the mask
+lag the image by a frame.
 
 ## Decisions and tradeoffs
 
-- **1D visibility texture instead of per-pixel raymarching.** 128 physics
-  raycasts per frame regardless of resolution, versus a march per pixel. The
-  cost is that visibility is evaluated in a single horizontal plane — see the
-  eye-height gotcha below.
-- **Raycasts on the physics tick, uniforms on the render tick.** The fan runs
-  in `_physics_process` (cheap, fixed rate) while camera and cone uniforms are
-  pushed in `_process` (`Scripts/vision_field.gd:48`). The mask geometry can
-  therefore be up to one physics step stale while still tracking the camera
-  smoothly at render rate.
+- **An area light instead of a softening term.** The previous model faked the
+  penumbra with a 33-iteration angular sweep and a tunable width. This one has no
+  softness parameter at all; the look is controlled by a physical width in
+  metres. The cost is that the CPU now casts seven times as many rays.
+- **Cost moved from the GPU to the physics engine.** The old sweep did about 66
+  texture fetches per pixel, roughly 270k per frame at 64×64. This does seven,
+  about 29k — a ninefold saving — while raycasts went from 128 to 896 per physics
+  tick. That trade is only obviously correct at this resolution.
+- **`ORIGIN_COUNT` lives only in the script.** The shader reads its loop bound
+  from `textureSize(vision_ranges, 0).y` instead of a matching `const`. A shader
+  constant and a script constant that must agree is a silent-desync waiting to
+  happen: the mask would still render, just subtly wrong. The price is a loop the
+  compiler cannot unroll, which at 4096 pixels × 7 is nothing.
+- **The wedge is measured from the centre origin.** The cone's angular edges stay
+  crisp and authored via `edge_softness_degrees`, rather than softening as a side
+  effect of the aperture. The cone is a camera property; the aperture is a light
+  property.
+- **Origins are never clamped against geometry.** They do not need to be — see
+  the aperture invariant below.
+- **1D visibility rather than per-pixel raymarching.** Raycast count is
+  independent of resolution. The cost is that visibility is evaluated in a single
+  horizontal plane — see the eye-height gotcha.
 - **Post-process on a `SubViewportContainer` rather than per-material.** One
   shader masks everything in the scene, including geometry added later, with no
   per-object setup. It also means the mask can only work from the ground plane
   and the final image — it has no depth buffer to consult.
-- **Split render layers instead of re-lighting the robot.** Costs a second
-  viewport and camera and a second render of one sprite, and requires keeping
-  the two cull masks in sync by hand. The alternative — special-casing the
-  robot inside the mask function — would fight every future thing that also
-  needs to stay visible.
-- **32 shadow taps, fixed.** Fully unrolled, always taken, even for pixels
-  nowhere near a shadow edge. At 64×64 that is affordable; at a real resolution
-  it would want an early-out.
 
 ## Knobs
 
-Script exports on `Render/WorldLayer`, with the values `Main3D.tscn` sets:
+Script exports on `Render/WorldLayer`, under the **Player vision** group, with
+the values `Main.tscn` sets:
 
-| Name | Default | In Main3D | What it does |
+| Name | Default | In Main | What it does |
 | --- | --- | --- | --- |
+| `aperture_width` | `0.6` | `1.4` | Width of the origin bar in metres. **The knob.** `0` collapses to a point light and hard shadows; wider softens everything and stops thin props casting. |
+| `fan_margin_degrees` | `15.0` | `45.0` | How far past the cone each fan reaches, so off-centre origins can still resolve pixels near the cone edge. Too low and pixels close to the robot lose their outboard origins and darken. |
+| `shadow_softness` | `0.05` | `1.0` | Metres of radial fade on each origin's own shadow. No longer the soft-shadow control — with an area light its job is antialiasing the individual steps. `0` gives a hard stair. |
 | `wall_bleed` | `0.35` | `0.0` | Metres added to each hit distance, pushing the boundary past the wall face so the face reads as lit. Raise if walls look black-fronted. |
-| `edge_softness_degrees` | `3.0` | `10.0` | Angular fade at the two edges of the wedge. |
-| `distance_fade` | `1.5` | `1.5` | Metres of fade before `view_distance`. |
-| `shadow_softness` | `0.25` | `1.0` | Metres over which a shadow fades in, both at its near edge and where a silhouette wedge dies into another occluder. |
-| `silhouette_angle_degrees` | `6.0` | `6.0` | Extra vision past a shadow's silhouette, as an angle from the corner. Widens with distance, so it reads as a triangle. `0` gives hard silhouettes. |
+| `edge_softness_degrees` | `3.0` | `13.0` | Angular fade at the two edges of the wedge. |
+| `distance_fade` | `1.5` | `10.0` | Metres of fade before `view_distance`. |
 | `mask_color` | black | black | Colour the hidden area is mixed toward. |
-| `occluder_mask` | layer 1 | layer 1 | Physics layers the rays collide with. |
+| `occluder_mask` | layer 1 | layer 5 | Physics layers the rays collide with. Layer 5 is the dedicated sight layer: walls always block, props only if they are 2 m or taller. |
 
-On the player (`Scenes/Player3D.tscn`, overridden in `Main3D.tscn`):
+On the player (`Assets/Player/Player.tscn`, overridden in `Main.tscn`):
 
-| Name | Default | In Main3D | What it does |
+| Name | Default | In Main | What it does |
 | --- | --- | --- | --- |
-| `vision_angle_degrees` | `45.0` | `90.0` | Full cone width. Halved into `half_angle` in both the script and the shader. |
+| `vision_angle_degrees` | `45.0` | `110.0` | Full cone width. Halved into `half_angle` in both the script and the shader. |
 | `view_distance` | `7.0` | `20.0` | Sight range, and the value stored for rays that hit nothing. |
-| `eye_height` | `1.55` | `2.0` | Height the fan is cast from. |
+| `eye_height` | `1.55` | `1.0` | Height the fans are cast from. |
 
-`RAY_COUNT` (128) and `SHADOW_TAPS` (32) are constants, in `vision_field.gd`
-and `vision_field.gdshaderinc` respectively. They are independent — rays are
-the resolution of the visibility polygon, taps are the quality of the blur.
+On the material, under **GradientMapping**: `gradient` and `mix_amount`. These
+are the only two shader parameters the script does not overwrite.
+
+`RAY_COUNT` (128) and `ORIGIN_COUNT` (7) are constants at the top of
+`vision_field.gd`. They are independent — rays are the angular resolution of each
+visibility polygon, origins are the number of penumbra steps.
 
 ## Gotchas
 
 - **Every vision setting lives on the script, in one group.** `_push_cone()`
-  overwrites the material's uniforms every frame, so the `ShaderMaterial` used
-  to carry a second set of controls that looked live and could never take
-  effect. Those duplicate `shader_parameter/` entries are now stripped from
-  `Main.tscn`; the only two left on the material, `gradient` and `mix_amount`,
-  belong to the tonemap pass rather than to vision. Tune everything on the
-  `Render/WorldLayer` node, under the **Player vision** group.
+  overwrites the material's uniforms every frame, so anything you type into the
+  material's Shader Parameters list is inert — and Godot writes it back into
+  `Main.tscn`, so it looks saved and still does nothing. The uniforms are grouped
+  under **NoTouchy** in the inspector to say so. Tune on the `Render/WorldLayer`
+  node instead.
+- **The aperture invariant.** Origins are never checked against geometry, because
+  the player's `BoxShape3D` is scaled 1.4 in X and Z — half-width 0.7 m — so
+  nothing can come within 0.7 m of the robot's centre. Any aperture up to 1.4 m
+  therefore keeps all seven origins inside the player's own footprint and in free
+  space. `MAX_APERTURE_WIDTH` pins the export range to that. **Shrink the player's
+  collider and this breaks**: an origin buried in a wall reports everything
+  blocked, and hugging a wall would dim the whole screen by 1⁄7.
 - **Rays are cast at eye height, the mask is evaluated on the floor.** With
-  `eye_height = 2.0`, anything shorter than 2 m is invisible to the fan and
-  casts no shadow at all, even though it is plainly on the ground. Crates and
-  railings will need either a lower fan or their own occluder geometry.
+  `eye_height = 1.0`, anything shorter than 1 m is invisible to the fans and casts
+  no shadow at all, even though it is plainly on the ground.
 - **Only the ground plane is unprojected.** A pixel showing the top of a wall is
-  masked according to the floor position directly beneath it. This holds up
-  under the straight-down orthographic camera; it would break immediately if the
-  camera were tilted or made perspective, since `vision_ground_point()` assumes
-  an orthographic projection.
-- **Setup is validated, not enforced.** `_ready()` needs a `SubViewport` as
-  child 0, a `ShaderMaterial` on the container, and a node in the `player`
-  group; missing any of them logs a warning and disables the script silently
-  (`Scripts/vision_field.gd:27`). Likewise `overlay_camera.gd` needs a node in
-  the `game_camera` group.
+  masked according to the floor position directly beneath it. This holds up under
+  the straight-down orthographic camera; it would break immediately if the camera
+  were tilted or made perspective.
+- **Setup is validated, not enforced.** `_ready()` needs a `SubViewport` as child
+  0, a `ShaderMaterial` on the container, and a node in the `player` group;
+  missing any of them logs a warning and disables the script silently
+  (`Assets/Scripts/vision_field.gd:33`). Likewise `overlay_camera.gd` needs a node
+  in the `game_camera` group.
 - **The two cull masks must stay in sync by hand.** Anything new that should
   escape the mask has to be on visual layer 2 *and* excluded from the game
-  camera's `cull_mask` (currently `1048573` — all 20 layers minus layer 2).
-  Setting only one of the two makes the object either double-drawn or invisible.
+  camera's `cull_mask` (currently `1048569` — all 20 layers minus 2 and 3, where 3
+  is the debug gizmo layer). Setting only one of the two makes the object either
+  double-drawn or invisible.
 - **A fresh `Image` is allocated every physics frame.** `_bake_image()` builds a
-  new `Image` for each `update()` (`Scripts/vision_field.gd:73`). Harmless at
-  128 texels, but it is per-frame garbage if the ray count ever grows.
+  new `Image` for each `update()`. It is now 896 floats rather than 128, so this
+  is eight times the per-frame garbage it used to be.
 
 ## The previous shadow model
 
 Kept here so the old look can be restored without unpicking a whole commit. It
-lived in `vision_visibility()` in `Assets/Shaders/vision_field.gdshaderinc`.
-
-It blurred visibility by averaging 32 binary taps across an angular window that
-grew with depth behind the occluder, then took the larger of that and the plain
-radial fade:
+lived in `vision_visibility()` in `Assets/Shaders/vision_field.gdshaderinc`, cast
+from a single origin, and opened an angular wedge from each silhouette edge:
 
 ```glsl
 float fade = max(shadow_softness, 0.0001);
-float traced = vision_range_at(angle);
-float hard = 1.0 - smoothstep(traced, traced + fade, dist);
+float span = min(silhouette_angle, 2.0 * half_angle);
+float step_angle = span / float(SHADOW_TAPS);
 
-float behind = max(dist - traced, 0.0);
-float window = min((fade + shadow_spread * behind) / max(dist, 0.001), 2.0 * half_angle);
-float step_angle = window / float(SHADOW_TAPS - 1);
-
-float soft = 0.0;
-float total_weight = 0.0;
-for (int i = 0; i < SHADOW_TAPS; i++) {
-    float offset = float(i) - float(SHADOW_TAPS - 1) * 0.5;
-    float weight = 1.0 - abs(offset) / (float(SHADOW_TAPS - 1) * 0.5 + 1.0);
-    float limit = vision_range_at(angle + offset * step_angle);
-    soft += weight * (1.0 - smoothstep(limit, limit + fade, dist));
-    total_weight += weight;
+float unblocked = 0.0;
+for (int i = 0; i <= SHADOW_TAPS; i++) {
+    float offset = step_angle * float(i);
+    float angular = 1.0 - smoothstep(0.0, span, offset);
+    float plus = vision_range_at(angle + offset);
+    float minus = vision_range_at(angle - offset);
+    float lit = max(
+        1.0 - smoothstep(plus, plus + fade, dist),
+        1.0 - smoothstep(minus, minus + fade, dist));
+    unblocked = max(unblocked, angular * lit);
 }
-soft /= total_weight;
-
-float unblocked = max(soft, hard);
 ```
 
-It needed `uniform float shadow_spread = 0.35;` in the include, an
-`@export_range(0.0, 2.0, 0.01) var shadow_spread := 0.35` on
-`Assets/Scripts/vision_field.gd`, and a matching
-`_material.set_shader_parameter("shadow_spread", shadow_spread)` at the end of
-`_push_cone()`.
+It needed `const int SHADOW_TAPS = 32;` and `uniform float silhouette_angle`, a
+`vision_range_at()` helper that sampled a 128×1 texture at `v = 0.5`, an
+`@export_range(0.0, 45.0, 0.5) var silhouette_angle_degrees := 6.0`, and a
+matching `set_shader_parameter` in `_push_cone()`.
 
-**To restore only the vision, not whole files:** paste the block above over
-everything between `float fade` and `float wedge` inside `vision_visibility()`,
-rename the `silhouette_angle` uniform back to `shadow_spread`, and put the
-export and the `set_shader_parameter` line back. Nothing else in the project
-reads either name, so no other file has to change.
-
-Its two faults, since they are why it went: `max(soft, hard)` leaves a kink
-where the two curves cross, so the gradient begins somewhere inside the shadow
-rather than at the silhouette and reads as a hard edge however high
-`shadow_spread` goes; and the window is measured in metres, so the extra vision
-is a constant-width band instead of widening with distance.
+Its fault, since that is why it went: the extra vision was invented rather than
+traced. It widened with distance and clipped correctly against second occluders,
+but it came from *one* origin, so it could only ever guess at what a wider eye
+would have seen. It could not peek round a corner, because there was nothing off
+to the side to do the peeking — which is exactly what the aperture model is for.

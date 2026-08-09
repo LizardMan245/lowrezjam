@@ -3,9 +3,16 @@ render_mode unshaded;
 
 #include "res://Assets/Shaders/vision_field.gdshaderinc"
 
+group_uniforms NoTouchy;
+
 uniform vec4 mask_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);
+
+group_uniforms GradientMapping;
+
 uniform sampler2D gradient;
 uniform float mix_amount = 1.0;
+
+group_uniforms;
 
 void fragment() {
 	vec3 world = texture(TEXTURE, UV).rgb;
