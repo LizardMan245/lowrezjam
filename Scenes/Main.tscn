@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://k31kmerh852j"]
 
 [ext_resource type="Shader" uid="uid://bdt3w78h42rk2" path="res://Assets/Shaders/vision_composite.gdshader" id="1_vy5pj"]
-[ext_resource type="Texture2D" uid="uid://c4ekybrg3gjx3" path="res://tonemap.tres" id="2_4kpch"]
 [ext_resource type="Script" uid="uid://2w717bxpil07" path="res://Assets/Scripts/vision_field.gd" id="2_bmxlf"]
+[ext_resource type="Texture2D" uid="uid://bq7n6vc7dy570" path="res://Assets/Shaders/thermal.tres" id="2_h1m7h"]
 [ext_resource type="Script" uid="uid://b3we63lcv60gm" path="res://Assets/Scripts/light_flicker.gd" id="3_4kpch"]
 [ext_resource type="Script" uid="uid://bggm7viqjydaa" path="res://Assets/Scripts/Map/dungeon_generator.gd" id="4_dungeon"]
-[ext_resource type="Environment" uid="uid://b3ulhtijha0iy" path="res://env.tres" id="5_h1m7h"]
+[ext_resource type="Environment" uid="uid://b3ulhtijha0iy" path="res://Scenes/Environments/env.tres" id="5_h1m7h"]
 [ext_resource type="PackedScene" path="res://Assets/Map/Corridors/Open.tscn" id="5_open"]
 [ext_resource type="PackedScene" path="res://Assets/Map/Corridors/Junction.tscn" id="6_junction"]
 [ext_resource type="PackedScene" uid="uid://d4ngk1vwbohat" path="res://Assets/Player/Player.tscn" id="7_h1m7h"]
@@ -20,12 +20,14 @@
 shader = ExtResource("1_vy5pj")
 shader_parameter/eye_pos = Vector2(0, 0)
 shader_parameter/eye_dir = Vector2(0, 1)
+shader_parameter/eye_right = Vector2(1, 0)
+shader_parameter/aperture_width = 0.6
 shader_parameter/half_angle = 0.3926991
+shader_parameter/fan_half_angle = 0.6544985
 shader_parameter/edge_softness = 0.0523599
 shader_parameter/view_distance = 7.0
 shader_parameter/distance_fade = 1.5
 shader_parameter/shadow_softness = 0.25
-shader_parameter/silhouette_angle = 0.10472
 shader_parameter/cam_pos = Vector3(0, 10, 0)
 shader_parameter/cam_right = Vector3(1, 0, 0)
 shader_parameter/cam_up = Vector3(0, 0, -1)
@@ -33,7 +35,7 @@ shader_parameter/cam_forward = Vector3(0, -1, 0)
 shader_parameter/cam_half_extents = Vector2(5, 5)
 shader_parameter/ground_height = 0.0
 shader_parameter/mask_color = Color(0, 0, 0, 1)
-shader_parameter/gradient = ExtResource("2_4kpch")
+shader_parameter/gradient = ExtResource("2_h1m7h")
 shader_parameter/mix_amount = 0.0
 
 [sub_resource type="Environment" id="Environment_overlay"]
@@ -59,8 +61,9 @@ occluder_mask = 16
 edge_softness_degrees = 13.0
 distance_fade = 10.0
 wall_bleed = 0.0
-shadow_softness = 0.0
-silhouette_angle_degrees = 10.0
+shadow_softness = 1.0
+aperture_width = 1.4
+fan_margin_degrees = 45.0
 
 [node name="World" type="SubViewport" parent="Render/WorldLayer" unique_id=1807412844]
 handle_input_locally = false
@@ -75,6 +78,7 @@ light_color = Color(0.79607844, 1, 1, 1)
 light_energy = 0.05
 shadow_blur = 0.5
 script = ExtResource("3_4kpch")
+base_energy = 2.0
 dropout_chance = 0.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Render/WorldLayer/World" unique_id=499222120]
