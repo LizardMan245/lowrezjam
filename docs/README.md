@@ -1,7 +1,5 @@
 # Design docs
 
-Prose that cannot live in the source files (see `CLAUDE.md`).
-
 - [Raycast vision cone](vision-cone.md) — how seven fans of raycasts become a
   shader mask that hides everything the robot cannot see, with soft shadows and
   corner peeking falling out of an eye that is a bar rather than a point.
