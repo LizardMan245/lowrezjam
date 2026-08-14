@@ -4,17 +4,11 @@
 [ext_resource type="Script" uid="uid://2w717bxpil07" path="res://Assets/Scripts/vision_field.gd" id="2_bmxlf"]
 [ext_resource type="Texture2D" uid="uid://bq7n6vc7dy570" path="res://Assets/Shaders/thermal.tres" id="2_h1m7h"]
 [ext_resource type="Script" uid="uid://b3we63lcv60gm" path="res://Assets/Scripts/light_flicker.gd" id="3_4kpch"]
-[ext_resource type="Script" uid="uid://bggm7viqjydaa" path="res://Assets/Scripts/Map/dungeon_generator.gd" id="4_dungeon"]
 [ext_resource type="Environment" uid="uid://b3ulhtijha0iy" path="res://Scenes/Environments/env.tres" id="5_h1m7h"]
-[ext_resource type="PackedScene" path="res://Assets/Map/Corridors/Open.tscn" id="5_open"]
-[ext_resource type="PackedScene" path="res://Assets/Map/Corridors/Junction.tscn" id="6_junction"]
 [ext_resource type="PackedScene" uid="uid://d4ngk1vwbohat" path="res://Assets/Player/Player.tscn" id="7_h1m7h"]
 [ext_resource type="PackedScene" uid="uid://bcap7bikpxwxw" path="res://Assets/Enemies/BasicEnemy.tscn" id="8_erwvk"]
 [ext_resource type="Script" uid="uid://dmtdlh3v7vxl4" path="res://Assets/Scripts/overlay_camera.gd" id="9_2w5on"]
 [ext_resource type="PackedScene" path="res://Assets/Debug/DebugMapWindow.tscn" id="10_monitor"]
-[ext_resource type="PackedScene" path="res://Assets/Map/Corridors/Straight.tscn" id="11_straight"]
-[ext_resource type="PackedScene" path="res://Assets/Map/Corridors/Corner.tscn" id="12_corner"]
-[ext_resource type="PackedScene" path="res://Assets/Map/Corridors/DeadEnd.tscn" id="13_deadend"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vision"]
 shader = ExtResource("1_vy5pj")
@@ -37,6 +31,20 @@ shader_parameter/ground_height = 0.0
 shader_parameter/mask_color = Color(0, 0, 0, 1)
 shader_parameter/gradient = ExtResource("2_h1m7h")
 shader_parameter/mix_amount = 0.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
+size = Vector2(20, 20)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
+albedo_color = Color(0.28, 0.29, 0.32, 1)
+roughness = 0.8
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(20, 0.02, 20)
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_floor"]
+vertices = PackedVector3Array(-9.5, 0, -9.5, 9.5, 0, -9.5, 9.5, 0, 9.5, -9.5, 0, 9.5)
+polygons = [PackedInt32Array(0, 1, 2, 3)]
 
 [sub_resource type="Environment" id="Environment_overlay"]
 ambient_light_source = 2
@@ -83,15 +91,17 @@ dropout_chance = 0.0
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Render/WorldLayer/World" unique_id=499222120]
 environment = ExtResource("5_h1m7h")
 
-[node name="Dungeon" type="Node3D" parent="Render/WorldLayer/World" unique_id=1244899461]
-script = ExtResource("4_dungeon")
-open_piece = ExtResource("5_open")
-junction_piece = ExtResource("6_junction")
-straight_piece = ExtResource("11_straight")
-corner_piece = ExtResource("12_corner")
-dead_end_piece = ExtResource("13_deadend")
-max_rooms = 12
-main_path_rooms = 4
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Render/WorldLayer/World" unique_id=1244899461]
+navigation_mesh = SubResource("NavigationMesh_floor")
+
+[node name="Floor" type="StaticBody3D" parent="Render/WorldLayer/World" unique_id=923107463]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Render/WorldLayer/World/Floor" unique_id=523759562]
+mesh = SubResource("PlaneMesh_floor")
+surface_material_override/0 = SubResource("StandardMaterial3D_floor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Render/WorldLayer/World/Floor" unique_id=294506356]
+shape = SubResource("BoxShape3D_floor")
 
 [node name="Player" parent="Render/WorldLayer/World" unique_id=650448909 instance=ExtResource("7_h1m7h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.30474377, 0, 0.25018883)
