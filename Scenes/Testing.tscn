@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://d1ydpfm2mtu3a"]
 
 [ext_resource type="Shader" uid="uid://bdt3w78h42rk2" path="res://Assets/Shaders/vision_composite.gdshader" id="1_7wycu"]
-[ext_resource type="PackedScene" uid="uid://cprsg5ky0rqxy" path="res://Assets/Map/Floor.tscn" id="1_50pdt"]
 [ext_resource type="Texture2D" uid="uid://c4ekybrg3gjx3" path="res://Assets/Shaders/tonemap.tres" id="2_pdd2q"]
 [ext_resource type="PackedScene" uid="uid://d4ngk1vwbohat" path="res://Assets/Player/Player.tscn" id="3_4y0hx"]
 [ext_resource type="Script" uid="uid://2w717bxpil07" path="res://Assets/Scripts/vision_field.gd" id="3_22721"]
@@ -33,6 +32,20 @@ shader_parameter/mix_amount = 0.0
 shader_parameter/bloom_threshold = 0.85
 shader_parameter/bloom_strength = 1.4
 shader_parameter/bloom_radius = 1.5
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
+size = Vector2(20, 20)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
+albedo_color = Color(0.28, 0.29, 0.32, 1)
+roughness = 0.8
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(20, 0.02, 20)
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_floor"]
+vertices = PackedVector3Array(-9.5, 0, -9.5, 9.5, 0, -9.5, 9.5, 0, 9.5, -9.5, 0, 9.5)
+polygons = [PackedInt32Array(0, 1, 2, 3)]
 
 [sub_resource type="Environment" id="Environment_v3ldo"]
 ambient_light_source = 2
@@ -94,8 +107,17 @@ spots_to_try = 15
 max_detour = 1.4
 memory_seconds = 30.0
 
-[node name="Floor" parent="Render/WorldLayer" unique_id=923107463 instance=ExtResource("1_50pdt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.019437551, 4.7683716e-07, -0.010620117)
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Render/WorldLayer/World" unique_id=1244899461]
+navigation_mesh = SubResource("NavigationMesh_floor")
+
+[node name="Floor" type="StaticBody3D" parent="Render/WorldLayer/World" unique_id=923107463]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Render/WorldLayer/World/Floor" unique_id=523759562]
+mesh = SubResource("PlaneMesh_floor")
+surface_material_override/0 = SubResource("StandardMaterial3D_floor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Render/WorldLayer/World/Floor" unique_id=294506356]
+shape = SubResource("BoxShape3D_floor")
 
 [node name="PlayerLayer" type="SubViewportContainer" parent="Render" unique_id=1580418654]
 anchors_preset = 15

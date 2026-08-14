@@ -280,7 +280,7 @@ flowchart TD
     WL --> WV["World — SubViewport 64×64"]
     WV --> PN["Player<br/>Visual meshes on layer 2 — culled here"]
     PN --> CM["Camera3D<br/>cull_mask = 1048569<br/>all layers except 2 and 3"]
-    WV --> SC["Dungeon, enemies,<br/>Sun, WorldEnvironment"]
+    WV --> SC["Floor, enemies,<br/>Sun, WorldEnvironment"]
     PL --> OV["Overlay — SubViewport 64×64<br/>transparent_bg"]
     OV --> OC["OverlayCamera<br/>cull_mask = 2<br/>only layer 2"]
 ```
