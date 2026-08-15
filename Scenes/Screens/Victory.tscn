@@ -1,0 +1,56 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://dl2t7tw3lsmwn" path="res://Assets/Scripts/screen_nav.gd" id="1_nav"]
+
+[node name="Victory" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_nav")
+input_delay = 1.0
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+color = Color(0.02, 0.06, 0.05, 1)
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 64.0
+offset_bottom = 27.0
+theme_override_colors/font_color = Color(0.5, 1, 0.7, 1)
+theme_override_font_sizes/font_size = 7
+text = "ELEVATOR
+ONLINE"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Sub" type="Label" parent="."]
+layout_mode = 0
+offset_top = 34.0
+offset_right = 64.0
+offset_bottom = 46.0
+theme_override_colors/font_color = Color(0.6, 0.9, 0.75, 1)
+theme_override_font_sizes/font_size = 4
+text = "YOU MADE IT OUT"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Tease" type="Label" parent="."]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 64.0
+offset_bottom = 59.0
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 5
+text = "BIG UPDATE
+COMING SOON"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+

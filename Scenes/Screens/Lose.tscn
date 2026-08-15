@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://bahe6d2pnxfuq"]
+
+[ext_resource type="Script" uid="uid://dl2t7tw3lsmwn" path="res://Assets/Scripts/screen_nav.gd" id="1_nav"]
+[ext_resource type="Shader" uid="uid://ctwj4jl657eap" path="res://Assets/Shaders/signal_lost.gdshader" id="2_static"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_static"]
+shader = ExtResource("2_static")
+shader_parameter/noise_amount = 0.2
+shader_parameter/band_speed = 9.0
+shader_parameter/tint = Color(0.75, 0.8, 0.85, 1)
+
+[node name="Lose" type="Control" unique_id=526966408]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nav")
+input_delay = 1.2
+
+[node name="Static" type="ColorRect" parent="." unique_id=1495870198]
+material = SubResource("ShaderMaterial_static")
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+
+[node name="Title" type="Label" parent="." unique_id=1138401962]
+layout_mode = 0
+offset_top = 14.0
+offset_right = 64.0
+offset_bottom = 41.0
+theme_override_colors/font_color = Color(1, 0.25, 0.2, 1)
+theme_override_font_sizes/font_size = 9
+text = "SIGNAL
+LOST"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Hint" type="Label" parent="." unique_id=868332201]
+layout_mode = 0
+offset_top = 50.0
+offset_right = 64.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 4
+text = "E TO RETURN"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
