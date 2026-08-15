@@ -1,0 +1,21 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bvm3yi42mfq0m"]
+
+[ext_resource type="Texture2D" uid="uid://blgminnawtnye" path="res://Assets/Map/Textures/station_floor_albedo.png" id="1_voqn5"]
+[ext_resource type="Texture2D" uid="uid://f23foq8riktk" path="res://Assets/Map/Textures/station_floor_orm.png" id="2_pv3m3"]
+[ext_resource type="Texture2D" uid="uid://golcuhhtw3gb" path="res://Assets/Map/Textures/station_floor_normal.png" id="3_d3mr1"]
+
+[resource]
+albedo_texture = ExtResource("1_voqn5")
+metallic = 0.63
+metallic_texture = ExtResource("2_pv3m3")
+metallic_texture_channel = 2
+roughness = 0.74
+roughness_texture = ExtResource("2_pv3m3")
+roughness_texture_channel = 1
+normal_enabled = true
+normal_scale = 0.1
+normal_texture = ExtResource("3_d3mr1")
+ao_enabled = true
+ao_texture = ExtResource("2_pv3m3")
+uv1_scale = Vector3(1.25, 1.25, 1)
+texture_filter = 5

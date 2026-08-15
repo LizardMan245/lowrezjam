@@ -1,0 +1,84 @@
+[gd_scene format=3 uid="uid://pvnxd84n7t5q"]
+
+[ext_resource type="Texture2D" uid="uid://blgminnawtnye" path="res://Assets/Map/Textures/station_floor_albedo.png" id="1_tcqwn"]
+[ext_resource type="Texture2D" uid="uid://f23foq8riktk" path="res://Assets/Map/Textures/station_floor_orm.png" id="2_bo7es"]
+[ext_resource type="Texture2D" uid="uid://golcuhhtw3gb" path="res://Assets/Map/Textures/station_floor_normal.png" id="3_tkmtk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vndak"]
+albedo_texture = ExtResource("1_tcqwn")
+metallic = 0.63
+metallic_texture = ExtResource("2_bo7es")
+metallic_texture_channel = 2
+roughness = 0.74
+roughness_texture = ExtResource("2_bo7es")
+roughness_texture_channel = 1
+normal_enabled = true
+normal_scale = 0.1
+normal_texture = ExtResource("3_tkmtk")
+ao_enabled = true
+ao_texture = ExtResource("2_bo7es")
+uv1_scale = Vector3(2.5, 1.25, 1)
+texture_filter = 5
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_v8kif"]
+size = Vector2(1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_88646"]
+size = Vector3(16, 5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_kj2oc"]
+size = Vector3(16, 5, 1)
+
+[sub_resource type="Gradient" id="Gradient_s0luu"]
+offsets = PackedFloat32Array(0, 0.29850745)
+colors = PackedColorArray(0.12388813, 0.19481453, 0.16209194, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_er72d"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kj2oc"]
+height = 2048
+noise = SubResource("FastNoiseLite_er72d")
+color_ramp = SubResource("Gradient_s0luu")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1g6y3"]
+albedo_texture = SubResource("NoiseTexture2D_kj2oc")
+metallic = 0.75
+metallic_specular = 0.1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_navfloor1"]
+size = Vector3(16, 0.5, 8)
+
+[node name="Hallway" type="Node3D" unique_id=201483746]
+
+[node name="Floor" type="MeshInstance3D" parent="." unique_id=732787023]
+transform = Transform3D(16, 0, 0, 0, 10, 0, 0, 0, 8, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_vndak")
+mesh = SubResource("PlaneMesh_v8kif")
+
+[node name="TopWall" type="StaticBody3D" parent="." unique_id=1126157351]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -3.5)
+collision_mask = 6
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TopWall" unique_id=309413261]
+shape = SubResource("BoxShape3D_88646")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TopWall" unique_id=1767704262]
+mesh = SubResource("BoxMesh_kj2oc")
+surface_material_override/0 = SubResource("StandardMaterial3D_1g6y3")
+
+[node name="TopWall2" type="StaticBody3D" parent="." unique_id=1202922289]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 3.5)
+collision_mask = 6
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TopWall2" unique_id=1595821765]
+shape = SubResource("BoxShape3D_88646")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TopWall2" unique_id=1235071883]
+mesh = SubResource("BoxMesh_kj2oc")
+surface_material_override/0 = SubResource("StandardMaterial3D_1g6y3")
+
+[node name="FloorBody" type="StaticBody3D" parent="." unique_id=1875796302]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FloorBody" unique_id=796064908]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+shape = SubResource("BoxShape3D_navfloor1")

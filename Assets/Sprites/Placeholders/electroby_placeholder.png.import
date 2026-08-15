@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bh0gn11rqgvu6"
-path.s3tc="res://.godot/imported/data.png-419f8363c6ef8be4533c8fb3f00fe6b7.s3tc.ctex"
+uid="uid://cp470rpqsd8hd"
+path.s3tc="res://.godot/imported/electroby_placeholder.png-b88244c317da54a345d0e49fc2e80ce6.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Assets/Sprites/Placeholders/data.png"
-dest_files=["res://.godot/imported/data.png-419f8363c6ef8be4533c8fb3f00fe6b7.s3tc.ctex"]
+source_file="res://Assets/Sprites/Placeholders/electroby_placeholder.png"
+dest_files=["res://.godot/imported/electroby_placeholder.png-b88244c317da54a345d0e49fc2e80ce6.s3tc.ctex"]
 
 [params]
 

@@ -1,12 +1,9 @@
 [gd_scene format=3 uid="uid://dxtq2ku2eafoe"]
 
-[ext_resource type="Texture2D" uid="uid://f6ta1kwp1gdq" path="res://Assets/Map/rust.png" id="1_jka13"]
+[ext_resource type="Material" uid="uid://bvm3yi42mfq0m" path="res://Assets/Map/station_floor.tres" id="1_jka13"]
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_ruhlt"]
 size = Vector2(100, 100)
-
-[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_wq8pq"]
-albedo_texture = ExtResource("1_jka13")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(100, 0.02, 100)
@@ -14,8 +11,8 @@ size = Vector3(100, 0.02, 100)
 [node name="Floor" type="StaticBody3D" unique_id=1718403227]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2092627737]
-mesh = SubResource("PlaneMesh_floor")
-surface_material_override/0 = SubResource("ORMMaterial3D_wq8pq")
+mesh = SubResource("PlaneMesh_ruhlt")
+material_override = ExtResource("1_jka13")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1290845208]
 shape = SubResource("BoxShape3D_floor")
