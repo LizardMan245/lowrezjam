@@ -13,7 +13,8 @@ var current: EnemyState
 
 var _states := {}
 var _transition_depth := 0
-var _resume_state: StringName = &""
+var _suspended: EnemyState
+var _previous_state_name: StringName = &""
 
 
 func setup(owner_actor) -> void:
@@ -44,31 +45,60 @@ func transition_to(next: StringName) -> void:
 		return
 
 	_transition_depth += 1
-	_resume_state = &""
+	_drop_suspended()
 	var previous := get_state_name()
 	if current != null:
 		current.exit()
+	_previous_state_name = previous
 	current = _states[next]
+	current.apply_senses()
 	current.enter()
 	state_changed.emit(previous, next)
 	_transition_depth -= 1
 
 
 func interrupt_with(next: StringName) -> void:
-	var interrupted := get_state_name()
-	transition_to(next)
-	if get_state_name() == next:
-		_resume_state = interrupted
+	if not _states.has(next) or current == null:
+		return
+	if _transition_depth >= MAX_CHAINED_TRANSITIONS:
+		push_warning("too many state changes at once while entering %s" % next)
+		return
+
+	_transition_depth += 1
+	_drop_suspended()
+	var previous := get_state_name()
+	_suspended = current
+	_suspended.suspend()
+	_previous_state_name = previous
+	current = _states[next]
+	current.apply_senses()
+	current.enter()
+	state_changed.emit(previous, next)
+	_transition_depth -= 1
 
 
 func resume_previous() -> void:
-	var back := _resume_state
-	_resume_state = &""
-	if back != &"" and _states.has(back):
-		transition_to(back)
+	if _suspended == null:
+		transition_to(initial_state if _states.has(initial_state) else get_state_name())
 		return
-	if _states.has(initial_state):
-		transition_to(initial_state)
+
+	var previous := get_state_name()
+	var back := _suspended
+	_suspended = null
+	current.exit()
+	_previous_state_name = previous
+	current = back
+	current.apply_senses()
+	current.unsuspend()
+	state_changed.emit(previous, StringName(back.name))
+
+
+func _drop_suspended() -> void:
+	if _suspended == null:
+		return
+	var dropped := _suspended
+	_suspended = null
+	dropped.exit()
 
 
 func physics_tick(delta: float) -> void:
@@ -76,12 +106,32 @@ func physics_tick(delta: float) -> void:
 		return
 	if current.interrupt_on_detection and actor.has_detected_player():
 		transition_to(current.detection_state)
-	elif current.interrupt_on_noise and get_state_name() != current.noise_state and actor.wants_to_glance():
-		actor.use_glance()
-		if _states.has(current.noise_state):
-			interrupt_with(current.noise_state)
+	elif actor.has_noise_cue():
+		_route_noise_cue()
 	current.physics_tick(delta)
+
+
+func _route_noise_cue() -> void:
+	if current.noise_response == EnemyState.NoiseResponse.IGNORE:
+		actor.discard_noise_cue()
+		return
+
+	var strength: float = actor.take_noise_cue()
+	if current.noise_response == EnemyState.NoiseResponse.REDIRECT:
+		current.on_noise(strength)
+		return
+
+	if actor.noise_is_loud(strength):
+		if _states.has(current.investigate_state):
+			transition_to(current.investigate_state)
+		return
+	if _states.has(current.glance_state):
+		interrupt_with(current.glance_state)
 
 
 func get_state_name() -> StringName:
 	return StringName(current.name) if current != null else &""
+
+
+func get_previous_state_name() -> StringName:
+	return _previous_state_name

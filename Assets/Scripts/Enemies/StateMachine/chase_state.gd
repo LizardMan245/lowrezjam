@@ -1,34 +1,34 @@
 extends "res://Assets/Scripts/Enemies/enemy_state.gd"
 
-@export_range(0.1, 16.0, 0.1) var start_speed := 2.4
-@export_range(0.1, 16.0, 0.1) var top_speed := 5.5
+@export_range(0.1, 16.0, 0.1) var start_speed := 3.2
+@export_range(0.1, 16.0, 0.1) var top_speed := 4.6
 @export_range(0.1, 20.0, 0.1) var acceleration := 0.9
-@export_range(0.1, 20.0, 0.1) var give_up_time := 4.0
-@export var lost_state: StringName = &"Search"
+@export_range(0.0, 4.0, 0.05) var lost_grace := 0.2
+@export var lost_state: StringName = &"CatchUp"
 
 var _speed := 0.0
-var _give_up_timer := 0.0
+var _grace := 0.0
 
 
 func _init() -> void:
-	interrupt_on_noise = false
+	noise_response = NoiseResponse.IGNORE
 
 
 func enter() -> void:
 	super()
 	_speed = start_speed
-	_give_up_timer = give_up_time
+	_grace = lost_grace
 
 
 func physics_tick(delta: float) -> void:
 	_speed = move_toward(_speed, top_speed, acceleration * delta)
-	actor.set_destination(actor.last_known_player_spot)
 
 	if actor.player_visible:
-		_give_up_timer = give_up_time
+		_grace = lost_grace
+		actor.set_destination(actor.last_known_player_spot)
 	else:
-		_give_up_timer -= delta
-		if _give_up_timer <= 0.0 or actor.has_arrived_at(actor.last_known_player_spot):
+		_grace -= delta
+		if _grace <= 0.0:
 			go_to(lost_state)
 			return
 

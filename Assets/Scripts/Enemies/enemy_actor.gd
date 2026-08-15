@@ -2,28 +2,32 @@ extends CharacterBody3D
 
 const NAVIGATION_WAIT_FRAMES := 120
 const NAVIGATION_SNAP_LIMIT := 4.0
+const UNLIMITED_VIEW_DISTANCE := 1000.0
 
 signal state_changed(previous: StringName, current: StringName)
 signal player_detected
 signal player_lost
+signal noise_noticed(spot: Vector3, strength: float)
 signal animation_requested(animation: StringName)
 signal sound_requested(stream: AudioStream)
 
 @export_group("Senses")
-@export_range(5.0, 180.0) var vision_angle_degrees := 70.0
+@export_range(5.0, 360.0) var vision_angle_degrees := 70.0
 @export_range(1.0, 40.0) var view_distance := 12.0
 @export_range(0.0, 4.0) var eye_height := 0.6
 @export_flags_3d_physics var sight_mask := 1
 @export_range(0.0, 10.0, 0.05) var detection_time := 0.5
 @export_range(0.0, 10.0, 0.05) var detection_decay_rate := 1.5
+@export_range(0.0, 1.0, 0.05) var peripheral_fill_scale := 0.25
+@export_range(0.2, 6.0, 0.1) var peripheral_falloff := 1.6
 
 @export_group("Hearing")
-@export_range(0.0, 40.0) var hearing_radius := 12.0
+@export_range(0.0, 3.0, 0.05) var hearing_range_scale := 1.0
 @export_range(0.0, 8.0, 0.05) var hearing_sensitivity := 1.4
 @export_range(0.0, 1.0, 0.05) var wall_muffle := 0.4
-@export_range(0.0, 4.0, 0.05) var noise_fade_rate := 0.35
-@export_range(0.0, 4.0, 0.05) var glance_rate := 0.9
-@export_range(0.0, 10.0, 0.1) var glance_cooldown := 2.0
+@export_range(0.0, 1.0, 0.05) var loud_noise_threshold := 0.35
+@export_range(0.0, 90.0, 1.0) var noise_swing_degrees := 45.0
+@export_range(0.0, 10.0, 0.1) var notice_cooldown := 1.5
 
 @export_group("Movement")
 @export_range(1.0, 30.0) var turn_speed := 6.0
@@ -33,8 +37,10 @@ signal sound_requested(stream: AudioStream)
 @export_group("Roaming")
 @export_range(1, 32) var spots_to_try := 12
 @export_range(0.0, 4.0, 0.1) var facing_bias := 1.2
+@export_range(0.0, 4.0, 0.1) var distance_bias := 0.5
 @export_range(0.0, 4.0, 0.1) var backtrack_penalty := 1.6
 @export_range(0.0, 4.0, 0.1) var revisit_penalty := 1.1
+@export_range(0.0, 8.0, 0.1) var roam_pick_sharpness := 1.5
 @export var roam_needs_line_of_sight := true
 @export_range(1.0, 4.0, 0.1) var max_detour := 1.7
 @export_range(0.5, 8.0, 0.5) var memory_cell_size := 2.0
@@ -42,11 +48,15 @@ signal sound_requested(stream: AudioStream)
 
 var facing := Vector2(0.0, 1.0)
 var player_visible := false
+var sight_focus := -1.0
 var last_known_player_spot := Vector3.ZERO
+var last_known_player_heading := Vector2(0.0, 1.0)
+var escape_speed := 0.0
 var sight_seconds := 0.0
-var noise_level := 0.0
 var last_heard_spot := Vector3.ZERO
 var heard_loudness := 0.0
+var noise_spot := Vector3.ZERO
+var noise_strength := 0.0
 
 var _player: Node3D
 var _agent: NavigationAgent3D
@@ -57,8 +67,14 @@ var _speaker: AudioStreamPlayer3D
 var _rng := RandomNumberGenerator.new()
 var _sight_query := PhysicsRayQueryParameters3D.new()
 var _detected_last_frame := false
-var _glance_pending := false
-var _glance_cooldown_left := 0.0
+var _active_vision_angle := 70.0
+var _active_view_distance := 12.0
+var _detection_rate := 1.0
+var _last_move_speed := 0.0
+var _pending_noise_spot := Vector3.ZERO
+var _pending_noise_strength := 0.0
+var _has_pending_noise := false
+var _notice_cooldown_left := 0.0
 var _visited := {}
 var _last_roam_spot := Vector3.ZERO
 var _came_from := Vector2.ZERO
@@ -84,6 +100,7 @@ func _ready() -> void:
 	_sight_query.exclude = [get_rid()]
 	_last_roam_spot = global_position
 	_came_from = -facing
+	reset_senses()
 	_apply_facing()
 
 	_machine.setup(self)
@@ -122,15 +139,56 @@ func _navigation_is_ready() -> bool:
 	return flat_distance(NavigationServer3D.map_get_closest_point(map, global_position), global_position) < NAVIGATION_SNAP_LIMIT
 
 
+func reset_senses() -> void:
+	_active_vision_angle = vision_angle_degrees
+	_active_view_distance = view_distance
+	_detection_rate = 1.0
+
+
+func set_vision_angle(degrees: float) -> void:
+	_active_vision_angle = clampf(degrees, 0.0, 360.0)
+
+
+func set_view_distance(distance: float) -> void:
+	_active_view_distance = maxf(distance, 0.0)
+
+
+func set_detection_rate(rate: float) -> void:
+	_detection_rate = maxf(rate, 0.0)
+
+
+func get_vision_angle() -> float:
+	return _active_vision_angle
+
+
+func get_view_distance() -> float:
+	return _active_view_distance
+
+
+func get_base_vision_angle() -> float:
+	return vision_angle_degrees
+
+
+func get_base_view_distance() -> float:
+	return view_distance
+
+
+func get_hearing_radius() -> float:
+	return view_distance * hearing_range_scale
+
+
 func _update_senses(delta: float) -> void:
 	var was_visible := player_visible
-	player_visible = can_see_player()
+	sight_focus = _measure_sight()
+	player_visible = sight_focus >= 0.0
 
 	if player_visible:
 		last_known_player_spot = _player.global_position
-		sight_seconds = minf(sight_seconds + delta, detection_time)
+		last_known_player_heading = _player_heading()
+		sight_seconds = minf(sight_seconds + delta * _sight_fill_rate() * _detection_rate, detection_time)
 	else:
 		if was_visible:
+			escape_speed = _last_move_speed
 			player_lost.emit()
 		sight_seconds = maxf(sight_seconds - delta * detection_decay_rate, 0.0)
 
@@ -142,33 +200,83 @@ func _update_senses(delta: float) -> void:
 	_detected_last_frame = detected
 
 
-func _update_hearing(delta: float) -> void:
-	var loudness := get_noise_loudness()
-	if loudness > 0.0:
-		last_heard_spot = _player.global_position
-		heard_loudness = loudness
-		noise_level = minf(noise_level + loudness * hearing_sensitivity * delta, 1.0)
-	else:
-		noise_level = maxf(noise_level - noise_fade_rate * delta, 0.0)
+func _player_heading() -> Vector2:
+	var body := _player as CharacterBody3D
+	if body != null:
+		var travel := Vector2(body.velocity.x, body.velocity.z)
+		if travel.length() > 0.05:
+			return travel.normalized()
+	var aim = _player.get("facing")
+	if aim is Vector2 and aim.length() > 0.001:
+		return aim
+	return last_known_player_heading
 
-	_glance_cooldown_left = maxf(_glance_cooldown_left - delta, 0.0)
-	if _glance_cooldown_left > 0.0 or _glance_pending:
+
+func _sight_fill_rate() -> float:
+	var centred := pow(clampf(sight_focus, 0.0, 1.0), peripheral_falloff)
+	return lerpf(peripheral_fill_scale, 1.0, centred)
+
+
+func _measure_sight() -> float:
+	if _player == null:
+		return -1.0
+
+	var eye := get_eye_position()
+	var target := Vector3(_player.global_position.x, eye.y, _player.global_position.z)
+	var flat := Vector2(target.x - eye.x, target.z - eye.z)
+	var range_to_player := flat.length()
+	if range_to_player < 0.001 or range_to_player > _active_view_distance:
+		return -1.0
+
+	var to_player := flat / range_to_player
+	var offset := absf(atan2(facing.x * to_player.y - facing.y * to_player.x, facing.dot(to_player)))
+	var half := deg_to_rad(_active_vision_angle) * 0.5
+	if offset > half:
+		return -1.0
+
+	_sight_query.from = eye
+	_sight_query.to = target
+	var hit := get_world_3d().direct_space_state.intersect_ray(_sight_query)
+	if hit.is_empty() or hit.collider != _player:
+		return -1.0
+	if half < 0.001:
+		return 1.0
+	return 1.0 - offset / half
+
+
+func _update_hearing(delta: float) -> void:
+	_notice_cooldown_left = maxf(_notice_cooldown_left - delta, 0.0)
+
+	heard_loudness = get_noise_loudness()
+	if heard_loudness <= 0.0:
 		return
-	if _rng.randf() < glance_rate * noise_level * delta:
-		_glance_pending = true
+	last_heard_spot = _player.global_position
+
+	if _has_pending_noise or _notice_cooldown_left > 0.0:
+		return
+	if _rng.randf() >= heard_loudness * hearing_sensitivity * delta:
+		return
+
+	_notice_cooldown_left = notice_cooldown
+	_pending_noise_strength = heard_loudness
+	_pending_noise_spot = swing_spot(last_heard_spot, heard_loudness, noise_swing_degrees)
+	_has_pending_noise = true
+	noise_noticed.emit(_pending_noise_spot, _pending_noise_strength)
 
 
 func get_noise_loudness() -> float:
-	if _player == null or hearing_radius <= 0.0:
+	if _player == null:
 		return 0.0
-	var source = _player
-	var output: float = source.get_noise_level() if source.has_method("get_noise_level") else 0.0
+	var radius := get_hearing_radius()
+	if radius <= 0.0:
+		return 0.0
+	var output: float = _player.get_noise_level() if _player.has_method("get_noise_level") else 0.0
 	if output <= 0.0:
 		return 0.0
 	var distance := flat_distance(_player.global_position, global_position)
-	if distance >= hearing_radius:
+	if distance >= radius:
 		return 0.0
-	var reach := 1.0 - distance / hearing_radius
+	var reach := 1.0 - distance / radius
 	var loudness := output * reach * reach
 	if _wall_blocks_sound():
 		loudness *= wall_muffle
@@ -183,45 +291,36 @@ func _wall_blocks_sound() -> bool:
 	return not hit.is_empty() and hit.collider != _player
 
 
-func wants_to_glance() -> bool:
-	return _glance_pending
+func has_noise_cue() -> bool:
+	return _has_pending_noise
 
 
-func use_glance() -> void:
-	_glance_pending = false
-	_glance_cooldown_left = glance_cooldown
-	noise_level *= 0.3
+func take_noise_cue() -> float:
+	_has_pending_noise = false
+	noise_spot = _pending_noise_spot
+	noise_strength = _pending_noise_strength
+	return noise_strength
 
 
-func guess_noise_spot(max_error_degrees: float) -> Vector3:
-	var to := Vector2(last_heard_spot.x - global_position.x, last_heard_spot.z - global_position.z)
+func discard_noise_cue() -> void:
+	_has_pending_noise = false
+
+
+func noise_is_loud(strength: float) -> bool:
+	return strength >= loud_noise_threshold
+
+
+func swing_spot(spot: Vector3, strength: float, max_error_degrees: float) -> Vector3:
+	var to := Vector2(spot.x - global_position.x, spot.z - global_position.z)
 	if to.length() < 0.001:
-		return last_heard_spot
-	var error := deg_to_rad(max_error_degrees) * (1.0 - clampf(heard_loudness, 0.0, 1.0))
+		return spot
+	var error := deg_to_rad(max_error_degrees) * (1.0 - clampf(strength, 0.0, 1.0))
 	var swung := to.rotated(_rng.randf_range(-error, error))
 	return global_position + Vector3(swung.x, 0.0, swung.y)
 
 
 func can_see_player() -> bool:
-	if _player == null:
-		return false
-
-	var eye := get_eye_position()
-	var target := Vector3(_player.global_position.x, eye.y, _player.global_position.z)
-	var flat := Vector2(target.x - eye.x, target.z - eye.z)
-	var range_to_player := flat.length()
-	if range_to_player < 0.001 or range_to_player > view_distance:
-		return false
-
-	var to_player := flat / range_to_player
-	var offset := absf(atan2(facing.x * to_player.y - facing.y * to_player.x, facing.dot(to_player)))
-	if offset > deg_to_rad(vision_angle_degrees) * 0.5:
-		return false
-
-	_sight_query.from = eye
-	_sight_query.to = target
-	var hit := get_world_3d().direct_space_state.intersect_ray(_sight_query)
-	return not hit.is_empty() and hit.collider == _player
+	return _measure_sight() >= 0.0
 
 
 func has_clear_line_to(spot: Vector3) -> bool:
@@ -260,6 +359,7 @@ func is_path_finished() -> bool:
 
 
 func move_along_path(speed: float, delta: float) -> void:
+	_last_move_speed = speed
 	var step := _agent.get_next_path_position() - global_position
 	step.y = 0.0
 	if step.length() < 0.001:
@@ -291,12 +391,26 @@ func face_spot(spot: Vector3, delta: float) -> void:
 	turn_towards(flat.normalized(), delta)
 
 
+func is_facing(spot: Vector3, tolerance_degrees: float) -> bool:
+	var flat := Vector2(spot.x - global_position.x, spot.z - global_position.z)
+	if flat.length() < 0.001:
+		return true
+	return absf(facing.angle_to(flat.normalized())) <= deg_to_rad(tolerance_degrees)
+
+
 func has_arrived_at(spot: Vector3) -> bool:
 	return flat_distance(spot, global_position) <= arrive_distance
 
 
 func flat_distance(a: Vector3, b: Vector3) -> float:
 	return Vector2(a.x - b.x, a.z - b.z).length()
+
+
+func nearest_walkable_point(spot: Vector3) -> Vector3:
+	var map := _agent.get_navigation_map()
+	if not map.is_valid():
+		return spot
+	return NavigationServer3D.map_get_closest_point(map, spot)
 
 
 func random_walkable_point(around: Vector3, radius: float) -> Vector3:
@@ -315,23 +429,41 @@ func random_walkable_point(around: Vector3, radius: float) -> Vector3:
 func pick_roam_target(around: Vector3, radius: float) -> Vector3:
 	_update_came_from(around)
 
-	var visible: Array = []
+	var in_sight: Array = []
 	var reachable: Array = []
 	for _try in spots_to_try:
 		var spot := random_walkable_point(around, radius)
 		if has_arrived_at(spot) or not _path_is_direct(spot):
 			continue
-		var scored := [_score_spot(spot), spot]
+		var scored := [_score_spot(spot, radius), spot]
 		reachable.append(scored)
 		if has_clear_line_to(spot):
-			visible.append(scored)
+			in_sight.append(scored)
 
-	var pool: Array = visible if roam_needs_line_of_sight and not visible.is_empty() else reachable
+	var pool: Array = in_sight if roam_needs_line_of_sight and not in_sight.is_empty() else reachable
 	if pool.is_empty():
 		return random_walkable_point(around, radius)
+	return _pick_weighted(pool)
 
-	pool.sort_custom(func(a, b): return a[0] > b[0])
-	return pool[_rng.randi_range(0, mini(2, pool.size() - 1))][1]
+
+func _pick_weighted(pool: Array) -> Vector3:
+	var best: float = pool[0][0]
+	for scored in pool:
+		best = maxf(best, scored[0])
+
+	var weights: Array[float] = []
+	var total := 0.0
+	for scored in pool:
+		var weight: float = exp((scored[0] - best) * roam_pick_sharpness)
+		weights.append(weight)
+		total += weight
+
+	var roll := _rng.randf() * total
+	for i in pool.size():
+		roll -= weights[i]
+		if roll <= 0.0:
+			return pool[i][1]
+	return pool[pool.size() - 1][1]
 
 
 func _update_came_from(around: Vector3) -> void:
@@ -340,13 +472,14 @@ func _update_came_from(around: Vector3) -> void:
 	_last_roam_spot = around
 
 
-func _score_spot(spot: Vector3) -> float:
+func _score_spot(spot: Vector3, radius: float) -> float:
 	var to := Vector2(spot.x - global_position.x, spot.z - global_position.z)
 	var distance := to.length()
 	if distance < 0.001:
 		return -INF
 	var direction := to / distance
 	var score := facing_bias * facing.dot(direction)
+	score += distance_bias * clampf(distance / maxf(radius, 0.001), 0.0, 1.0)
 	score -= backtrack_penalty * maxf(_came_from.dot(direction), 0.0)
 	score -= revisit_penalty * _visit_amount(spot)
 	return score

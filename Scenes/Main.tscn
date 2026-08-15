@@ -5,10 +5,11 @@
 [ext_resource type="Texture2D" uid="uid://bq7n6vc7dy570" path="res://Assets/Shaders/thermal.tres" id="2_h1m7h"]
 [ext_resource type="Script" uid="uid://b3we63lcv60gm" path="res://Assets/Scripts/light_flicker.gd" id="3_4kpch"]
 [ext_resource type="Environment" uid="uid://b3ulhtijha0iy" path="res://Scenes/Environments/env.tres" id="5_h1m7h"]
+[ext_resource type="PackedScene" uid="uid://dxtq2ku2eafoe" path="res://Assets/Map/testmap.tscn" id="6_bmxlf"]
 [ext_resource type="PackedScene" uid="uid://d4ngk1vwbohat" path="res://Assets/Player/Player.tscn" id="7_h1m7h"]
 [ext_resource type="PackedScene" uid="uid://bcap7bikpxwxw" path="res://Assets/Enemies/BasicEnemy.tscn" id="8_erwvk"]
 [ext_resource type="Script" uid="uid://dmtdlh3v7vxl4" path="res://Assets/Scripts/overlay_camera.gd" id="9_2w5on"]
-[ext_resource type="PackedScene" path="res://Assets/Debug/DebugMapWindow.tscn" id="10_monitor"]
+[ext_resource type="PackedScene" uid="uid://drv4ivrqednix" path="res://Assets/Debug/DebugMapWindow.tscn" id="10_monitor"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vision"]
 shader = ExtResource("1_vy5pj")
@@ -32,19 +33,9 @@ shader_parameter/mask_color = Color(0, 0, 0, 1)
 shader_parameter/gradient = ExtResource("2_h1m7h")
 shader_parameter/mix_amount = 0.0
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
-size = Vector2(20, 20)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
-albedo_color = Color(0.28, 0.29, 0.32, 1)
-roughness = 0.8
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
-size = Vector3(20, 0.02, 20)
-
 [sub_resource type="NavigationMesh" id="NavigationMesh_floor"]
-vertices = PackedVector3Array(-9.5, 0, -9.5, 9.5, 0, -9.5, 9.5, 0, 9.5, -9.5, 0, 9.5)
-polygons = [PackedInt32Array(0, 1, 2, 3)]
+vertices = PackedVector3Array(-49.4812, 0.51001954, -49.50258, -49.4812, 0.51001954, 49.49742, 49.5188, 0.51001954, 49.49742, 49.5188, 0.51001954, -49.50258)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
 
 [sub_resource type="Environment" id="Environment_overlay"]
 ambient_light_source = 2
@@ -94,14 +85,8 @@ environment = ExtResource("5_h1m7h")
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="Render/WorldLayer/World" unique_id=1244899461]
 navigation_mesh = SubResource("NavigationMesh_floor")
 
-[node name="Floor" type="StaticBody3D" parent="Render/WorldLayer/World" unique_id=923107463]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Render/WorldLayer/World/Floor" unique_id=523759562]
-mesh = SubResource("PlaneMesh_floor")
-surface_material_override/0 = SubResource("StandardMaterial3D_floor")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Render/WorldLayer/World/Floor" unique_id=294506356]
-shape = SubResource("BoxShape3D_floor")
+[node name="Floor" parent="Render/WorldLayer/World/NavigationRegion3D" unique_id=1718403227 instance=ExtResource("6_bmxlf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.018798828, 0.020019531, -0.0025787354)
 
 [node name="Player" parent="Render/WorldLayer/World" unique_id=650448909 instance=ExtResource("7_h1m7h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.30474377, 0, 0.25018883)
@@ -111,30 +96,7 @@ view_distance = 20.0
 eye_height = 1.0
 
 [node name="Basicenemy" parent="Render/WorldLayer/World" unique_id=1364594077 instance=ExtResource("8_erwvk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.8731489, -6)
-vision_angle_degrees = 180.0
-sight_mask = 16
-detection_time = 0.6
-detection_decay_rate = 3.0
-turn_speed = 3.0
-brake_rate = 10.0
-spots_to_try = 15
-max_detour = 1.4
-memory_seconds = 30.0
-
-[node name="Basicenemy2" parent="Render/WorldLayer/World" unique_id=1377881211 instance=ExtResource("8_erwvk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.8731489, -2.7651415)
-vision_angle_degrees = 180.0
-detection_time = 0.6
-detection_decay_rate = 3.0
-turn_speed = 3.0
-brake_rate = 10.0
-spots_to_try = 15
-max_detour = 1.4
-memory_seconds = 30.0
-
-[node name="Basicenemy3" parent="Render/WorldLayer/World" unique_id=1342071640 instance=ExtResource("8_erwvk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.8731489, -0.39453602)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.54718, 0.8731489, 6.9346924)
 vision_angle_degrees = 180.0
 detection_time = 0.6
 detection_decay_rate = 3.0
@@ -171,5 +133,4 @@ script = ExtResource("9_2w5on")
 [node name="DebugMapWindow" parent="." unique_id=276062607 instance=ExtResource("10_monitor")]
 title = "Enemy Monitor"
 initial_position = 0
-map_extent = 148.0
-camera_height = 120.0
+map_extent = 102.206
