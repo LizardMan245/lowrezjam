@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://b3jucuvpvirb7"]
+
+[ext_resource type="Material" uid="uid://bvm3yi42mfq0m" path="res://Assets/Map/station_floor.tres" id="1_aubbr"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_yr6em"]
+size = Vector2(1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_aubbr"]
+size = Vector3(8, 5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_yr6em"]
+size = Vector3(8, 5, 1)
+
+[sub_resource type="Gradient" id="Gradient_t4nu6"]
+offsets = PackedFloat32Array(0, 0.29850745)
+colors = PackedColorArray(0.12388813, 0.19481453, 0.16209194, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_y0plq"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_54gkc"]
+height = 2048
+noise = SubResource("FastNoiseLite_y0plq")
+color_ramp = SubResource("Gradient_t4nu6")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_18qml"]
+albedo_texture = SubResource("NoiseTexture2D_54gkc")
+metallic = 0.75
+metallic_specular = 0.1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_navfloor1"]
+size = Vector3(8, 0.5, 8)
+
+[node name="Turn" type="Node3D" unique_id=785319787]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=487703185]
+transform = Transform3D(8, 0, 0, 0, 10, 0, 0, 0, 8, 0, 0, 0)
+mesh = SubResource("PlaneMesh_yr6em")
+material_override = ExtResource("1_aubbr")
+
+[node name="TopWall" type="StaticBody3D" parent="." unique_id=724129350]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, -4.5)
+collision_mask = 6
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TopWall" unique_id=1161145903]
+shape = SubResource("BoxShape3D_aubbr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TopWall" unique_id=952861343]
+mesh = SubResource("BoxMesh_yr6em")
+surface_material_override/0 = SubResource("StandardMaterial3D_18qml")
+
+[node name="SideWall" type="StaticBody3D" parent="." unique_id=822010388]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -4.5, 2.5, 0)
+collision_mask = 6
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SideWall" unique_id=1002738168]
+shape = SubResource("BoxShape3D_aubbr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SideWall" unique_id=1069564274]
+mesh = SubResource("BoxMesh_yr6em")
+surface_material_override/0 = SubResource("StandardMaterial3D_18qml")
+
+[node name="FloorBody" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FloorBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+shape = SubResource("BoxShape3D_navfloor1")

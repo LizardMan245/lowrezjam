@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://f6ta1kwp1gdq"
-path.s3tc="res://.godot/imported/rust.png-0607b33a86b5679811f93e5406c3b57a.s3tc.ctex"
+uid="uid://cs5kr2j5yenlq"
+path.s3tc="res://.godot/imported/mission_1.png-a7f14be65e5a1e71941e05fc286d22ff.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Assets/Map/rust.png"
-dest_files=["res://.godot/imported/rust.png-0607b33a86b5679811f93e5406c3b57a.s3tc.ctex"]
+source_file="res://Assets/Sprites/UI/Screens/mission_1.png"
+dest_files=["res://.godot/imported/mission_1.png-a7f14be65e5a1e71941e05fc286d22ff.s3tc.ctex"]
 
 [params]
 
