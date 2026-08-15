@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://3enoqrgngi2g"]
+
+[ext_resource type="Script" uid="uid://dl2t7tw3lsmwn" path="res://Assets/Scripts/screen_nav.gd" id="1_nav"]
+[ext_resource type="AudioStream" uid="uid://b5p8nejy16x8o" path="res://Assets/Audio/OST/booting_up.mp3" id="2_boot"]
+[ext_resource type="FontFile" uid="uid://6y3ubcokl4pq" path="res://Assets/Sprites/UI/PxPlus_IBM_BIOS.ttf" id="3_7ghhb"]
+
+[node name="Menu" type="Control" unique_id=829721155]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nav")
+starts_game = true
+music = ExtResource("2_boot")
+input_delay = 0.4
+
+[node name="Background" type="ColorRect" parent="." unique_id=1385104224]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+color = Color(0.0150615545, 0.02129857, 0, 1)
+
+[node name="Title" type="Label" parent="." unique_id=1946696529]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 64.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(0.23333335, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_7ghhb")
+theme_override_font_sizes/font_size = 8
+text = "APOLLO ECHO 12"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+uppercase = true
+
+[node name="Hint" type="Label" parent="." unique_id=1625281663]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 37.0
+offset_right = 80.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_7ghhb")
+theme_override_font_sizes/font_size = 4
+text = "Press 'O' to enter"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Controls" type="Label" parent="." unique_id=842409363]
+layout_mode = 0
+offset_top = 48.0
+offset_right = 64.0
+offset_bottom = 85.0
+theme_override_colors/font_color = Color(0.3, 0.38, 0.45, 1)
+theme_override_font_sizes/font_size = 4
+text = "WASD MOVE
+ARROWS LOOK
+N ALLOCATE RAM
+E INTERACT"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
