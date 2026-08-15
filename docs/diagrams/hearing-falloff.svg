@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 430" font-family="system-ui, sans-serif">
+<style>
+  .ink{stroke:#1b1f2a}.fill-ink{fill:#1b1f2a}.muted{stroke:#6b7280}.fill-muted{fill:#4b5563}
+  .ring{fill:none;stroke:#6b7280;stroke-dasharray:4 4;stroke-width:1}
+  .wall{fill:#9aa3b2;stroke:#4b5563;stroke-width:1.5}
+  @media (prefers-color-scheme: dark){
+    .ink{stroke:#e8ecf4}.fill-ink{fill:#e8ecf4}.muted{stroke:#9aa3b2}.fill-muted{fill:#b6bdc9}
+    .ring{stroke:#7b8494}.wall{fill:#59606e;stroke:#9aa3b2}
+  }
+</style>
+<circle cx="300.0" cy="212.0" r="189.0" fill="#f59e0b" fill-opacity="0.07" class="muted" stroke-width="1.5"/>
+<circle cx="300.0" cy="212.0" r="42.0" class="ring"/>
+<text x="305.0" y="166.0" font-size="13" class="fill-muted">2 m &#183; 0.60</text>
+<circle cx="300.0" cy="212.0" r="84.0" class="ring"/>
+<text x="305.0" y="124.0" font-size="13" class="fill-muted">4 m &#183; 0.31</text>
+<circle cx="300.0" cy="212.0" r="126.0" class="ring"/>
+<text x="305.0" y="82.0" font-size="13" class="fill-muted">6 m &#183; 0.11</text>
+<circle cx="300.0" cy="212.0" r="168.0" class="ring"/>
+<text x="305.0" y="40.0" font-size="13" class="fill-muted">8 m &#183; 0.01</text>
+<rect x="413.4" y="144.8" width="18.9" height="134.4" rx="2" class="wall"/>
+<text x="407.4" y="134.8" font-size="13" text-anchor="end" class="fill-muted">wall</text>
+<circle cx="300.0" cy="212.0" r="7" class="fill-ink"/>
+<text x="300.0" y="236.0" font-size="14" text-anchor="middle" class="fill-ink" font-weight="600">enemy</text>
+<line x1="300.0" y1="212.0" x2="254.7" y2="269.9" class="muted" stroke-width="1.5" stroke-dasharray="5 3"/>
+<circle cx="254.7" cy="269.9" r="6" fill="#2563eb"/>
+<text x="242.7" y="267.9" font-size="13.5" text-anchor="end" class="fill-ink" font-weight="600">moving, in the open</text>
+<text x="242.7" y="283.9" font-size="12.5" text-anchor="end" class="fill-muted">(1 - 3.5/9)&#178; = 0.37</text>
+<line x1="300.0" y1="212.0" x2="445.6" y2="191.5" class="muted" stroke-width="1.5" stroke-dasharray="5 3"/>
+<circle cx="445.6" cy="191.5" r="6" fill="#2563eb"/>
+<text x="457.6" y="189.5" font-size="13.5" text-anchor="start" class="fill-ink" font-weight="600">moving, behind a wall</text>
+<text x="457.6" y="205.5" font-size="12.5" text-anchor="start" class="fill-muted">(1 - 7.0/9)&#178; &#215; wall_muffle 0.4 = 0.02</text>
+<text x="24" y="34" font-size="14.5" class="fill-ink" font-weight="600">loudness = player speed &#215; (1 &#8722; distance / hearing_radius)&#178;</text>
+<text x="24" y="54" font-size="13" class="fill-muted">hearing_radius = 9 m &#183; a still player scores 0 at any distance</text>
+<line x1="24" y1="400" x2="66.0" y2="400" class="ink" stroke-width="2"/>
+<text x="74.0" y="405" font-size="13" class="fill-muted">2 m</text>
+</svg>

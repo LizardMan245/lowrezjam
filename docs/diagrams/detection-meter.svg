@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 360" role="img">
+<style>
+  .bg { fill: none; }
+  .axis { stroke: #5a6472; stroke-width: 1.4; }
+  .tick { stroke: #9aa4b2; stroke-width: 1; }
+  .grid { stroke: #9aa4b2; stroke-width: 0.6; stroke-dasharray: 3 4; opacity: 0.55; }
+  text { font-family: system-ui, sans-serif; font-size: 14px; fill: #3c4553; }
+  .small { font-size: 13px; fill: #5a6472; }
+  .band { fill: #2f8fd8; opacity: 0.13; }
+  .bandlab { font-size: 13px; fill: #1f6fa8; }
+  .meter { fill: none; stroke: #2f8fd8; stroke-width: 3; stroke-linejoin: round; }
+  .thresh { stroke: #c8384f; stroke-width: 1.6; stroke-dasharray: 6 4; }
+  .threshlab { font-size: 13px; fill: #c8384f; }
+  .hit { fill: #c8384f; }
+  @media (prefers-color-scheme: dark) {
+    .axis { stroke: #98a3b3; }
+    .tick { stroke: #78828f; }
+    .grid { stroke: #78828f; }
+    text { fill: #d7dde6; }
+    .small { fill: #a7b0bd; }
+    .band { fill: #58b0f0; opacity: 0.18; }
+    .bandlab { fill: #7cc4f7; }
+    .meter { stroke: #58b0f0; }
+    .thresh { stroke: #f2798f; }
+    .threshlab { fill: #f2798f; }
+    .hit { fill: #f2798f; }
+  }
+</style>
+<rect class="band" x="201.6" y="40.0" width="92.7" height="258.0"/>
+<rect class="band" x="356.0" y="40.0" width="278.0" height="258.0"/>
+<text class="bandlab" x="247.9" y="20.0" text-anchor="middle">player in cone</text>
+<text class="bandlab" x="433.2" y="20.0" text-anchor="middle">player in cone</text>
+<line class="thresh" x1="78.0" y1="89.9" x2="634.0" y2="89.9"/>
+<text class="threshlab" x="634.0" y="81.9" text-anchor="end">detection_time = 0.5 s</text>
+<line class="grid" x1="78.0" y1="298.0" x2="634.0" y2="298.0"/>
+<text class="small" x="68.0" y="303.0" text-anchor="end">0.00</text>
+<line class="grid" x1="78.0" y1="194.0" x2="634.0" y2="194.0"/>
+<text class="small" x="68.0" y="199.0" text-anchor="end">0.25</text>
+<line class="grid" x1="78.0" y1="89.9" x2="634.0" y2="89.9"/>
+<text class="small" x="68.0" y="94.9" text-anchor="end">0.50</text>
+<line class="axis" x1="78.0" y1="40.0" x2="78.0" y2="298.0"/>
+<line class="axis" x1="78.0" y1="298.0" x2="634.0" y2="298.0"/>
+<line class="tick" x1="78.0" y1="298.0" x2="78.0" y2="304.0"/>
+<text class="small" x="78.0" y="320.0" text-anchor="middle">0.0</text>
+<line class="tick" x1="170.7" y1="298.0" x2="170.7" y2="304.0"/>
+<text class="small" x="170.7" y="320.0" text-anchor="middle">0.3</text>
+<line class="tick" x1="263.3" y1="298.0" x2="263.3" y2="304.0"/>
+<text class="small" x="263.3" y="320.0" text-anchor="middle">0.6</text>
+<line class="tick" x1="356.0" y1="298.0" x2="356.0" y2="304.0"/>
+<text class="small" x="356.0" y="320.0" text-anchor="middle">0.9</text>
+<line class="tick" x1="448.7" y1="298.0" x2="448.7" y2="304.0"/>
+<text class="small" x="448.7" y="320.0" text-anchor="middle">1.2</text>
+<line class="tick" x1="541.3" y1="298.0" x2="541.3" y2="304.0"/>
+<text class="small" x="541.3" y="320.0" text-anchor="middle">1.5</text>
+<line class="tick" x1="634.0" y1="298.0" x2="634.0" y2="304.0"/>
+<text class="small" x="634.0" y="320.0" text-anchor="middle">1.8</text>
+<text class="small" x="356.0" y="346.0" text-anchor="middle">time (seconds)</text>
+<text class="small" transform="translate(20,169.0) rotate(-90)" text-anchor="middle">sight_seconds</text>
+<polyline class="meter" points="78.0,298.0 201.6,298.0 294.2,173.2 340.6,298.0 356.0,298.0 510.4,89.9 634.0,89.9"/>
+<circle class="hit" cx="510.4" cy="89.9" r="5"/>
+<text class="threshlab" x="520.4" y="109.9">detected -&gt; Alert</text>
+<text class="small" x="207.7" y="131.5">rises +1.0 / s</text>
+<text class="small" x="322.0" y="218.8" text-anchor="middle">falls 2.0 / s</text>
+<text class="small" x="269.5" y="275.1" text-anchor="middle">peek is not enough</text>
+</svg>
