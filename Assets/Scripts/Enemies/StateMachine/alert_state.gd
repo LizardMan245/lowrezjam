@@ -5,15 +5,24 @@ extends "res://Assets/Scripts/Enemies/enemy_state.gd"
 @export var turn_to_face_player := true
 @export var next_state: StringName = &"Chase"
 
+@export_group("Re-lock")
+@export_range(0.0, 4.0, 0.05) var relock_duration := 0.25
+@export var relock_sound: AudioStream
+@export var relock_from_states: Array[StringName] = [&"CatchUp", &"Search", &"Scan"]
+
 var _timer := 0.0
 
 
 func _init() -> void:
-	interrupt_on_noise = false
+	noise_response = NoiseResponse.IGNORE
 
 
 func enter() -> void:
 	super()
+	if _is_relock():
+		actor.play_sound(relock_sound if relock_sound != null else sound)
+		_timer = relock_duration
+		return
 	actor.play_sound(sound)
 	var animated: float = actor.animation_length(animation)
 	_timer = animated if animated > 0.0 else default_duration
@@ -26,3 +35,7 @@ func physics_tick(delta: float) -> void:
 	_timer -= delta
 	if _timer <= 0.0:
 		go_to(next_state)
+
+
+func _is_relock() -> bool:
+	return relock_from_states.has(machine.get_previous_state_name())

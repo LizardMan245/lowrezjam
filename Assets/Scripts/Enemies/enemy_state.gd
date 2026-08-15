@@ -2,11 +2,28 @@ extends Node
 
 const EnemyActor = preload("res://Assets/Scripts/Enemies/enemy_actor.gd")
 
+enum NoiseResponse {
+	IGNORE,
+	TIERED,
+	REDIRECT,
+}
+
 @export var animation: StringName = &""
 @export var interrupt_on_detection := true
 @export var detection_state: StringName = &"Alert"
-@export var interrupt_on_noise := true
-@export var noise_state: StringName = &"Glance"
+
+@export_group("Hearing")
+@export var noise_response: NoiseResponse = NoiseResponse.TIERED
+@export var glance_state: StringName = &"Glance"
+@export var investigate_state: StringName = &"Investigate"
+
+@export_group("Senses")
+@export_range(0.0, 360.0, 1.0) var vision_angle_override := 0.0
+@export_range(0.0, 60.0, 0.5) var view_distance_override := 0.0
+@export var unlimited_view_distance := false
+@export_range(0.0, 8.0, 0.05) var detection_rate := 1.0
+
+@export_group("Flow")
 @export var next_states: Array[StringName] = []
 @export var next_state_weights: Array[float] = []
 
@@ -19,11 +36,34 @@ func setup(owner_actor: EnemyActor, owner_machine) -> void:
 	machine = owner_machine
 
 
+func apply_senses() -> void:
+	actor.set_vision_angle(vision_angle_override if vision_angle_override > 0.0 else actor.get_base_vision_angle())
+	if unlimited_view_distance:
+		actor.set_view_distance(EnemyActor.UNLIMITED_VIEW_DISTANCE)
+	elif view_distance_override > 0.0:
+		actor.set_view_distance(view_distance_override)
+	else:
+		actor.set_view_distance(actor.get_base_view_distance())
+	actor.set_detection_rate(detection_rate)
+
+
 func enter() -> void:
 	actor.play_animation(animation)
 
 
 func exit() -> void:
+	pass
+
+
+func suspend() -> void:
+	pass
+
+
+func unsuspend() -> void:
+	actor.play_animation(animation)
+
+
+func on_noise(_strength: float) -> void:
 	pass
 
 

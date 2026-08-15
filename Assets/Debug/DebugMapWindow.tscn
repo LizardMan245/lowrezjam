@@ -1,10 +1,12 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://drv4ivrqednix"]
 
-[ext_resource type="Script" path="res://Assets/Scripts/Debug/debug_map_window.gd" id="1_window"]
+[ext_resource type="Script" uid="uid://g1cjoek7svyv" path="res://Assets/Scripts/Debug/debug_map_window.gd" id="1_window"]
 
-[node name="DebugMapWindow" type="Window"]
+[node name="DebugMapWindow" type="Window" unique_id=613100736]
 title = "Enemy AI monitor"
 initial_position = 1
-size = Vector2i(768, 768)
+size = Vector2i(832, 832)
 visible = false
 script = ExtResource("1_window")
+window_size = Vector2i(832, 832)
+screen_gap = 42

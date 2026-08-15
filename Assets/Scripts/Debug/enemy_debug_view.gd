@@ -16,7 +16,7 @@ const METER_BACKING := Color(0.05, 0.05, 0.08, 0.75)
 @export var show_state_indicator := true
 @export var show_navigation_target := true
 @export var show_detection_meter := true
-@export var last_known_states: Array[StringName] = [&"Alert", &"Chase", &"Search"]
+@export var last_known_states: Array[StringName] = [&"Alert", &"Chase", &"CatchUp", &"Search", &"Scan"]
 @export var indicator_offset := Vector3(0.0, 0.0, -1.1)
 @export_range(0.1, 2.0, 0.05) var indicator_size := 0.5
 @export_range(0.2, 4.0, 0.05) var meter_width := 1.2
@@ -27,8 +27,11 @@ const METER_BACKING := Color(0.05, 0.05, 0.08, 0.75)
 	&"RoamIdle": Color(0.3, 0.6, 1.0),
 	&"Alert": Color(1.0, 1.0, 1.0),
 	&"Chase": Color(1.0, 0.15, 0.1),
+	&"CatchUp": Color(1.0, 0.45, 0.1),
 	&"Search": Color(1.0, 0.75, 0.1),
+	&"Scan": Color(0.95, 0.95, 0.35),
 	&"Glance": Color(0.812, 0.0, 0.765, 1.0),
+	&"Investigate": Color(0.55, 0.2, 1.0),
 }
 
 var _enemy: EnemyActor
@@ -110,7 +113,7 @@ func _ground_level() -> float:
 func _draw_sight_cone(tint: Color) -> void:
 	var eye := _enemy.get_eye_position()
 	var apex := Vector3(eye.x, _ground_level(), eye.z)
-	var half := deg_to_rad(_enemy.vision_angle_degrees) * 0.5
+	var half := deg_to_rad(_enemy.get_vision_angle()) * 0.5
 	var centre := atan2(_enemy.facing.x, _enemy.facing.y)
 
 	var rim: Array[Vector3] = []
@@ -137,7 +140,7 @@ func _draw_sight_cone(tint: Color) -> void:
 
 func _unblocked_point(eye: Vector3, angle: float) -> Vector3:
 	var direction := Vector3(sin(angle), 0.0, cos(angle))
-	var reach: float = _enemy.view_distance
+	var reach: float = _enemy.get_view_distance()
 	_query.from = eye
 	_query.to = eye + direction * reach
 	var hit := _enemy.get_world_3d().direct_space_state.intersect_ray(_query)
