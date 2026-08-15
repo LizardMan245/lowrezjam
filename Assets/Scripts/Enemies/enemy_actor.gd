@@ -21,6 +21,10 @@ signal sound_requested(stream: AudioStream)
 @export_range(0.0, 1.0, 0.05) var peripheral_fill_scale := 0.25
 @export_range(0.2, 6.0, 0.1) var peripheral_falloff := 1.6
 
+@export_group("Ram sense")
+@export var ram_sense := false
+@export_range(0.0, 20.0, 0.5) var ram_sense_floor := 2.0
+
 @export_group("Hearing")
 @export_range(0.0, 3.0, 0.05) var hearing_range_scale := 1.0
 @export_range(0.0, 8.0, 0.05) var hearing_sensitivity := 1.4
@@ -33,6 +37,7 @@ signal sound_requested(stream: AudioStream)
 @export_range(1.0, 30.0) var turn_speed := 6.0
 @export_range(1.0, 60.0) var brake_rate := 14.0
 @export_range(0.1, 3.0, 0.05) var arrive_distance := 0.6
+@export_range(0.0, 4.0, 0.05) var repath_distance := 0.6
 
 @export_group("Roaming")
 @export_range(1, 32) var spots_to_try := 12
@@ -180,6 +185,8 @@ func get_hearing_radius() -> float:
 func _update_senses(delta: float) -> void:
 	var was_visible := player_visible
 	sight_focus = _measure_sight()
+	if ram_sense and _ram_sense_reaches_player():
+		sight_focus = 1.0
 	player_visible = sight_focus >= 0.0
 
 	if player_visible:
@@ -340,6 +347,22 @@ func get_detection_progress() -> float:
 	return clampf(sight_seconds / detection_time, 0.0, 1.0)
 
 
+func ram_sense_radius() -> float:
+	if not ram_sense or _player == null:
+		return 0.0
+	if _player.has_method("get_ram_radius"):
+		return maxf(ram_sense_floor, _player.get_ram_radius())
+	return ram_sense_floor
+
+
+func _ram_sense_reaches_player() -> bool:
+	return _player != null and flat_distance(global_position, _player.global_position) <= ram_sense_radius()
+
+
+func get_player_spot() -> Vector3:
+	return _player.global_position if _player != null else global_position
+
+
 func get_eye_position() -> Vector3:
 	return global_position + Vector3(0.0, eye_height, 0.0)
 
@@ -351,6 +374,8 @@ func get_state_name() -> StringName:
 
 
 func set_destination(spot: Vector3) -> void:
+	if flat_distance(_agent.target_position, spot) < repath_distance:
+		return
 	_agent.target_position = spot
 
 

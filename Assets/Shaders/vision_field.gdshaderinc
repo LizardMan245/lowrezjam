@@ -12,6 +12,7 @@ uniform float edge_softness = 0.0523599;
 uniform float view_distance = 7.0;
 uniform float distance_fade = 1.5;
 uniform float shadow_softness = 0.05;
+uniform float window_shadow = 0.2;
 
 uniform vec3 cam_pos = vec3(0.0, 10.0, 0.0);
 uniform vec3 cam_right = vec3(1.0, 0.0, 0.0);
@@ -59,9 +60,12 @@ float vision_origin_sees(vec2 point, int index, int count) {
 
 	float u = (angle + fan_half_angle) / (2.0 * fan_half_angle);
 	float v = (float(index) + 0.5) / float(count);
-	float traced = texture(vision_ranges, vec2(u, v)).r;
+	vec2 traced = texture(vision_ranges, vec2(u, v)).rg;
+	float fade = max(shadow_softness, 0.0001);
+	float solid = 1.0 - smoothstep(traced.r, traced.r + fade, dist);
+	float glass = 1.0 - smoothstep(traced.g, traced.g + fade, dist);
 
-	return 1.0 - smoothstep(traced, traced + max(shadow_softness, 0.0001), dist);
+	return solid * (1.0 - window_shadow * (1.0 - glass));
 }
 
 float vision_visibility(vec2 uv) {

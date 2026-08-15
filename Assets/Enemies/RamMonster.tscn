@@ -1,5 +1,7 @@
-[gd_scene format=3 uid="uid://bcap7bikpxwxw"]
+[gd_scene format=3]
 
+[ext_resource type="Script" uid="uid://c4p5s1mpxa17b" path="res://Assets/Scripts/Enemies/catcher.gd" id="98_catch"]
+[ext_resource type="Script" uid="uid://d20jhql5sjipp" path="res://Assets/Scripts/Thermal/heat_trail.gd" id="99_trail"]
 [ext_resource type="Texture2D" uid="uid://cmmp6b0pklxv4" path="res://Assets/Sprites/Placeholders/enemy.webp" id="1_8vmum"]
 [ext_resource type="Script" uid="uid://hhivxkcywgcs" path="res://Assets/Scripts/Enemies/enemy_actor.gd" id="2_actor"]
 [ext_resource type="Script" uid="uid://dvircusdp5mr5" path="res://Assets/Scripts/Debug/enemy_debug_view.gd" id="3_debug"]
@@ -15,8 +17,6 @@
 [ext_resource type="Script" uid="uid://dtwa2ejd1thq4" path="res://Assets/Scripts/Enemies/StateMachine/catch_up_state.gd" id="12_catchup"]
 [ext_resource type="Script" uid="uid://dyfkifasi0wbf" path="res://Assets/Scripts/Enemies/StateMachine/scan_state.gd" id="13_scan"]
 [ext_resource type="Texture2D" uid="uid://cuu3spm2k2hhn" path="res://Assets/Enemies/eye_glow.tres" id="14_eyeglow"]
-[ext_resource type="Script" uid="uid://c4p5s1mpxa17b" path="res://Assets/Scripts/Enemies/catcher.gd" id="98_catch"]
-[ext_resource type="Script" uid="uid://d20jhql5sjipp" path="res://Assets/Scripts/Thermal/heat_trail.gd" id="99_trail"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_body"]
 height = 1.0
@@ -46,48 +46,51 @@ disable_receive_shadows = true
 billboard_mode = 1
 billboard_keep_scale = true
 
-[node name="Basicenemy" type="CharacterBody3D" unique_id=1377881211 groups=["enemy"]]
+[node name="RamMonster" type="CharacterBody3D" groups=["enemy"]]
 collision_layer = 4
 collision_mask = 129
 script = ExtResource("2_actor")
-view_distance = 10.0
-detection_time = 0.55
+vision_angle_degrees = 360.0
+view_distance = 2.5
+ram_sense = true
+ram_sense_floor = 2.5
+detection_time = 0.35
 peripheral_fill_scale = 0.22
 peripheral_falloff = 1.8
 loud_noise_threshold = 0.32
 notice_cooldown = 1.6
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=215603961]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("CylinderShape3D_body")
 
-[node name="Visual" type="Node3D" parent="." unique_id=1024778311]
+[node name="Visual" type="Node3D" parent="."]
 
-[node name="eye" type="MeshInstance3D" parent="Visual" unique_id=457549527]
+[node name="eye" type="MeshInstance3D" parent="Visual"]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.3042958, 0.6161619, -0.9745818)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_cny37")
 surface_material_override/0 = SubResource("StandardMaterial3D_rldou")
 
-[node name="eye2" type="MeshInstance3D" parent="Visual" unique_id=8998904]
+[node name="eye2" type="MeshInstance3D" parent="Visual"]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.29870483, 0.6161619, -0.9745818)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_cny37")
 surface_material_override/0 = SubResource("StandardMaterial3D_rldou")
 
-[node name="EyeGlow" type="MeshInstance3D" parent="Visual" unique_id=311204577]
+[node name="EyeGlow" type="MeshInstance3D" parent="Visual"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2858398, 0.5160032, -0.9745818)
 cast_shadow = 0
 mesh = SubResource("QuadMesh_eyeglow")
 surface_material_override/0 = SubResource("StandardMaterial3D_eyeglow")
 
-[node name="EyeGlow2" type="MeshInstance3D" parent="Visual" unique_id=133521734]
+[node name="EyeGlow2" type="MeshInstance3D" parent="Visual"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2983582, 0.5160032, -0.9745818)
 cast_shadow = 0
 mesh = SubResource("QuadMesh_eyeglow")
 surface_material_override/0 = SubResource("StandardMaterial3D_eyeglow")
 
-[node name="Sprite3D" type="Sprite3D" parent="Visual" unique_id=1868556659]
+[node name="Sprite3D" type="Sprite3D" parent="Visual"]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0.5490232, 0)
 pixel_size = 0.15
 axis = 1
@@ -95,51 +98,50 @@ shaded = true
 texture_filter = 0
 texture = ExtResource("1_8vmum")
 
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=829769888]
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 path_desired_distance = 0.4
 target_desired_distance = 0.5
 path_height_offset = 0.5
 radius = 0.4
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1466118383]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 
-[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1975332894]
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 attenuation_model = 1
-bus = &"Reverb"
 
-[node name="StateMachine" type="Node" parent="." unique_id=1119538764]
+[node name="StateMachine" type="Node" parent="."]
 script = ExtResource("4_machine")
 initial_state = &"RoamIdle"
 
-[node name="RoamWalk" type="Node" parent="StateMachine" unique_id=1274935182]
+[node name="RoamWalk" type="Node" parent="StateMachine"]
 script = ExtResource("5_walk")
-min_speed = 1.8
-max_speed = 3.0
+min_speed = 0.6
+max_speed = 0.95
 animation = &"walk"
 next_states = Array[StringName]([&"RoamWalk", &"RoamIdle"])
 next_state_weights = Array[float]([0.7, 0.3])
 
-[node name="RoamIdle" type="Node" parent="StateMachine" unique_id=1810249447]
+[node name="RoamIdle" type="Node" parent="StateMachine"]
 script = ExtResource("6_idle")
 min_time = 1.0
 animation = &"idle"
 next_states = Array[StringName]([&"RoamWalk", &"RoamIdle"])
 next_state_weights = Array[float]([0.9, 0.1])
 
-[node name="Glance" type="Node" parent="StateMachine" unique_id=1688732872]
+[node name="Glance" type="Node" parent="StateMachine"]
 script = ExtResource("10_glance")
 hold_time = 0.85
 animation = &"glance"
 
-[node name="Investigate" type="Node" parent="StateMachine" unique_id=1173044821]
+[node name="Investigate" type="Node" parent="StateMachine"]
 script = ExtResource("11_investigate")
-min_speed = 2.0
-max_speed = 3.0
+min_speed = 0.9
+max_speed = 1.3
 animation = &"walk"
 next_states = Array[StringName]([&"RoamIdle", &"RoamWalk"])
 next_state_weights = Array[float]([0.6, 0.4])
 
-[node name="Alert" type="Node" parent="StateMachine" unique_id=1592043260]
+[node name="Alert" type="Node" parent="StateMachine"]
 script = ExtResource("7_alert")
 default_duration = 1.0
 sound = ExtResource("7_0s84d")
@@ -148,29 +150,31 @@ interrupt_on_detection = false
 vision_angle_override = 360.0
 unlimited_view_distance = true
 
-[node name="Chase" type="Node" parent="StateMachine" unique_id=2038741539]
+[node name="Chase" type="Node" parent="StateMachine"]
 script = ExtResource("8_chase")
-acceleration = 1.0
+start_speed = 2.4
+top_speed = 3.4
+acceleration = 2.5
 animation = &"run"
 interrupt_on_detection = false
 vision_angle_override = 360.0
 unlimited_view_distance = true
 
-[node name="CatchUp" type="Node" parent="StateMachine" unique_id=1904772630]
+[node name="CatchUp" type="Node" parent="StateMachine"]
 script = ExtResource("12_catchup")
 animation = &"run"
 vision_angle_override = 360.0
 unlimited_view_distance = true
 detection_rate = 3.0
 
-[node name="Search" type="Node" parent="StateMachine" unique_id=1352220885]
+[node name="Search" type="Node" parent="StateMachine"]
 script = ExtResource("9_search")
 animation = &"run"
 vision_angle_override = 270.0
 unlimited_view_distance = true
 detection_rate = 3.0
 
-[node name="Scan" type="Node" parent="StateMachine" unique_id=1042886507]
+[node name="Scan" type="Node" parent="StateMachine"]
 script = ExtResource("13_scan")
 animation = &"glance"
 vision_angle_override = 180.0
@@ -179,13 +183,13 @@ detection_rate = 3.0
 next_states = Array[StringName]([&"RoamIdle", &"RoamWalk"])
 next_state_weights = Array[float]([0.7, 0.3])
 
-[node name="DebugView" type="MeshInstance3D" parent="." unique_id=1590023477]
+[node name="DebugView" type="MeshInstance3D" parent="."]
 layers = 512
 script = ExtResource("3_debug")
 fallback_color = Color(0.31431612, 0.31431612, 0.3143161, 1)
 
-[node name="HeatTrail" type="Node" parent="." unique_id=1613657134]
+[node name="HeatTrail" type="Node" parent="."]
 script = ExtResource("99_trail")
 
-[node name="Catcher" type="Node" parent="." unique_id=256941044]
+[node name="Catcher" type="Node" parent="."]
 script = ExtResource("98_catch")

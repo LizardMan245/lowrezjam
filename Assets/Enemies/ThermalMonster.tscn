@@ -1,0 +1,127 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://hhivxkcywgcs" path="res://Assets/Scripts/Enemies/enemy_actor.gd" id="1_actor"]
+[ext_resource type="Script" uid="uid://bm32cghgkj3uu" path="res://Assets/Scripts/Enemies/enemy_state_machine.gd" id="2_machine"]
+[ext_resource type="Shader" uid="uid://cqih1nlycex4g" path="res://Assets/Shaders/shimmer.gdshader" id="4_shimmer"]
+[ext_resource type="Script" uid="uid://cyvrtlfgus5v2" path="res://Assets/Scripts/Enemies/StateMachine/roam_walk_state.gd" id="5_walk"]
+[ext_resource type="Script" uid="uid://8v01qveaa76y" path="res://Assets/Scripts/Enemies/StateMachine/glance_state.gd" id="6_glance"]
+[ext_resource type="Script" uid="uid://gxd35utekoik" path="res://Assets/Scripts/Enemies/StateMachine/investigate_state.gd" id="7_investigate"]
+[ext_resource type="Script" uid="uid://crpahmsxdljhq" path="res://Assets/Scripts/Enemies/StateMachine/chase_state.gd" id="8_chase"]
+[ext_resource type="Script" uid="uid://dtwa2ejd1thq4" path="res://Assets/Scripts/Enemies/StateMachine/catch_up_state.gd" id="9_catchup"]
+[ext_resource type="Script" uid="uid://bt5bbwk4fpqka" path="res://Assets/Scripts/Enemies/StateMachine/search_state.gd" id="10_search"]
+[ext_resource type="Script" uid="uid://c4p5s1mpxa17b" path="res://Assets/Scripts/Enemies/catcher.gd" id="11_catch"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
+height = 1.6
+radius = 0.45
+
+[sub_resource type="SphereMesh" id="SphereMesh_heat"]
+radius = 0.55
+height = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_heat"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(1, 1, 1, 0.85)
+disable_receive_shadows = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_shimmer"]
+size = Vector2(1.8, 1.8)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_shimmer"]
+shader = ExtResource("4_shimmer")
+shader_parameter/distortion = 0.035
+shader_parameter/edge_sharpness = 1.6
+shader_parameter/tint = Color(0.55, 0.72, 1, 0.18)
+
+[node name="ThermalMonster" type="CharacterBody3D" groups=["enemy"]]
+collision_layer = 4
+collision_mask = 129
+script = ExtResource("1_actor")
+vision_angle_degrees = 70.0
+view_distance = 10.0
+detection_time = 0.7
+turn_speed = 2.5
+brake_rate = 6.0
+arrive_distance = 0.8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+shape = SubResource("CapsuleShape3D_body")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="HeatBody" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+layers = 8
+cast_shadow = 0
+mesh = SubResource("SphereMesh_heat")
+surface_material_override/0 = SubResource("StandardMaterial3D_heat")
+
+[node name="Shimmer" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+layers = 4
+cast_shadow = 0
+mesh = SubResource("QuadMesh_shimmer")
+surface_material_override/0 = SubResource("ShaderMaterial_shimmer")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.4
+target_desired_distance = 0.5
+path_height_offset = 0.5
+radius = 0.4
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("2_machine")
+initial_state = &"RoamWalk"
+
+[node name="RoamWalk" type="Node" parent="StateMachine"]
+script = ExtResource("5_walk")
+min_speed = 1.0
+max_speed = 1.4
+timeout = 14.0
+detection_state = &"Chase"
+next_states = Array[StringName]([&"RoamWalk"])
+
+[node name="Glance" type="Node" parent="StateMachine"]
+script = ExtResource("6_glance")
+hold_time = 0.5
+detection_state = &"Chase"
+
+[node name="Investigate" type="Node" parent="StateMachine"]
+script = ExtResource("7_investigate")
+min_speed = 1.2
+max_speed = 1.6
+detection_state = &"Chase"
+next_states = Array[StringName]([&"RoamWalk"])
+
+[node name="Chase" type="Node" parent="StateMachine"]
+script = ExtResource("8_chase")
+start_speed = 1.8
+top_speed = 2.2
+acceleration = 0.6
+lost_state = &"CatchUp"
+interrupt_on_detection = false
+vision_angle_override = 360.0
+unlimited_view_distance = true
+
+[node name="CatchUp" type="Node" parent="StateMachine"]
+script = ExtResource("9_catchup")
+minimum_speed = 1.8
+detection_state = &"Chase"
+vision_angle_override = 360.0
+unlimited_view_distance = true
+detection_rate = 3.0
+
+[node name="Search" type="Node" parent="StateMachine"]
+script = ExtResource("10_search")
+minimum_speed = 1.6
+next_state = &"RoamWalk"
+detection_state = &"Chase"
+vision_angle_override = 270.0
+unlimited_view_distance = true
+detection_rate = 3.0
+next_states = Array[StringName]([&"RoamWalk"])
+
+[node name="Catcher" type="Node" parent="."]
+script = ExtResource("11_catch")
