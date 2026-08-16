@@ -13,8 +13,9 @@
 [ext_resource type="PackedScene" uid="uid://c668sf2ho1lj6" path="res://Assets/Player/UI/ui.tscn" id="11_grg3l"]
 [ext_resource type="Shader" uid="uid://dd3sacgros6ko" path="res://Assets/Shaders/thermal_composite.gdshader" id="12_thermal"]
 [ext_resource type="Script" uid="uid://gsxv11gjoaii" path="res://Assets/Scripts/Thermal/heat_marks.gd" id="13_heat"]
-[ext_resource type="PackedScene" path="res://Assets/Enemies/ThermalMonster.tscn" id="14_thermalmob"]
-[ext_resource type="PackedScene" path="res://Assets/Enemies/RamMonster.tscn" id="15_rammob"]
+[ext_resource type="PackedScene" uid="uid://b08r7yb0erqqt" path="res://Assets/Enemies/ThermalMonster.tscn" id="14_thermalmob"]
+[ext_resource type="PackedScene" uid="uid://b2anna8vfeffi" path="res://Assets/Enemies/RamMonster.tscn" id="15_rammob"]
+[ext_resource type="Texture2D" uid="uid://bf4exglpr3ls3" path="res://Assets/Shaders/thermalenv.tres" id="16_346fj"]
 [ext_resource type="Script" uid="uid://8fmxgr0vb6gb" path="res://Assets/Scripts/game.gd" id="16_game"]
 [ext_resource type="PackedScene" uid="uid://cb8sfa6keg8lo" path="res://Assets/Map/Rooms/blueprint.tscn" id="17_bp"]
 
@@ -40,6 +41,7 @@ shader_parameter/ground_height = 0.0
 shader_parameter/mask_color = Color(0, 0, 0, 1)
 shader_parameter/gradient = ExtResource("2_h1m7h")
 shader_parameter/mix_amount = 0.0
+shader_parameter/color_noise = 0.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_thermal"]
 shader = ExtResource("12_thermal")
@@ -61,11 +63,21 @@ shader_parameter/cam_forward = Vector3(0, -1, 0)
 shader_parameter/cam_half_extents = Vector2(5, 5)
 shader_parameter/ground_height = 0.0
 shader_parameter/heat_gradient = ExtResource("2_h1m7h")
-shader_parameter/blur_radius = 2.5
-shader_parameter/heat_gain = 1.6
-shader_parameter/env_floor = 0.02
-shader_parameter/env_ceiling = 0.16
-shader_parameter/env_mix = 0.5
+shader_parameter/env_gradient = ExtResource("16_346fj")
+shader_parameter/grain_amount = 0.07
+
+[sub_resource type="Environment" id="Environment_b8igc"]
+background_energy_multiplier = 0.0
+ambient_light_energy = 0.0
+tonemap_exposure = 0.34
+glow_enabled = true
+glow_levels/1 = 4.83
+glow_intensity = 2.05
+glow_strength = 0.52
+glow_bloom = 0.66
+glow_blend_mode = 0
+volumetric_fog_enabled = true
+volumetric_fog_emission = Color(1, 1, 1, 1)
 
 [sub_resource type="Environment" id="Environment_overlay"]
 ambient_light_source = 2
@@ -74,6 +86,22 @@ ambient_light_energy = 0.15
 
 [node name="Main3d" type="Node3D" unique_id=1741938559]
 script = ExtResource("16_game")
+
+[node name="ThermalWorld" type="SubViewport" parent="." unique_id=1054434451]
+transparent_bg = true
+handle_input_locally = false
+msaa_3d = 3
+debug_draw = 1
+size = Vector2i(64, 64)
+render_target_update_mode = 4
+
+[node name="ThermalWorldCamera" type="Camera3D" parent="ThermalWorld" unique_id=473365612]
+transform = Transform3D(1, 0, 0, 0, -4.3711385e-08, 0.99999994, 0, -0.99999994, -4.3711385e-08, 0, 10, 0)
+cull_mask = 1
+projection = 1
+current = true
+size = 10.0
+script = ExtResource("9_2w5on")
 
 [node name="Render" type="CanvasLayer" parent="." unique_id=531473880]
 
@@ -97,6 +125,7 @@ shadow_softness = 1.0
 aperture_width = 1.4
 fan_margin_degrees = 45.0
 thermal_screen = NodePath("../ThermalLayer")
+thermal_world = NodePath("../../ThermalWorld")
 thermal_distance = 14.0
 
 [node name="World" type="SubViewport" parent="Render/WorldLayer" unique_id=1807412844]
@@ -121,6 +150,7 @@ environment = ExtResource("5_h1m7h")
 [node name="Player" parent="Render/WorldLayer/World" unique_id=650448909 instance=ExtResource("7_h1m7h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.30474377, 0.41439617, 4.905709)
 collision_layer = 3
+godmode = true
 
 [node name="Basicenemy" parent="Render/WorldLayer/World" unique_id=1364594077 instance=ExtResource("8_erwvk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.46782, 0.8731489, -18.034657)
@@ -153,6 +183,9 @@ data_name = &"blueprint3"
 
 [node name="HeatMarks" type="Node3D" parent="Render/WorldLayer/World" unique_id=865599622]
 script = ExtResource("13_heat")
+decay_seconds = 16.0
+ground_offset = 1.5
+start_heat = 0.5
 
 [node name="Map" parent="Render/WorldLayer/World" unique_id=1493392457 instance=ExtResource("6_4kpch")]
 
@@ -183,6 +216,9 @@ shadow_enabled = true
 spot_range = 62.370335
 spot_angle = 40.353374
 
+[node name="ScreenCopy" type="BackBufferCopy" parent="Render" unique_id=1402733375]
+copy_mode = 2
+
 [node name="ThermalLayer" type="SubViewportContainer" parent="Render" unique_id=244957688]
 material = SubResource("ShaderMaterial_thermal")
 anchors_preset = 15
@@ -196,12 +232,17 @@ stretch = true
 [node name="Heat" type="SubViewport" parent="Render/ThermalLayer" unique_id=1024920878]
 transparent_bg = true
 handle_input_locally = false
+msaa_2d = 2
+msaa_3d = 3
+use_taa = true
+use_debanding = true
 size = Vector2i(64, 64)
 render_target_update_mode = 4
 
 [node name="HeatCamera" type="Camera3D" parent="Render/ThermalLayer/Heat" unique_id=1045968794]
 transform = Transform3D(1, 0, 0, 0, -4.3711385e-08, 0.99999994, 0, -0.99999994, -4.3711385e-08, 0, 10, 0)
 cull_mask = 8
+environment = SubResource("Environment_b8igc")
 projection = 1
 current = true
 size = 10.0
@@ -232,6 +273,8 @@ size = 12.0
 script = ExtResource("9_2w5on")
 
 [node name="UI" parent="Render" unique_id=1321854455 instance=ExtResource("11_grg3l")]
+heat_angles = [0.0, 40.0, 65.0]
+camera_noise = [0.0, 0.4, 0.2, 0.0]
 
 [node name="DebugMapWindow" parent="." unique_id=276062607 instance=ExtResource("10_monitor")]
 oversampling_override = 1.0

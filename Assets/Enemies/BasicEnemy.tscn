@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://bcap7bikpxwxw"]
 
+[ext_resource type="Shader" uid="uid://oenosiroewqp" path="res://Assets/Shaders/invert_sprite.gdshader" id="92_invert"]
 [ext_resource type="Texture2D" uid="uid://cmmp6b0pklxv4" path="res://Assets/Sprites/Placeholders/enemy.webp" id="1_8vmum"]
 [ext_resource type="Script" uid="uid://hhivxkcywgcs" path="res://Assets/Scripts/Enemies/enemy_actor.gd" id="2_actor"]
 [ext_resource type="Script" uid="uid://dvircusdp5mr5" path="res://Assets/Scripts/Debug/enemy_debug_view.gd" id="3_debug"]
@@ -45,6 +46,10 @@ albedo_texture = ExtResource("14_eyeglow")
 disable_receive_shadows = true
 billboard_mode = 1
 billboard_keep_scale = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_heatsprite"]
+shader = ExtResource("92_invert")
+shader_parameter/source = ExtResource("1_8vmum")
 
 [node name="Basicenemy" type="CharacterBody3D" unique_id=1377881211 groups=["enemy"]]
 collision_layer = 4
@@ -92,6 +97,15 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0
 pixel_size = 0.15
 axis = 1
 shaded = true
+texture_filter = 0
+texture = ExtResource("1_8vmum")
+
+[node name="HeatSprite" type="Sprite3D" parent="Visual"]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0.5490232, 0)
+layers = 8
+material_override = SubResource("ShaderMaterial_heatsprite")
+pixel_size = 0.15
+axis = 1
 texture_filter = 0
 texture = ExtResource("1_8vmum")
 

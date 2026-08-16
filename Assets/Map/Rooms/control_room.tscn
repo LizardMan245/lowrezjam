@@ -4,6 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://de0csxqb8ufii" path="res://Assets/Map/Rooms/door.tscn" id="2_j5xpt"]
 [ext_resource type="Texture2D" uid="uid://cs5kr2j5yenlq" path="res://Assets/Sprites/UI/Screens/mission_1.png" id="3_suyvj"]
 [ext_resource type="Texture2D" uid="uid://d0wxgx24deih7" path="res://Assets/Sprites/UI/Screens/mission_2.png" id="4_265tl"]
+[ext_resource type="Texture2D" uid="uid://cuu3spm2k2hhn" path="res://Assets/Enemies/eye_glow.tres" id="5_de7jb"]
+[ext_resource type="Script" uid="uid://c7ituejwdgcn7" path="res://Assets/Map/Rooms/consoleglow.gd" id="6_72aic"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7rnak"]
 size = Vector3(20, 5, 1)
@@ -39,7 +41,7 @@ size = Vector2(1, 1)
 albedo_color = Color(0.27445003, 0.27445006, 0.27445003, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_navconsole"]
-size = Vector3(10, 4.5, 1)
+size = Vector3(10, 4.5, 1.1469727)
 
 [sub_resource type="BoxMesh" id="BoxMesh_4ion3"]
 size = Vector3(10, 3, 1)
@@ -55,11 +57,25 @@ size = Vector3(9.5, 2.5, 1)
 albedo_color = Color(0, 0.5019608, 0.007843138, 1)
 metallic = 1.0
 emission_enabled = true
-emission = Color(0, 2.4246898, 0.10005109, 1)
-emission_energy_multiplier = 1.29
+emission = Color(0, 1, 0, 1)
+emission_energy_multiplier = 2.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_egr7i"]
 size = Vector3(10, 3, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_s1gl7"]
+size = Vector2(10.51, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n8r7h"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+albedo_color = Color(0.26666665, 1, 0, 1)
+albedo_texture = ExtResource("5_de7jb")
+emission_enabled = true
+emission = Color(0, 1, 0, 1)
+disable_receive_shadows = true
+billboard_keep_scale = true
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_88646"]
 height = 1.75
@@ -200,7 +216,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -7)
 collision_layer = 128
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Props/Console" unique_id=1063100430]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.75, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.75, 0.07348633)
 shape = SubResource("BoxShape3D_navconsole")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Props/Console" unique_id=1090976429]
@@ -208,7 +224,7 @@ mesh = SubResource("BoxMesh_4ion3")
 surface_material_override/0 = SubResource("StandardMaterial3D_dwmqx")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Props/Console/MeshInstance3D" unique_id=1873224178]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14505005, 0.13736486)
 mesh = SubResource("BoxMesh_wr0l1")
 surface_material_override/0 = SubResource("StandardMaterial3D_j5xpt")
 
@@ -220,6 +236,16 @@ slides = [ExtResource("3_suyvj"), ExtResource("4_265tl")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Props/Console/ConsoleInteraction" unique_id=1548785494]
 shape = SubResource("BoxShape3D_egr7i")
+
+[node name="Consoleglow" type="MeshInstance3D" parent="Props/Console" unique_id=289101426]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.05503726, 1.3122435, 0.55189204)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_s1gl7")
+surface_material_override/0 = SubResource("StandardMaterial3D_n8r7h")
+script = ExtResource("6_72aic")
+base_energy = 0.6
+flicker_depth = 3.0
+flicker_speed = 7.5969999999999995
 
 [node name="RoundTable" type="StaticBody3D" parent="Props" unique_id=880179068]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)

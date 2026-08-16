@@ -18,11 +18,13 @@ const MAX_APERTURE_WIDTH := 1.4
 
 @export_group("Thermal camera")
 @export var thermal_screen: NodePath
+@export var thermal_world: NodePath
 @export_range(0.0, 40.0) var thermal_distance := 12.0
 @export_range(0.0, 20.0) var thermal_edge_softness_degrees := 8.0
 @export_range(0.0, 10.0) var thermal_distance_fade := 3.0
 
 var thermal_angle_degrees := 0.0
+var camera_noise := 0.0
 
 var _viewport: SubViewport
 var _player: Node3D
@@ -57,7 +59,9 @@ func _ready() -> void:
 		_thermal = screen.material as ShaderMaterial
 	if _thermal != null:
 		_thermal.set_shader_parameter("vision_ranges", _texture)
-		_thermal.set_shader_parameter("world_tex", _viewport.get_texture())
+		var flat_world := get_node_or_null(thermal_world) as SubViewport
+		if flat_world != null:
+			_thermal.set_shader_parameter("world_tex", flat_world.get_texture())
 
 	_query.exclude = [_player.get_rid()]
 	_cast_fan()
@@ -172,6 +176,7 @@ func _push_cone() -> void:
 	_material.set_shader_parameter("edge_softness", deg_to_rad(edge_softness_degrees))
 	_material.set_shader_parameter("distance_fade", distance_fade)
 	_material.set_shader_parameter("mask_color", mask_color)
+	_material.set_shader_parameter("color_noise", camera_noise)
 
 	if _thermal == null:
 		return

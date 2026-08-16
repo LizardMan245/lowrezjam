@@ -23,6 +23,10 @@ uniform float ground_height = 0.0;
 
 group_uniforms;
 
+float vision_noise(vec2 cell, float seed) {
+	return fract(sin(dot(cell, vec2(12.9898, 78.233)) + seed * 43.7585) * 43758.5453);
+}
+
 vec2 vision_ground_point(vec2 uv) {
 	vec2 ndc = vec2(uv.x * 2.0 - 1.0, 1.0 - uv.y * 2.0);
 	vec3 origin = cam_pos

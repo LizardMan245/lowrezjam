@@ -24,13 +24,12 @@ color = Color(0.0150615545, 0.02129857, 0, 1)
 
 [node name="Title" type="Label" parent="." unique_id=1946696529]
 layout_mode = 0
-offset_top = 6.0
 offset_right = 64.0
-offset_bottom = 33.0
+offset_bottom = 27.0
 theme_override_colors/font_color = Color(0.23333335, 1, 0, 1)
 theme_override_fonts/font = ExtResource("3_7ghhb")
-theme_override_font_sizes/font_size = 8
-text = "APOLLO ECHO 12"
+theme_override_font_sizes/font_size = 7
+text = "ECHO-212"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
@@ -38,14 +37,14 @@ uppercase = true
 
 [node name="Hint" type="Label" parent="." unique_id=1625281663]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 37.0
-offset_right = 80.0
-offset_bottom = 42.0
+offset_top = 25.0
+offset_right = 64.0
+offset_bottom = 41.0
 theme_override_colors/font_color = Color(0, 1, 0, 1)
 theme_override_fonts/font = ExtResource("3_7ghhb")
 theme_override_font_sizes/font_size = 4
-text = "Press 'O' to enter"
+text = "Press 'O'
+to enter"
 horizontal_alignment = 1
 vertical_alignment = 1
 

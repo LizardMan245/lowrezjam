@@ -7,6 +7,7 @@ extends Control
 @export var view_distances := [0.0, 10.0, 13.0, 20.0]
 @export var heat_angles := [0.0, 70.0, 140.0]
 @export var echo_radii := [0.0, 14.0, 30.0]
+@export var camera_noise := [0.0, 0.28, 0.12, 0.0]
 
 @export var options = Array([], TYPE_NODE_PATH, "", null)
 var selected: int = 0
@@ -27,8 +28,6 @@ func toggle_menu() -> void:
 	if Input.is_action_just_pressed("menu"):
 		$Menu.visible = not $Menu.is_visible_in_tree()
 		in_menu = $Menu.is_visible_in_tree()
-		$Ram/EmptyRam.visible = in_menu
-		$Ram/ActiveRam.visible = in_menu
 
 func option_selection() -> void:
 	var options_num: int = options.size()
@@ -59,6 +58,8 @@ func option_effect(opt) -> void:
 		0:
 			player.vision_angle_degrees = view_angles[opt.curr_level]
 			player.view_distance = view_distances[opt.curr_level]
+			var vision_camera = get_tree().get_first_node_in_group("vision")
+			vision_camera.camera_noise = camera_noise[opt.curr_level]
 		1:
 			player.SPEED = speeds[opt.curr_level]
 			player.turn_speed = turn_speeds[opt.curr_level]
@@ -70,16 +71,15 @@ func option_effect(opt) -> void:
 
 
 func _ready() -> void:
-	display_ram($Ram/UsedRam, ram)
 	$Menu.visible = false
-	$Ram/EmptyRam.visible = false
-	$Ram/ActiveRam.visible = false
+	refresh_ram_bar()
 	get_node(options[selected]).select()
 
 
 func _process(delta: float) -> void:
 	_tick_success(delta)
 	toggle_menu()
+	refresh_ram_bar()
 	if in_menu:
 		if Input.get_axis("look_down", "look_up"):
 			option_selection()
@@ -94,8 +94,6 @@ func _process(delta: float) -> void:
 			var curr_option = get_node(options[selected])
 			ram += curr_option.edit_ram_usage()
 			option_effect(curr_option)
-			display_ram($Ram/UsedRam, ram)
-			display_ram($Ram/ActiveRam, curr_option.ram_used())
 			resize_ram_radius.emit(ram)
 
 
@@ -116,8 +114,35 @@ func popup_doer(state: String, sprite, dur: float) -> void:
 
 func add_ram(amount: int) -> void:
 	ram = clampi(ram + amount, 0, 21)
-	display_ram($Ram/UsedRam, ram)
 	resize_ram_radius.emit(ram)
+
+
+func refresh_ram_bar() -> void:
+	var preview := 0
+	if in_menu:
+		preview = next_upgrade_cost() + fragment_cost_in_reach()
+	display_ram($Ram/UsedRam, ram)
+	display_ram($Ram/ActiveRam, mini(ram + preview, 21))
+	$Ram/EmptyRam.visible = in_menu
+	$Ram/ActiveRam.visible = in_menu and preview > 0
+
+
+func next_upgrade_cost() -> int:
+	if selected == held_data_option:
+		return 0
+	var opt = get_node(options[selected])
+	if opt.curr_level >= opt.levels:
+		return 0
+	return opt.level_val
+
+
+func fragment_cost_in_reach() -> int:
+	for fragment in get_tree().get_nodes_in_group("blueprint"):
+		if fragment.held:
+			continue
+		if fragment.has_overlapping_areas():
+			return fragment.ram_cost
+	return 0
 
 
 func show_download(progress: float) -> void:

@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://clmnbcxee07qw" path="res://Assets/Player/UI/Scripts/pop_up_screen.gd" id="2_ywlnc"]
 [ext_resource type="Texture2D" uid="uid://dmlvuvf8bot6o" path="res://Assets/Sprites/UI/Screens/cryo_chamber_1.png" id="3_bn4mj"]
 [ext_resource type="Texture2D" uid="uid://lmtutuex2dfo" path="res://Assets/Sprites/UI/Screens/cryo_chamber_2.png" id="4_w7qub"]
+[ext_resource type="Texture2D" uid="uid://cuu3spm2k2hhn" path="res://Assets/Enemies/eye_glow.tres" id="5_ywvk0"]
+[ext_resource type="Script" uid="uid://c7ituejwdgcn7" path="res://Assets/Map/Rooms/consoleglow.gd" id="6_8ud12"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_frjq8"]
 size = Vector2(1, 1)
@@ -104,7 +106,7 @@ size = Vector3(2, 1, 2)
 albedo_color = Color(0.6392157, 0.6392157, 0.6392157, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_navconsole"]
-size = Vector3(3.5, 4.5, 1)
+size = Vector3(3.5, 4.5, 1.3716431)
 
 [sub_resource type="BoxMesh" id="BoxMesh_h2kra"]
 size = Vector3(3.5, 3, 1)
@@ -114,17 +116,30 @@ albedo_color = Color(0.14166665, 0, 0.5, 1)
 metallic = 1.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_bj7p7"]
-size = Vector3(3, 2.5, 1)
+size = Vector3(3, 2.5, 0.69628906)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jbtne"]
 albedo_color = Color(0, 0.5019608, 0.007843138, 1)
-metallic = 1.0
 emission_enabled = true
-emission = Color(0, 2.4246898, 0.10005109, 1)
-emission_energy_multiplier = 0.97
+emission = Color(0, 1, 0, 1)
+emission_energy_multiplier = 2.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_54wuo"]
 size = Vector3(3.5, 3, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_8ud12"]
+size = Vector2(3.92, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kdm7k"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+albedo_color = Color(0.26666665, 1, 0, 1)
+albedo_texture = ExtResource("5_ywvk0")
+emission_enabled = true
+emission = Color(0, 1, 0, 1)
+disable_receive_shadows = true
+billboard_keep_scale = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_navfloor1"]
 size = Vector3(24, 0.5, 8)
@@ -526,18 +541,18 @@ surface_material_override/0 = SubResource("StandardMaterial3D_7rnak")
 [node name="Console" type="StaticBody3D" parent="." unique_id=1966605374]
 transform = Transform3D(1.3113416e-07, 0, 1, 0, 1, 0, -1, 0, 1.3113416e-07, -3, 3, 4)
 collision_layer = 128
+collision_mask = 129
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Console" unique_id=996652540]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.75, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.75, 0.18582153)
 shape = SubResource("BoxShape3D_navconsole")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Console" unique_id=174987390]
-layers = 2
 mesh = SubResource("BoxMesh_h2kra")
 surface_material_override/0 = SubResource("StandardMaterial3D_10gs0")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Console/MeshInstance3D" unique_id=880073762]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.26609993)
 mesh = SubResource("BoxMesh_bj7p7")
 surface_material_override/0 = SubResource("StandardMaterial3D_jbtne")
 
@@ -546,10 +561,19 @@ collision_layer = 64
 collision_mask = 64
 script = ExtResource("2_ywlnc")
 slides = [ExtResource("3_bn4mj"), ExtResource("4_w7qub")]
-popup_time = 0.2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Console/ConsoleInteraction" unique_id=1354266429]
 shape = SubResource("BoxShape3D_54wuo")
+
+[node name="Consoleglow" type="MeshInstance3D" parent="Console" unique_id=807121122]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0.05503726, 1.3122435, 0.55189204)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_8ud12")
+surface_material_override/0 = SubResource("StandardMaterial3D_kdm7k")
+script = ExtResource("6_8ud12")
+base_energy = 0.6
+flicker_depth = 3.0
+flicker_speed = 7.5969999999999995
 
 [node name="FloorBody" type="StaticBody3D" parent="." unique_id=1487154581]
 
