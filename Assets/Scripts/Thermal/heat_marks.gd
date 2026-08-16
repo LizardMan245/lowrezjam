@@ -62,4 +62,5 @@ func _new_material() -> StandardMaterial3D:
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.albedo_color = Color(1.0, 1.0, 1.0, 1.0)
+	mat.render_priority = -1
 	return mat

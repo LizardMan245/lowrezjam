@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cs5kr2j5yenlq" path="res://Assets/Sprites/UI/Screens/mission_1.png" id="3_suyvj"]
 [ext_resource type="Texture2D" uid="uid://d0wxgx24deih7" path="res://Assets/Sprites/UI/Screens/mission_2.png" id="4_265tl"]
 [ext_resource type="Texture2D" uid="uid://cuu3spm2k2hhn" path="res://Assets/Enemies/eye_glow.tres" id="5_de7jb"]
-[ext_resource type="Script" uid="uid://c7ituejwdgcn7" path="res://Assets/Map/Rooms/consoleglow.gd" id="6_72aic"]
+[ext_resource type="Script" uid="uid://c7ituejwdgcn7" path="res://Assets/Map/Scripts/consoleglow.gd" id="6_72aic"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7rnak"]
 size = Vector3(20, 5, 1)
@@ -64,7 +64,7 @@ emission_energy_multiplier = 2.0
 size = Vector3(10, 3, 1)
 
 [sub_resource type="QuadMesh" id="QuadMesh_s1gl7"]
-size = Vector2(10.51, 1)
+size = Vector2(11.235, 1.315)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n8r7h"]
 transparency = 1
@@ -87,7 +87,7 @@ bottom_radius = 2.5
 height = 0.5
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4ion3"]
-albedo_color = Color(0.64, 0.862, 1, 1)
+albedo_color = Color(0.20392157, 0.8627451, 1, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_navroundtable"]
 size = Vector3(3.5, 0.75, 3.5)
@@ -243,9 +243,6 @@ cast_shadow = 0
 mesh = SubResource("QuadMesh_s1gl7")
 surface_material_override/0 = SubResource("StandardMaterial3D_n8r7h")
 script = ExtResource("6_72aic")
-base_energy = 0.6
-flicker_depth = 3.0
-flicker_speed = 7.5969999999999995
 
 [node name="RoundTable" type="StaticBody3D" parent="Props" unique_id=880179068]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)

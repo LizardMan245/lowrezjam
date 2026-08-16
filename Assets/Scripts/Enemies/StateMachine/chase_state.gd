@@ -5,6 +5,7 @@ extends "res://Assets/Scripts/Enemies/enemy_state.gd"
 @export_range(0.1, 20.0, 0.1) var acceleration := 0.9
 @export_range(0.0, 4.0, 0.05) var lost_grace := 0.2
 @export var lost_state: StringName = &"CatchUp"
+@export var sound: AudioStream
 
 var _speed := 0.0
 var _grace := 0.0
@@ -16,6 +17,7 @@ func _init() -> void:
 
 func enter() -> void:
 	super()
+	actor.play_sound(sound)
 	_speed = start_speed
 	_grace = lost_grace
 
@@ -23,7 +25,7 @@ func enter() -> void:
 func physics_tick(delta: float) -> void:
 	_speed = move_toward(_speed, top_speed, acceleration * delta)
 
-	if actor.player_visible:
+	if actor.truly_visible:
 		_grace = lost_grace
 		actor.set_destination(actor.last_known_player_spot)
 	else:

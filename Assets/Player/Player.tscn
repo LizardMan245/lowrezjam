@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://ba5jaya2x0vdl" path="res://Assets/Player/Scripts/player.gd" id="1_rpqav"]
 [ext_resource type="Texture2D" uid="uid://c4qw0beonlys1" path="res://Assets/Sprites/Placeholders/drones.png" id="2_8ffsa"]
 [ext_resource type="Script" uid="uid://badm5ftuk8c6x" path="res://Assets/Scripts/camera_rig.gd" id="2_rig"]
+[ext_resource type="AudioStream" uid="uid://kfdsvc5roye6" path="res://Assets/Audio/Sfx/ping.wav" id="5_33wup"]
 [ext_resource type="Script" uid="uid://bpskv2g8c5llp" path="res://Assets/Player/Scripts/echo_ring.gd" id="94_ring"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rldou"]
@@ -28,7 +29,7 @@ albedo_color = Color(1, 0.55, 0.15, 0.22)
 collision_layer = 2
 collision_mask = 157
 script = ExtResource("1_rpqav")
-ram_size = 5.0
+ram_size = 6.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1989597804]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -92,6 +93,14 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ramdebug")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CylinderShape3D_88646")
 
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1521884312]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+attenuation_model = 3
+panning_strength = 0.0
+
 [node name="EchoRing" type="Node3D" parent="." unique_id=404507315]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 script = ExtResource("94_ring")
+ring_color = Color(0, 0.5666666, 1, 1)
+fade_in = 0.19999999999999998
+ping = ExtResource("5_33wup")

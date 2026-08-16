@@ -3,8 +3,10 @@
 [ext_resource type="Shader" uid="uid://bdt3w78h42rk2" path="res://Assets/Shaders/vision_composite.gdshader" id="1_vy5pj"]
 [ext_resource type="Script" uid="uid://2w717bxpil07" path="res://Assets/Scripts/vision_field.gd" id="2_bmxlf"]
 [ext_resource type="Texture2D" uid="uid://bq7n6vc7dy570" path="res://Assets/Shaders/thermal.tres" id="2_h1m7h"]
+[ext_resource type="AudioStream" uid="uid://rimwx2y87llu" path="res://Assets/Audio/OST/ambientslowedreverb.mp3" id="2_sxkr1"]
 [ext_resource type="Script" uid="uid://b3we63lcv60gm" path="res://Assets/Scripts/light_flicker.gd" id="3_4kpch"]
 [ext_resource type="Environment" uid="uid://b3ulhtijha0iy" path="res://Scenes/Environments/env.tres" id="5_h1m7h"]
+[ext_resource type="Texture2D" uid="uid://c4ekybrg3gjx3" path="res://Assets/Shaders/tonemap.tres" id="5_hwpts"]
 [ext_resource type="PackedScene" uid="uid://c54do76yh4uvo" path="res://Assets/Map/Rooms/map.tscn" id="6_4kpch"]
 [ext_resource type="PackedScene" uid="uid://dcpswo02xtcin" path="res://Assets/Player/Player.tscn" id="7_h1m7h"]
 [ext_resource type="PackedScene" uid="uid://bcap7bikpxwxw" path="res://Assets/Enemies/BasicEnemy.tscn" id="8_erwvk"]
@@ -18,6 +20,8 @@
 [ext_resource type="Texture2D" uid="uid://bf4exglpr3ls3" path="res://Assets/Shaders/thermalenv.tres" id="16_346fj"]
 [ext_resource type="Script" uid="uid://8fmxgr0vb6gb" path="res://Assets/Scripts/game.gd" id="16_game"]
 [ext_resource type="PackedScene" uid="uid://cb8sfa6keg8lo" path="res://Assets/Map/Rooms/blueprint.tscn" id="17_bp"]
+[ext_resource type="Script" uid="uid://cqbunml3y58br" path="res://Assets/Scripts/looping_sound.gd" id="19_loop"]
+[ext_resource type="Script" uid="uid://dvqprihpaqo3b" path="res://Assets/Scripts/bitcrush.gd" id="20_crush"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vision"]
 shader = ExtResource("1_vy5pj")
@@ -39,7 +43,7 @@ shader_parameter/cam_forward = Vector3(0, -1, 0)
 shader_parameter/cam_half_extents = Vector2(5, 5)
 shader_parameter/ground_height = 0.0
 shader_parameter/mask_color = Color(0, 0, 0, 1)
-shader_parameter/gradient = ExtResource("2_h1m7h")
+shader_parameter/gradient = ExtResource("5_hwpts")
 shader_parameter/mix_amount = 0.0
 shader_parameter/color_noise = 0.0
 
@@ -64,7 +68,7 @@ shader_parameter/cam_half_extents = Vector2(5, 5)
 shader_parameter/ground_height = 0.0
 shader_parameter/heat_gradient = ExtResource("2_h1m7h")
 shader_parameter/env_gradient = ExtResource("16_346fj")
-shader_parameter/grain_amount = 0.07
+shader_parameter/grain_amount = 0.05
 
 [sub_resource type="Environment" id="Environment_b8igc"]
 background_energy_multiplier = 0.0
@@ -86,6 +90,7 @@ ambient_light_energy = 0.15
 
 [node name="Main3d" type="Node3D" unique_id=1741938559]
 script = ExtResource("16_game")
+ambience = ExtResource("2_sxkr1")
 
 [node name="ThermalWorld" type="SubViewport" parent="." unique_id=1054434451]
 transparent_bg = true
@@ -155,8 +160,11 @@ godmode = true
 [node name="Basicenemy" parent="Render/WorldLayer/World" unique_id=1364594077 instance=ExtResource("8_erwvk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.46782, 0.8731489, -18.034657)
 vision_angle_degrees = 180.0
+eye_height = 1.0
 detection_time = 0.6
 detection_decay_rate = 3.0
+peripheral_fill_scale = 0.4
+peripheral_falloff = 1.6
 turn_speed = 3.0
 brake_rate = 10.0
 spots_to_try = 15
@@ -167,7 +175,7 @@ memory_seconds = 30.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.644688, 1.7849227, 7.99621)
 
 [node name="RamMonster" parent="Render/WorldLayer/World" unique_id=1794099744 instance=ExtResource("15_rammob")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54.783974, 0.5, -76.29979)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54.783974, 0.9966748, -74.64644)
 
 [node name="Blueprint1" parent="Render/WorldLayer/World" unique_id=348216001 instance=ExtResource("17_bp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.4185925, 0, 30.363243)
@@ -273,8 +281,9 @@ size = 12.0
 script = ExtResource("9_2w5on")
 
 [node name="UI" parent="Render" unique_id=1321854455 instance=ExtResource("11_grg3l")]
+speeds = [0.0, 2.0, 4.0, 6.0]
 heat_angles = [0.0, 40.0, 65.0]
-camera_noise = [0.0, 0.4, 0.2, 0.0]
+camera_noise = [0.0, 0.4, 0.13, 0.0]
 
 [node name="DebugMapWindow" parent="." unique_id=276062607 instance=ExtResource("10_monitor")]
 oversampling_override = 1.0
@@ -283,5 +292,11 @@ initial_position = 0
 map_centre = Vector3(5, 0, -20)
 map_extent = 145.761
 render_layers = 527
+
+[node name="Ambience" type="AudioStreamPlayer" parent="." unique_id=1091507964]
+script = ExtResource("19_loop")
+
+[node name="BitCrush" type="AudioStreamPlayer" parent="." unique_id=2046148075]
+script = ExtResource("20_crush")
 
 [connection signal="resize_ram_radius" from="Render/UI" to="Render/WorldLayer/World/Player" method="_on_ui_resize_ram_radius"]
