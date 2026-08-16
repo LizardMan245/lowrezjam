@@ -26,7 +26,7 @@ shading_mode = 2
 albedo_color = Color(0, 0, 0, 1)
 emission_enabled = true
 emission = Color(1, 1, 1, 1)
-emission_energy_multiplier = 2.64
+emission_energy_multiplier = 2.0
 disable_receive_shadows = true
 
 [sub_resource type="QuadMesh" id="QuadMesh_shimmer"]
@@ -35,15 +35,17 @@ size = Vector2(1.8, 1.8)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_shimmer"]
 render_priority = 0
 shader = ExtResource("4_shimmer")
-shader_parameter/distortion = 0.035
-shader_parameter/edge_sharpness = 1.6
-shader_parameter/tint = Color(0.55, 0.72, 1, 0.18)
+shader_parameter/distortion = 0.295
+shader_parameter/edge_sharpness = 2.71
+shader_parameter/tint = Color(0.16862746, 0.16470589, 0.49411765, 0.05490196)
 
 [node name="ThermalMonster" type="CharacterBody3D" unique_id=1724183330 groups=["enemy"]]
 collision_layer = 4
 collision_mask = 129
 script = ExtResource("1_actor")
+vision_angle_degrees = 360.0
 view_distance = 10.0
+eye_height = 1.0
 detection_time = 0.7
 turn_speed = 2.5
 brake_rate = 6.0

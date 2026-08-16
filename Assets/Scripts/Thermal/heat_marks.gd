@@ -5,7 +5,7 @@ const HEAT_LAYER := 8
 @export_range(8, 512) var pool_size := 128
 @export_range(0.1, 4.0, 0.05) var mark_size := 0.8
 @export_range(1.0, 120.0, 0.5) var decay_seconds := 14.0
-@export_range(0.0, 0.5, 0.01) var ground_offset := 0.03
+@export_range(0.0, 3, 0.01) var ground_offset := 0.03
 @export_range(0.0, 1.0, 0.05) var start_heat := 0.9
 
 var _marks: Array[MeshInstance3D] = []

@@ -128,18 +128,18 @@ offset_right = 64.0
 offset_bottom = 64.0
 texture = ExtResource("1_fyqef")
 
-[node name="UsedRam" type="TextureRect" parent="Ram" unique_id=1212638373]
-offset_left = -63.0
-offset_right = 1.0
-offset_bottom = 64.0
-texture = ExtResource("3_nltto")
-
 [node name="ActiveRam" type="TextureRect" parent="Ram" unique_id=1867351115]
 visible = false
 offset_left = -63.0
 offset_right = 1.0
 offset_bottom = 64.0
 texture = ExtResource("34_mirbq")
+
+[node name="UsedRam" type="TextureRect" parent="Ram" unique_id=1212638373]
+offset_left = -63.0
+offset_right = 1.0
+offset_bottom = 64.0
+texture = ExtResource("3_nltto")
 
 [node name="Echo" type="Control" parent="."]
 layout_mode = 3
