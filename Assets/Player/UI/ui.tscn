@@ -1,10 +1,5 @@
 [gd_scene format=3 uid="uid://c668sf2ho1lj6"]
 
-[ext_resource type="Texture2D" uid="uid://ddsyb6nbqxr5y" path="res://Assets/Sprites/UI/Held data/data_off_sel.png" id="93_datasel"]
-[ext_resource type="Script" uid="uid://c5lnh70xnhn1x" path="res://Assets/Player/UI/Scripts/inventory.gd" id="97_inv"]
-[ext_resource type="Texture2D" uid="uid://dyn4mrf7xm7t8" path="res://Assets/Sprites/UI/Held data/data_off.png" id="96_dataoff"]
-[ext_resource type="Texture2D" uid="uid://mkvymnoogpep" path="res://Assets/Sprites/UI/Held data/data_on.png" id="95_dataon"]
-[ext_resource type="Script" uid="uid://cf2kjaercmadd" path="res://Assets/Player/UI/Scripts/echo_ping.gd" id="99_echo"]
 [ext_resource type="Texture2D" uid="uid://0dm3o6b258y5" path="res://Assets/Sprites/UI/ram_empty.png" id="1_fyqef"]
 [ext_resource type="Script" uid="uid://dd2qsu6sqrqdl" path="res://Assets/Player/UI/Scripts/ui.gd" id="1_nf4gj"]
 [ext_resource type="Texture2D" uid="uid://nn35dqijpmlk" path="res://Assets/Sprites/UI/menu_bg.png" id="2_2246s"]
@@ -40,6 +35,13 @@
 [ext_resource type="Texture2D" uid="uid://d1emq7rofx7p7" path="res://Assets/Sprites/UI/Echo/echo_1_sel.png" id="30_ipwe8"]
 [ext_resource type="Texture2D" uid="uid://dbir5bptp5erh" path="res://Assets/Sprites/UI/ram_active.png" id="34_mirbq"]
 [ext_resource type="Texture2D" uid="uid://h5ww3vphncl" path="res://Assets/Sprites/UI/Screens/tv_screen.png" id="35_wmls6"]
+[ext_resource type="AudioStream" uid="uid://kfdsvc5roye6" path="res://Assets/Audio/Sfx/ping.wav" id="40_3stq4"]
+[ext_resource type="Texture2D" uid="uid://byv04vlnm6j3c" path="res://Assets/Sprites/UI/Screens/useoverlay.png" id="40_a6i80"]
+[ext_resource type="Texture2D" uid="uid://ddsyb6nbqxr5y" path="res://Assets/Sprites/UI/Held data/data_off_sel.png" id="93_datasel"]
+[ext_resource type="Texture2D" uid="uid://mkvymnoogpep" path="res://Assets/Sprites/UI/Held data/data_on.png" id="95_dataon"]
+[ext_resource type="Texture2D" uid="uid://dyn4mrf7xm7t8" path="res://Assets/Sprites/UI/Held data/data_off.png" id="96_dataoff"]
+[ext_resource type="Script" uid="uid://c5lnh70xnhn1x" path="res://Assets/Player/UI/Scripts/inventory.gd" id="97_inv"]
+[ext_resource type="Script" uid="uid://cf2kjaercmadd" path="res://Assets/Player/UI/Scripts/echo_ping.gd" id="99_echo"]
 
 [node name="UI" type="Control" unique_id=1321854455 groups=["ui"]]
 layout_mode = 3
@@ -102,20 +104,17 @@ level_val = 2
 base_sprites = [ExtResource("26_3g2cg"), ExtResource("27_ebfgw"), ExtResource("10_3r70p")]
 sel_sprites = [ExtResource("29_mirbq"), ExtResource("30_ipwe8"), ExtResource("11_8fs27")]
 
-[node name="HeldData" type="TextureRect" parent="Menu"]
+[node name="HeldData" type="TextureRect" parent="Menu" unique_id=414400459]
 layout_mode = 0
 offset_right = 64.0
 offset_bottom = 64.0
 texture = ExtResource("96_dataoff")
 script = ExtResource("4_smcll")
-levels = 0
-level_val = 0
 base_sprites = [ExtResource("96_dataoff")]
 sel_sprites = [ExtResource("93_datasel")]
 
-[node name="Inventory" type="Node" parent="."]
+[node name="Inventory" type="Node" parent="." unique_id=2024670748]
 script = ExtResource("97_inv")
-needed = 3
 icon_off = ExtResource("96_dataoff")
 icon_on = ExtResource("95_dataon")
 icon = NodePath("../Menu/HeldData")
@@ -141,15 +140,22 @@ offset_right = 1.0
 offset_bottom = 64.0
 texture = ExtResource("3_nltto")
 
-[node name="Echo" type="Control" parent="."]
-layout_mode = 3
+[node name="Echo" type="Control" parent="." unique_id=2093420793]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("99_echo")
+blip_color = Color(0.9372549, 0, 0, 1)
 
-[node name="Download" type="ColorRect" parent="."]
+[node name="Ping" type="AudioStreamPlayer" parent="Echo" unique_id=1203453948]
+stream = ExtResource("40_3stq4")
+volume_db = -7.0
+
+[node name="Download" type="ColorRect" parent="." unique_id=681451032]
 visible = false
 layout_mode = 0
 offset_left = 12.0
@@ -158,13 +164,12 @@ offset_right = 52.0
 offset_bottom = 56.0
 color = Color(0.05, 0.09, 0.11, 0.85)
 
-[node name="Fill" type="ColorRect" parent="Download"]
+[node name="Fill" type="ColorRect" parent="Download" unique_id=838847601]
 layout_mode = 0
-offset_right = 0.0
 offset_bottom = 4.0
-color = Color(0.35, 1, 0.75, 1)
+color = Color(0.34901962, 1, 0.14509805, 1)
 
-[node name="Success" type="Label" parent="."]
+[node name="Success" type="Label" parent="." unique_id=1714751438]
 visible = false
 layout_mode = 0
 offset_top = 42.0
@@ -175,6 +180,15 @@ theme_override_font_sizes/font_size = 5
 text = "DOWNLOADED"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Prompt" type="TextureRect" parent="." unique_id=1489731220]
+visible = false
+layout_mode = 0
+offset_top = 34.0
+offset_right = 64.0
+offset_bottom = 42.0
+texture = ExtResource("40_a6i80")
+stretch_mode = 3
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1733811465]
 layout_mode = 0

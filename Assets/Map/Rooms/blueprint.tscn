@@ -11,6 +11,8 @@ size = Vector3(2.5, 2, 2.5)
 collision_layer = 64
 collision_mask = 64
 script = ExtResource("1_bp")
+ram_cost = 4
+taken_opacity = 0.1
 
 [node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=773919344]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

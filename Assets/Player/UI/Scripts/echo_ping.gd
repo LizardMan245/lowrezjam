@@ -1,9 +1,9 @@
 extends Control
 
-@export_range(0.0, 60.0, 0.5) var radius := 0.0
+@export_range(0.0, 60.0, 0.5) var radius := 0.0 : set = set_radius
 @export_range(0.2, 10.0, 0.1) var ping_interval := 2.5
 @export_range(0.1, 4.0, 0.1) var blip_seconds := 0.9
-@export var blip_color := Color(0.35, 1.0, 0.75, 1.0)
+@export var blip_color := Color(1.0, 0.18, 0.14, 1.0)
 @export_range(1, 8) var blip_size := 2
 @export_range(1, 32) var pool_size := 8
 
@@ -13,10 +13,21 @@ var _timer := 0.0
 var _player: Node3D
 var _camera: Camera3D
 var _ring: Node3D
+var _speaker: AudioStreamPlayer
 var _waiting: Array[Node3D] = []
 
 
+func set_radius(value: float) -> void:
+	radius = value
+	if not is_inside_tree():
+		return
+	var crush := get_tree().get_first_node_in_group("bitcrush")
+	if crush != null:
+		crush.strength = 0.0 if radius > 0.0 else 1.0
+
+
 func _ready() -> void:
+	_speaker = get_node_or_null("Ping") as AudioStreamPlayer
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_life.resize(pool_size)
 	for i in pool_size:
@@ -60,6 +71,8 @@ func ping() -> int:
 			_waiting.append(mob)
 	if _ring != null:
 		_ring.pulse(radius)
+	if _speaker != null and _speaker.stream != null:
+		_speaker.play()
 	return _waiting.size()
 
 
@@ -79,7 +92,7 @@ func _mark(mob: Node3D) -> void:
 	if slot < 0:
 		return
 	var blip := _blips[slot]
-	blip.position = _on_screen(_camera.unproject_position(mob.global_position + Vector3(0.0, 1.0, 0.0))) - blip.size * 0.5
+	blip.position = _edge_spot(mob) - blip.size * 0.5
 	blip.visible = true
 	blip.modulate.a = 1.0
 	_life[slot] = blip_seconds
@@ -110,9 +123,22 @@ func _find_helpers() -> bool:
 	return _player != null and _camera != null
 
 
-func _on_screen(at: Vector2) -> Vector2:
+func _edge_spot(mob: Node3D) -> Vector2:
+	var origin := _camera.unproject_position(_player.global_position + Vector3(0.0, 1.0, 0.0))
+	var bearing := _camera.unproject_position(mob.global_position + Vector3(0.0, 1.0, 0.0)) - origin
+	if bearing.length() < 0.001:
+		bearing = Vector2.UP
+	bearing = bearing.normalized()
+
 	var edge := float(blip_size)
-	return Vector2(clampf(at.x, edge, size.x - edge), clampf(at.y, edge, size.y - edge))
+	var reach := INF
+	if absf(bearing.x) > 0.0001:
+		reach = minf(reach, ((size.x - edge if bearing.x > 0.0 else edge) - origin.x) / bearing.x)
+	if absf(bearing.y) > 0.0001:
+		reach = minf(reach, ((size.y - edge if bearing.y > 0.0 else edge) - origin.y) / bearing.y)
+	if reach == INF or reach < 0.0:
+		reach = 0.0
+	return origin + bearing * reach
 
 
 func live_blip_count() -> int:

@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://bcap7bikpxwxw"]
 
-[ext_resource type="Shader" uid="uid://oenosiroewqp" path="res://Assets/Shaders/invert_sprite.gdshader" id="92_invert"]
 [ext_resource type="Texture2D" uid="uid://cmmp6b0pklxv4" path="res://Assets/Sprites/Placeholders/enemy.webp" id="1_8vmum"]
 [ext_resource type="Script" uid="uid://hhivxkcywgcs" path="res://Assets/Scripts/Enemies/enemy_actor.gd" id="2_actor"]
 [ext_resource type="Script" uid="uid://dvircusdp5mr5" path="res://Assets/Scripts/Debug/enemy_debug_view.gd" id="3_debug"]
@@ -16,6 +15,9 @@
 [ext_resource type="Script" uid="uid://dtwa2ejd1thq4" path="res://Assets/Scripts/Enemies/StateMachine/catch_up_state.gd" id="12_catchup"]
 [ext_resource type="Script" uid="uid://dyfkifasi0wbf" path="res://Assets/Scripts/Enemies/StateMachine/scan_state.gd" id="13_scan"]
 [ext_resource type="Texture2D" uid="uid://cuu3spm2k2hhn" path="res://Assets/Enemies/eye_glow.tres" id="14_eyeglow"]
+[ext_resource type="AudioStream" uid="uid://bck72wxkdxdy" path="res://Assets/Audio/Placeholders/breath.mp3" id="20_382ll"]
+[ext_resource type="Script" uid="uid://cjn3pq20gy6k8" path="res://Assets/Scripts/Enemies/enemy_voice.gd" id="89_voice"]
+[ext_resource type="Shader" uid="uid://b3frnem5n4vhd" path="res://Assets/Shaders/heat_sprite.gdshader" id="92_invert"]
 [ext_resource type="Script" uid="uid://c4p5s1mpxa17b" path="res://Assets/Scripts/Enemies/catcher.gd" id="98_catch"]
 [ext_resource type="Script" uid="uid://d20jhql5sjipp" path="res://Assets/Scripts/Thermal/heat_trail.gd" id="99_trail"]
 
@@ -48,8 +50,12 @@ billboard_mode = 1
 billboard_keep_scale = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_heatsprite"]
+render_priority = 0
 shader = ExtResource("92_invert")
 shader_parameter/source = ExtResource("1_8vmum")
+shader_parameter/invert = true
+shader_parameter/flatten = false
+shader_parameter/tint = Color(1, 1, 1, 1)
 
 [node name="Basicenemy" type="CharacterBody3D" unique_id=1377881211 groups=["enemy"]]
 collision_layer = 4
@@ -100,7 +106,7 @@ shaded = true
 texture_filter = 0
 texture = ExtResource("1_8vmum")
 
-[node name="HeatSprite" type="Sprite3D" parent="Visual"]
+[node name="HeatSprite" type="Sprite3D" parent="Visual" unique_id=974695565]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0.5490232, 0)
 layers = 8
 material_override = SubResource("ShaderMaterial_heatsprite")
@@ -118,7 +124,6 @@ radius = 0.4
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1466118383]
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1975332894]
-attenuation_model = 1
 bus = &"Reverb"
 
 [node name="StateMachine" type="Node" parent="." unique_id=1119538764]
@@ -203,3 +208,16 @@ script = ExtResource("99_trail")
 
 [node name="Catcher" type="Node" parent="." unique_id=256941044]
 script = ExtResource("98_catch")
+
+[node name="Voice" type="Node3D" parent="." unique_id=1800461441]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("89_voice")
+
+[node name="Rush" type="AudioStreamPlayer3D" parent="Voice" unique_id=457546469]
+unit_size = 14.0
+max_distance = 30.0
+
+[node name="Breath" type="AudioStreamPlayer3D" parent="Voice" unique_id=1549417657]
+stream = ExtResource("20_382ll")
+volume_db = -3.0
+unit_size = 6.0

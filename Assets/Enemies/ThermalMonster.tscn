@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://hhivxkcywgcs" path="res://Assets/Scripts/Enemies/enemy_actor.gd" id="1_actor"]
 [ext_resource type="Script" uid="uid://bm32cghgkj3uu" path="res://Assets/Scripts/Enemies/enemy_state_machine.gd" id="2_machine"]
 [ext_resource type="Shader" uid="uid://cqih1nlycex4g" path="res://Assets/Shaders/shimmer.gdshader" id="4_shimmer"]
+[ext_resource type="AudioStream" uid="uid://b10sh82pdwl0i" path="res://Assets/Audio/Sfx/thermalnoise.wav" id="5_6tsjg"]
 [ext_resource type="Script" uid="uid://cyvrtlfgus5v2" path="res://Assets/Scripts/Enemies/StateMachine/roam_walk_state.gd" id="5_walk"]
 [ext_resource type="Script" uid="uid://8v01qveaa76y" path="res://Assets/Scripts/Enemies/StateMachine/glance_state.gd" id="6_glance"]
 [ext_resource type="Script" uid="uid://gxd35utekoik" path="res://Assets/Scripts/Enemies/StateMachine/investigate_state.gd" id="7_investigate"]
@@ -10,6 +11,8 @@
 [ext_resource type="Script" uid="uid://dtwa2ejd1thq4" path="res://Assets/Scripts/Enemies/StateMachine/catch_up_state.gd" id="9_catchup"]
 [ext_resource type="Script" uid="uid://bt5bbwk4fpqka" path="res://Assets/Scripts/Enemies/StateMachine/search_state.gd" id="10_search"]
 [ext_resource type="Script" uid="uid://c4p5s1mpxa17b" path="res://Assets/Scripts/Enemies/catcher.gd" id="11_catch"]
+[ext_resource type="Script" uid="uid://dvircusdp5mr5" path="res://Assets/Scripts/Debug/enemy_debug_view.gd" id="88_debug"]
+[ext_resource type="Script" uid="uid://cjn3pq20gy6k8" path="res://Assets/Scripts/Enemies/enemy_voice.gd" id="89_voice"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 radius = 0.45
@@ -35,7 +38,7 @@ size = Vector2(1.8, 1.8)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_shimmer"]
 render_priority = 0
 shader = ExtResource("4_shimmer")
-shader_parameter/distortion = 0.295
+shader_parameter/distortion = 0.1
 shader_parameter/edge_sharpness = 2.71
 shader_parameter/tint = Color(0.16862746, 0.16470589, 0.49411765, 0.05490196)
 
@@ -71,6 +74,16 @@ cast_shadow = 0
 mesh = SubResource("QuadMesh_shimmer")
 surface_material_override/0 = SubResource("ShaderMaterial_shimmer")
 
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1355103282]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+attenuation_model = 2
+volume_db = -8.0
+max_db = 0.0
+max_distance = 30.0
+panning_strength = 0.0
+bus = &"Reverb"
+area_mask = 25
+
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=2024303601]
 path_desired_distance = 0.4
 target_desired_distance = 0.5
@@ -83,6 +96,7 @@ initial_state = &"RoamWalk"
 
 [node name="RoamWalk" type="Node" parent="StateMachine" unique_id=1882796451]
 script = ExtResource("5_walk")
+sound = ExtResource("5_6tsjg")
 min_speed = 1.0
 max_speed = 1.4
 timeout = 14.0
@@ -130,3 +144,26 @@ next_states = Array[StringName]([&"RoamWalk"])
 
 [node name="Catcher" type="Node" parent="." unique_id=525063445]
 script = ExtResource("11_catch")
+
+[node name="Voice" type="Node3D" parent="." unique_id=1995430870]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("89_voice")
+rush_states = Array[StringName]([])
+calm_states = Array[StringName]([&"RoamWalk", &"RoamIdle", &"Glance", &"Investigate", &"Scan", &"Chase", &"CatchUp", &"Search"])
+
+[node name="Rush" type="AudioStreamPlayer3D" parent="Voice" unique_id=272295575]
+unit_size = 14.0
+max_distance = 30.0
+bus = &"Reverb"
+
+[node name="Breath" type="AudioStreamPlayer3D" parent="Voice" unique_id=1342742578]
+stream = ExtResource("5_6tsjg")
+attenuation_model = 2
+unit_size = 6.0
+panning_strength = 0.0
+bus = &"Reverb"
+
+[node name="DebugView" type="MeshInstance3D" parent="." unique_id=418886628]
+layers = 512
+script = ExtResource("88_debug")
+fallback_color = Color(0.45, 0.75, 1, 1)

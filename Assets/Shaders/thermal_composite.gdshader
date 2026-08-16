@@ -22,10 +22,11 @@ void fragment() {
 	float seen = vision_visibility(UV);
 	float grain = (vision_noise(floor(UV * 64.0), TIME) - 0.5) * grain_amount * seen;
 	lit = clamp(lit + grain, 0.0, 1.0);
+	float heat_shade = clamp(heat + grain, 0.0, 1.0);
 
 	vec3 mapped = mix(
 		texture(env_gradient, vec2(lit, 0.0)).rgb,
-		texture(heat_gradient, vec2(heat, 0.0)).rgb,
+		texture(heat_gradient, vec2(heat_shade, 0.0)).rgb,
 		heat);
 
 	vec3 under = texture(screen_tex, SCREEN_UV).rgb;
