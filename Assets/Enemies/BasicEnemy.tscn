@@ -61,12 +61,18 @@ shader_parameter/tint = Color(1, 1, 1, 1)
 collision_layer = 4
 collision_mask = 129
 script = ExtResource("2_actor")
+vision_angle_degrees = 200.0
 view_distance = 10.0
-detection_time = 0.55
-peripheral_fill_scale = 0.22
+eye_height = 1.0
+detection_time = 0.3
+peripheral_fill_scale = 0.4
 peripheral_falloff = 1.8
+hearing_sensitivity = 2.05
 loud_noise_threshold = 0.32
-notice_cooldown = 1.6
+notice_cooldown = 1.2
+turn_speed = 5.0
+brake_rate = 10.0
+spots_to_try = 15
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=215603961]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -169,6 +175,7 @@ unlimited_view_distance = true
 
 [node name="Chase" type="Node" parent="StateMachine" unique_id=2038741539]
 script = ExtResource("8_chase")
+top_speed = 7.0
 acceleration = 1.0
 animation = &"run"
 interrupt_on_detection = false
@@ -219,5 +226,6 @@ max_distance = 30.0
 
 [node name="Breath" type="AudioStreamPlayer3D" parent="Voice" unique_id=1549417657]
 stream = ExtResource("20_382ll")
-volume_db = -3.0
+attenuation_model = 2
 unit_size = 6.0
+bus = &"Reverb"
