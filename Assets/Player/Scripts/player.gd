@@ -8,8 +8,11 @@ var SPEED = 0.0
 
 @export var ram_size: float = 3
 @export var godmode := false
+@export_range(0.5, 20.0, 0.5) var loud_speed := 8.0
+@export_range(0.0, 4.0, 0.05) var burst_fade := 1.6
 
 var facing := Vector2(0.0, -1.0)
+var _noise_burst := 0.0
 
 
 @onready var _visual: Node3D = $Visual
@@ -39,6 +42,21 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
 	move_and_slide()
+	_noise_burst = maxf(_noise_burst - burst_fade * delta, 0.0)
+
+
+func get_noise_level() -> float:
+	return maxf(_step_noise(), _noise_burst)
+
+
+func make_noise(amount: float) -> void:
+	_noise_burst = maxf(_noise_burst, clampf(amount, 0.0, 1.0))
+
+
+func _step_noise() -> float:
+	if loud_speed <= 0.0:
+		return 0.0
+	return clampf(Vector2(velocity.x, velocity.z).length() / loud_speed, 0.0, 1.0)
 
 
 func in_menu() -> bool:

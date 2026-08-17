@@ -3,6 +3,7 @@ extends CharacterBody3D
 const NAVIGATION_WAIT_FRAMES := 120
 const NAVIGATION_SNAP_LIMIT := 4.0
 const UNLIMITED_VIEW_DISTANCE := 1000.0
+const ROOM_SEARCH_STEPS := 4
 
 signal state_changed(previous: StringName, current: StringName)
 signal player_detected
@@ -38,6 +39,8 @@ signal sound_requested(stream: AudioStream)
 @export_range(1.0, 60.0) var brake_rate := 14.0
 @export_range(0.1, 3.0, 0.05) var arrive_distance := 0.6
 @export_range(0.0, 4.0, 0.05) var repath_distance := 0.6
+@export_range(0.0, 5.0, 0.1) var stuck_patience := 1.2
+@export_range(0.0, 1.0, 0.05) var stuck_progress := 0.5
 
 @export_group("Roaming")
 @export_range(1, 32) var spots_to_try := 12
@@ -88,6 +91,9 @@ var _notice_cooldown_left := 0.0
 var _visited := {}
 var _last_roam_spot := Vector3.ZERO
 var _came_from := Vector2.ZERO
+var _body_reach := 0.0
+var _stuck_seconds := 0.0
+var _progress_from := Vector3.ZERO
 
 
 func _ready() -> void:
@@ -106,8 +112,11 @@ func _ready() -> void:
 		push_warning("no player found, the enemy will just walk around")
 
 	_rng.randomize()
+	_body_reach = BodySize.of(self)
+	_progress_from = global_position
 	_sight_query.collision_mask = sight_mask
 	_sight_query.exclude = [get_rid()]
+	_room_query.exclude = _bodies_to_ignore()
 	_last_roam_spot = global_position
 	_came_from = -facing
 	reset_senses()
@@ -147,6 +156,18 @@ func _navigation_is_ready() -> bool:
 	if not map.is_valid() or NavigationServer3D.map_get_iteration_id(map) == 0:
 		return false
 	return flat_distance(NavigationServer3D.map_get_closest_point(map, global_position), global_position) < NAVIGATION_SNAP_LIMIT
+
+
+func _bodies_to_ignore() -> Array[RID]:
+	var skip: Array[RID] = [get_rid()]
+	var body := _player as CollisionObject3D
+	if body != null:
+		skip.append(body.get_rid())
+	return skip
+
+
+func reach_distance() -> float:
+	return _body_reach + arrive_distance
 
 
 func reset_senses() -> void:
@@ -382,15 +403,52 @@ func get_state_name() -> StringName:
 func set_destination(spot: Vector3) -> void:
 	if flat_distance(_agent.target_position, spot) < repath_distance:
 		return
-	_agent.target_position = spot
+	_agent.target_position = spot_with_room(spot)
+	clear_stuck()
+
+
+func spot_with_room(spot: Vector3) -> Vector3:
+	if has_room_at(spot):
+		return spot
+	var back := Vector2(global_position.x - spot.x, global_position.z - spot.z)
+	if back.length() < 0.001:
+		return spot
+	back = back.normalized()
+	for step in range(1, ROOM_SEARCH_STEPS + 1):
+		var pulled := spot + Vector3(back.x, 0.0, back.y) * (float(step) * roam_clearance)
+		var on_mesh := nearest_walkable_point(pulled)
+		if has_room_at(on_mesh):
+			return on_mesh
+	return spot
+
+
+func clear_stuck() -> void:
+	_stuck_seconds = 0.0
+	_progress_from = global_position
+
+
+func is_stuck() -> bool:
+	return stuck_patience > 0.0 and _stuck_seconds >= stuck_patience
 
 
 func is_path_finished() -> bool:
-	return _agent.is_navigation_finished()
+	return _agent.is_navigation_finished() or is_stuck() or has_arrived_at(_agent.target_position)
+
+
+func _watch_progress(speed: float, delta: float) -> void:
+	if stuck_patience <= 0.0 or speed <= 0.0:
+		return
+	var moved := flat_distance(global_position, _progress_from)
+	_progress_from = global_position
+	if moved >= speed * delta * stuck_progress:
+		_stuck_seconds = 0.0
+	else:
+		_stuck_seconds += delta
 
 
 func move_along_path(speed: float, delta: float) -> void:
 	_last_move_speed = speed
+	_watch_progress(speed, delta)
 	var step := _agent.get_next_path_position() - global_position
 	step.y = 0.0
 	if step.length() < 0.001:
@@ -430,7 +488,7 @@ func is_facing(spot: Vector3, tolerance_degrees: float) -> bool:
 
 
 func has_arrived_at(spot: Vector3) -> bool:
-	return flat_distance(spot, global_position) <= arrive_distance
+	return flat_distance(spot, global_position) <= reach_distance()
 
 
 func flat_distance(a: Vector3, b: Vector3) -> float:
@@ -526,7 +584,6 @@ func has_room_at(spot: Vector3) -> bool:
 	_room_shape.radius = roam_clearance
 	_room_query.shape = _room_shape
 	_room_query.collision_mask = collision_mask
-	_room_query.exclude = [get_rid()]
 	_room_query.transform = Transform3D(Basis.IDENTITY, spot + Vector3(0.0, roam_clearance + 0.1, 0.0))
 	return get_world_3d().direct_space_state.intersect_shape(_room_query, 1).is_empty()
 

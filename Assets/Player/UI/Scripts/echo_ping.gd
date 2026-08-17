@@ -6,6 +6,7 @@ extends Control
 @export var blip_color := Color(1.0, 0.18, 0.14, 1.0)
 @export_range(1, 8) var blip_size := 2
 @export_range(1, 32) var pool_size := 8
+@export_range(0.0, 1.0, 0.05) var ping_loudness := 0.8
 
 var _blips: Array[ColorRect] = []
 var _life := PackedFloat32Array()
@@ -71,6 +72,8 @@ func ping() -> int:
 			_waiting.append(mob)
 	if _ring != null:
 		_ring.pulse(radius)
+	if _player != null and _player.has_method("make_noise"):
+		_player.make_noise(ping_loudness)
 	if _speaker != null and _speaker.stream != null:
 		_speaker.play()
 	return _waiting.size()
