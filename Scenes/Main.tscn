@@ -2,7 +2,6 @@
 
 [ext_resource type="Shader" uid="uid://bdt3w78h42rk2" path="res://Assets/Shaders/vision_composite.gdshader" id="1_vy5pj"]
 [ext_resource type="Script" uid="uid://2w717bxpil07" path="res://Assets/Scripts/vision_field.gd" id="2_bmxlf"]
-[ext_resource type="Texture2D" uid="uid://bq7n6vc7dy570" path="res://Assets/Shaders/thermal.tres" id="2_h1m7h"]
 [ext_resource type="AudioStream" uid="uid://rimwx2y87llu" path="res://Assets/Audio/OST/ambientslowedreverb.mp3" id="2_sxkr1"]
 [ext_resource type="Script" uid="uid://b3we63lcv60gm" path="res://Assets/Scripts/light_flicker.gd" id="3_4kpch"]
 [ext_resource type="Environment" uid="uid://b3ulhtijha0iy" path="res://Scenes/Environments/env.tres" id="5_h1m7h"]
@@ -20,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://bf4exglpr3ls3" path="res://Assets/Shaders/thermalenv.tres" id="16_346fj"]
 [ext_resource type="Script" uid="uid://8fmxgr0vb6gb" path="res://Assets/Scripts/game.gd" id="16_game"]
 [ext_resource type="PackedScene" uid="uid://cb8sfa6keg8lo" path="res://Assets/Map/Rooms/blueprint.tscn" id="17_bp"]
+[ext_resource type="Texture2D" uid="uid://b1t0gtpw17hur" path="res://Assets/Shaders/thermalv2.tres" id="18_hwpts"]
 [ext_resource type="Script" uid="uid://cqbunml3y58br" path="res://Assets/Scripts/looping_sound.gd" id="19_loop"]
 [ext_resource type="Script" uid="uid://dvqprihpaqo3b" path="res://Assets/Scripts/bitcrush.gd" id="20_crush"]
 
@@ -66,7 +66,7 @@ shader_parameter/cam_up = Vector3(0, 0, -1)
 shader_parameter/cam_forward = Vector3(0, -1, 0)
 shader_parameter/cam_half_extents = Vector2(5, 5)
 shader_parameter/ground_height = 0.0
-shader_parameter/heat_gradient = ExtResource("2_h1m7h")
+shader_parameter/heat_gradient = ExtResource("18_hwpts")
 shader_parameter/env_gradient = ExtResource("16_346fj")
 shader_parameter/grain_amount = 0.05
 

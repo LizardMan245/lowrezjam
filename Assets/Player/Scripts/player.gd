@@ -18,6 +18,8 @@ var _noise_burst := 0.0
 @onready var _visual: Node3D = $Visual
 var ui: Control
 
+@onready var _animated_sprite = $Visual/AnimatedSprite3D
+
 
 func _ready() -> void:
 	_apply_facing()

@@ -11,8 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://duvtgrcn7nhp8" path="res://Assets/Menu/controls_3.png" id="5_e1lsp"]
 [ext_resource type="Texture2D" uid="uid://5oht2qsq4g4c" path="res://Assets/Menu/stars_3.png" id="5_r6ov2"]
 [ext_resource type="AudioStream" uid="uid://kt4eauevrmsr" path="res://Assets/Audio/Sfx/console.mp3" id="6_e1lsp"]
-[ext_resource type="Texture2D" uid="uid://ihhitreaa6gs" path="res://Assets/Menu/moon.png" id="6_qg0ry"]
 [ext_resource type="Texture2D" uid="uid://rsofhfieu7lh" path="res://Assets/Menu/options.png" id="9_yk7l8"]
+[ext_resource type="Texture2D" uid="uid://bf0l5p38vejvt" path="res://Assets/Menu/moonv2.png" id="10_e1lsp"]
 [ext_resource type="AudioStream" uid="uid://cu4p1xhluoyyv" path="res://Assets/Audio/Sfx/game_start.mp3" id="13_fwooc"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gnmj0"]
@@ -460,8 +460,9 @@ offset_left = 27.999998
 offset_top = 16.000002
 offset_right = 726.0
 offset_bottom = 728.0
-scale = Vector2(0.05, 0.05)
-texture = ExtResource("6_qg0ry")
+scale = Vector2(0.07, 0.07)
+pivot_offset = Vector2(-8, -5)
+texture = ExtResource("10_e1lsp")
 
 [node name="Static" type="ColorRect" parent="BackgroundStuff" unique_id=1361080820]
 material = SubResource("ShaderMaterial_gnmj0")
