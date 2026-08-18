@@ -10,6 +10,9 @@ var base_dist: float = 1
 enum states {closed, opening, opened, closing}
 @export var curr_state := states.closed
 
+@export var open_sfx: AudioStream
+@export var close_sfx: AudioStream
+
 
 func open_door(delta) -> void:
 	if right_side.position.x < opening_dist:
@@ -32,11 +35,15 @@ func close_door(delta) -> void:
 
 
 func _on_area_3d_body_entered(_body: Node3D) -> void:
+	$AudioStreamPlayer3D.stream = open_sfx
+	$AudioStreamPlayer3D.play()
 	curr_state = states.opening
 
 
 func _on_area_3d_body_exited(_body: Node3D) -> void:
 	if not $Area3D.has_overlapping_bodies():
+		$AudioStreamPlayer3D.stream = close_sfx
+		$AudioStreamPlayer3D.play()
 		curr_state = states.closing
 
 

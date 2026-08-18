@@ -3,12 +3,16 @@
 [ext_resource type="Texture2D" uid="uid://0dm3o6b258y5" path="res://Assets/Sprites/UI/ram_empty.png" id="1_fyqef"]
 [ext_resource type="Script" uid="uid://dd2qsu6sqrqdl" path="res://Assets/Player/UI/Scripts/ui.gd" id="1_nf4gj"]
 [ext_resource type="Texture2D" uid="uid://nn35dqijpmlk" path="res://Assets/Sprites/UI/menu_bg.png" id="2_2246s"]
+[ext_resource type="AudioStream" uid="uid://icppyxh1f8lb" path="res://Assets/Audio/Sfx/delect_up.mp3" id="2_owcae"]
 [ext_resource type="Texture2D" uid="uid://8nfj6dhp688a" path="res://Assets/Sprites/UI/Camera/cam_off.png" id="3_d42i4"]
 [ext_resource type="Texture2D" uid="uid://bblgxsmm2p1cj" path="res://Assets/Sprites/UI/ram_full.png" id="3_nltto"]
+[ext_resource type="AudioStream" uid="uid://ce00sjv2p5nnt" path="res://Assets/Audio/Sfx/delect_down.mp3" id="3_ptrwr"]
 [ext_resource type="Texture2D" uid="uid://b4md8pfjat110" path="res://Assets/Sprites/UI/Camera/cam_3.png" id="3_q7pk6"]
 [ext_resource type="Texture2D" uid="uid://cjitraa6is57n" path="res://Assets/Sprites/UI/Camera/cam_3_sel.png" id="3_smcll"]
+[ext_resource type="AudioStream" uid="uid://b1cn4diobjtlw" path="res://Assets/Audio/Sfx/turn_up.mp3" id="4_i3pym"]
 [ext_resource type="Texture2D" uid="uid://chpiqf8bjjn2e" path="res://Assets/Sprites/UI/Movement/mov_3.png" id="4_m78vo"]
 [ext_resource type="Script" uid="uid://c1i5mvc5fxind" path="res://Assets/Player/UI/Scripts/menu_option.gd" id="4_smcll"]
+[ext_resource type="AudioStream" uid="uid://btjg7krfthat1" path="res://Assets/Audio/Sfx/turn_down.mp3" id="5_as5xl"]
 [ext_resource type="Texture2D" uid="uid://sq2lkgru3xxn" path="res://Assets/Sprites/UI/Camera/cam_1.png" id="5_fcexb"]
 [ext_resource type="Texture2D" uid="uid://bymm1tvdltoek" path="res://Assets/Sprites/UI/Movement/mov_3_sel.png" id="5_ryf15"]
 [ext_resource type="Texture2D" uid="uid://bq8erkiuhhgnv" path="res://Assets/Sprites/UI/Camera/cam_2.png" id="6_v4f2e"]
@@ -35,8 +39,11 @@
 [ext_resource type="Texture2D" uid="uid://d1emq7rofx7p7" path="res://Assets/Sprites/UI/Echo/echo_1_sel.png" id="30_ipwe8"]
 [ext_resource type="Texture2D" uid="uid://dbir5bptp5erh" path="res://Assets/Sprites/UI/ram_active.png" id="34_mirbq"]
 [ext_resource type="Texture2D" uid="uid://h5ww3vphncl" path="res://Assets/Sprites/UI/Screens/tv_screen.png" id="35_wmls6"]
+[ext_resource type="FontFile" uid="uid://cd6uoxe0jyqnq" path="res://Assets/Sprites/big-shot.ttf" id="38_mo57o"]
 [ext_resource type="AudioStream" uid="uid://kfdsvc5roye6" path="res://Assets/Audio/Sfx/ping.wav" id="40_3stq4"]
 [ext_resource type="Texture2D" uid="uid://byv04vlnm6j3c" path="res://Assets/Sprites/UI/Screens/useoverlay.png" id="40_a6i80"]
+[ext_resource type="AudioStream" uid="uid://kt4eauevrmsr" path="res://Assets/Audio/Sfx/console.mp3" id="43_0u0jk"]
+[ext_resource type="FontFile" uid="uid://6y3ubcokl4pq" path="res://Assets/Sprites/UI/PxPlus_IBM_BIOS.ttf" id="45_as5xl"]
 [ext_resource type="Texture2D" uid="uid://ddsyb6nbqxr5y" path="res://Assets/Sprites/UI/Held data/data_off_sel.png" id="93_datasel"]
 [ext_resource type="Texture2D" uid="uid://mkvymnoogpep" path="res://Assets/Sprites/UI/Held data/data_on.png" id="95_dataon"]
 [ext_resource type="Texture2D" uid="uid://dyn4mrf7xm7t8" path="res://Assets/Sprites/UI/Held data/data_off.png" id="96_dataoff"]
@@ -52,9 +59,12 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_nf4gj")
 options = Array[NodePath]([NodePath("Menu/Camera"), NodePath("Menu/Movement"), NodePath("Menu/HeatVision"), NodePath("Menu/EchoLocation"), NodePath("Menu/HeldData")])
+select_up_sfx = ExtResource("2_owcae")
+select_down_sfx = ExtResource("3_ptrwr")
+level_up_sfx = ExtResource("4_i3pym")
+level_down_sfx = ExtResource("5_as5xl")
 
 [node name="Menu" type="TextureRect" parent="." unique_id=2113272477]
-visible = false
 layout_mode = 0
 offset_right = 64.0
 offset_bottom = 64.0
@@ -112,6 +122,28 @@ texture = ExtResource("96_dataoff")
 script = ExtResource("4_smcll")
 base_sprites = [ExtResource("96_dataoff")]
 sel_sprites = [ExtResource("93_datasel")]
+
+[node name="Interaction" type="Label" parent="." unique_id=1704394261]
+visible = false
+layout_mode = 0
+offset_left = 10.0
+offset_top = 56.0
+offset_right = 58.0
+offset_bottom = 64.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("38_mo57o")
+theme_override_font_sizes/font_size = 6
+text = "OPEN CONSOLE"
+
+[node name="Interaction2" type="Label" parent="Interaction" unique_id=1773255823]
+layout_mode = 0
+offset_left = -7.0
+offset_right = 41.0
+offset_bottom = 8.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("38_mo57o")
+theme_override_font_sizes/font_size = 6
+text = "O:"
 
 [node name="Inventory" type="Node" parent="." unique_id=2024670748]
 script = ExtResource("97_inv")
@@ -172,11 +204,12 @@ color = Color(0.34901962, 1, 0.14509805, 1)
 [node name="Success" type="Label" parent="." unique_id=1714751438]
 visible = false
 layout_mode = 0
-offset_top = 42.0
+offset_top = 16.0
 offset_right = 64.0
-offset_bottom = 50.0
-theme_override_colors/font_color = Color(0.35, 1, 0.75, 1)
-theme_override_font_sizes/font_size = 5
+offset_bottom = 79.999954
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("45_as5xl")
+theme_override_font_sizes/font_size = 6
 text = "DOWNLOADED"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -196,3 +229,14 @@ offset_top = 64.0
 offset_right = 64.0
 offset_bottom = 128.0
 texture = ExtResource("35_wmls6")
+
+[node name="Sfx" type="Node" parent="." unique_id=538810320]
+
+[node name="ConsoleSfx" type="AudioStreamPlayer" parent="Sfx" unique_id=836948900]
+stream = ExtResource("43_0u0jk")
+
+[node name="SelectSfx" type="AudioStreamPlayer" parent="Sfx" unique_id=282457207]
+volume_db = -10.0
+
+[node name="LevelSfx" type="AudioStreamPlayer" parent="Sfx" unique_id=1713477480]
+volume_db = -10.0

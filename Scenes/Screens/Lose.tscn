@@ -1,7 +1,10 @@
 [gd_scene format=3 uid="uid://bahe6d2pnxfuq"]
 
 [ext_resource type="Script" uid="uid://dl2t7tw3lsmwn" path="res://Assets/Scripts/screen_nav.gd" id="1_nav"]
+[ext_resource type="AudioStream" uid="uid://rimwx2y87llu" path="res://Assets/Audio/OST/ambientslowedreverb.mp3" id="2_4no6n"]
 [ext_resource type="Shader" uid="uid://ctwj4jl657eap" path="res://Assets/Shaders/signal_lost.gdshader" id="2_static"]
+[ext_resource type="FontFile" uid="uid://6y3ubcokl4pq" path="res://Assets/Sprites/UI/PxPlus_IBM_BIOS.ttf" id="3_nwlpl"]
+[ext_resource type="Texture2D" uid="uid://oexvnh5hc2ts" path="res://Assets/Menu/restart_hint.png" id="5_rqv7u"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_static"]
 shader = ExtResource("2_static")
@@ -17,6 +20,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_nav")
+music = ExtResource("2_4no6n")
 input_delay = 1.2
 
 [node name="Static" type="ColorRect" parent="." unique_id=1495870198]
@@ -27,25 +31,20 @@ offset_bottom = 64.0
 
 [node name="Title" type="Label" parent="." unique_id=1138401962]
 layout_mode = 0
+offset_left = 1.0
 offset_top = 14.0
-offset_right = 64.0
+offset_right = 65.0
 offset_bottom = 41.0
 theme_override_colors/font_color = Color(1, 0.25, 0.2, 1)
-theme_override_font_sizes/font_size = 9
+theme_override_fonts/font = ExtResource("3_nwlpl")
+theme_override_font_sizes/font_size = 10
 text = "SIGNAL
 LOST"
 horizontal_alignment = 1
 vertical_alignment = 1
-autowrap_mode = 2
 
-[node name="Hint" type="Label" parent="." unique_id=868332201]
+[node name="Hint" type="TextureRect" parent="." unique_id=183285953]
 layout_mode = 0
-offset_top = 50.0
-offset_right = 64.0
-offset_bottom = 62.0
-theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_font_sizes/font_size = 4
-text = "E TO RETURN"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("5_rqv7u")

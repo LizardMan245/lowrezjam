@@ -133,7 +133,6 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -26.
 
 [node name="PlantRow1" type="StaticBody3D" parent="." unique_id=762835745]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
-collision_layer = 128
 collision_mask = 6
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PlantRow1" unique_id=745119947]
@@ -306,7 +305,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_yp3ic")
 
 [node name="PlantRow2" type="StaticBody3D" parent="." unique_id=1953162317]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6)
-collision_layer = 128
 collision_mask = 6
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PlantRow2" unique_id=125343950]
@@ -487,7 +485,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_yp3ic")
 
 [node name="PlantRow3" type="StaticBody3D" parent="." unique_id=533549431]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
-collision_layer = 128
 collision_mask = 6
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PlantRow3" unique_id=1035217676]
@@ -660,7 +657,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_yp3ic")
 
 [node name="PlantRow4" type="StaticBody3D" parent="." unique_id=781475497]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
-collision_layer = 128
 collision_mask = 6
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PlantRow4" unique_id=725796347]
@@ -833,7 +829,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_yp3ic")
 
 [node name="PlantRow5" type="StaticBody3D" parent="." unique_id=2127785114]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
-collision_layer = 128
 collision_mask = 6
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PlantRow5" unique_id=900742951]
@@ -1014,7 +1009,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_yp3ic")
 
 [node name="PlantRow6" type="StaticBody3D" parent="." unique_id=1779240489]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-collision_layer = 128
 collision_mask = 6
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="PlantRow6" unique_id=2054018309]

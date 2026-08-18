@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://hhivxkcywgcs" path="res://Assets/Scripts/Enemies/enemy_actor.gd" id="1_actor"]
 [ext_resource type="Script" uid="uid://bm32cghgkj3uu" path="res://Assets/Scripts/Enemies/enemy_state_machine.gd" id="2_machine"]
+[ext_resource type="Texture2D" uid="uid://du6erm13sxrnm" path="res://Assets/Sprites/Enemies/thermal.webp" id="3_4w4nf"]
 [ext_resource type="Shader" uid="uid://cqih1nlycex4g" path="res://Assets/Shaders/shimmer.gdshader" id="4_shimmer"]
 [ext_resource type="AudioStream" uid="uid://b10sh82pdwl0i" path="res://Assets/Audio/Sfx/thermalnoise.wav" id="5_6tsjg"]
 [ext_resource type="Script" uid="uid://cyvrtlfgus5v2" path="res://Assets/Scripts/Enemies/StateMachine/roam_walk_state.gd" id="5_walk"]
@@ -39,7 +40,7 @@ size = Vector2(1.8, 1.8)
 render_priority = 0
 shader = ExtResource("4_shimmer")
 shader_parameter/distortion = 0.1
-shader_parameter/edge_sharpness = 2.71
+shader_parameter/edge_sharpness = 1.0
 shader_parameter/tint = Color(0.16862746, 0.16470589, 0.49411765, 0.05490196)
 
 [node name="ThermalMonster" type="CharacterBody3D" unique_id=1724183330 groups=["enemy"]]
@@ -62,6 +63,7 @@ shape = SubResource("CapsuleShape3D_body")
 
 [node name="HeatBody" type="MeshInstance3D" parent="Visual" unique_id=1402273284]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+visible = false
 layers = 8
 cast_shadow = 0
 mesh = SubResource("SphereMesh_heat")
@@ -73,6 +75,13 @@ layers = 4
 cast_shadow = 0
 mesh = SubResource("QuadMesh_shimmer")
 surface_material_override/0 = SubResource("ShaderMaterial_shimmer")
+
+[node name="Sprite3D" type="Sprite3D" parent="Visual" unique_id=1065931956]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)
+layers = 8
+pixel_size = 0.008
+axis = 1
+texture = ExtResource("3_4w4nf")
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1355103282]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

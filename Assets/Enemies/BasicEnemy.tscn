@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://cmmp6b0pklxv4" path="res://Assets/Sprites/Placeholders/enemy.webp" id="1_8vmum"]
 [ext_resource type="Script" uid="uid://hhivxkcywgcs" path="res://Assets/Scripts/Enemies/enemy_actor.gd" id="2_actor"]
 [ext_resource type="Script" uid="uid://dvircusdp5mr5" path="res://Assets/Scripts/Debug/enemy_debug_view.gd" id="3_debug"]
+[ext_resource type="Script" uid="uid://dgk1r2kilm2e8" path="res://Assets/Enemies/aggro.gd" id="4_abalx"]
 [ext_resource type="Script" uid="uid://bm32cghgkj3uu" path="res://Assets/Scripts/Enemies/enemy_state_machine.gd" id="4_machine"]
 [ext_resource type="Script" uid="uid://cyvrtlfgus5v2" path="res://Assets/Scripts/Enemies/StateMachine/roam_walk_state.gd" id="5_walk"]
 [ext_resource type="Script" uid="uid://4etnb6ep6tdg" path="res://Assets/Scripts/Enemies/StateMachine/roam_idle_state.gd" id="6_idle"]
@@ -13,6 +14,7 @@
 [ext_resource type="Script" uid="uid://8v01qveaa76y" path="res://Assets/Scripts/Enemies/StateMachine/glance_state.gd" id="10_glance"]
 [ext_resource type="Script" uid="uid://gxd35utekoik" path="res://Assets/Scripts/Enemies/StateMachine/investigate_state.gd" id="11_investigate"]
 [ext_resource type="Script" uid="uid://dtwa2ejd1thq4" path="res://Assets/Scripts/Enemies/StateMachine/catch_up_state.gd" id="12_catchup"]
+[ext_resource type="AudioStream" uid="uid://dcrhbsk2xu68a" path="res://Assets/Audio/Sfx/monster_scream.mp3" id="12_g0ifm"]
 [ext_resource type="Script" uid="uid://dyfkifasi0wbf" path="res://Assets/Scripts/Enemies/StateMachine/scan_state.gd" id="13_scan"]
 [ext_resource type="Texture2D" uid="uid://cuu3spm2k2hhn" path="res://Assets/Enemies/eye_glow.tres" id="14_eyeglow"]
 [ext_resource type="AudioStream" uid="uid://bck72wxkdxdy" path="res://Assets/Audio/Placeholders/breath.mp3" id="20_382ll"]
@@ -24,6 +26,14 @@
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_body"]
 height = 1.0
 radius = 0.7
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_heatsprite"]
+render_priority = 0
+shader = ExtResource("92_invert")
+shader_parameter/source = ExtResource("1_8vmum")
+shader_parameter/invert = true
+shader_parameter/flatten = false
+shader_parameter/tint = Color(1, 1, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_cny37"]
 size = Vector3(0.18615723, 0.14892578, 0.18269348)
@@ -49,14 +59,6 @@ disable_receive_shadows = true
 billboard_mode = 1
 billboard_keep_scale = true
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_heatsprite"]
-render_priority = 0
-shader = ExtResource("92_invert")
-shader_parameter/source = ExtResource("1_8vmum")
-shader_parameter/invert = true
-shader_parameter/flatten = false
-shader_parameter/tint = Color(1, 1, 1, 1)
-
 [node name="Basicenemy" type="CharacterBody3D" unique_id=1377881211 groups=["enemy"]]
 collision_layer = 4
 collision_mask = 129
@@ -67,9 +69,10 @@ eye_height = 1.0
 detection_time = 0.3
 peripheral_fill_scale = 0.4
 peripheral_falloff = 1.8
-hearing_sensitivity = 2.05
+hearing_range_scale = 2.0
+hearing_sensitivity = 5.25
 loud_noise_threshold = 0.32
-notice_cooldown = 1.2
+notice_cooldown = 1.0
 turn_speed = 5.0
 brake_rate = 10.0
 spots_to_try = 15
@@ -79,30 +82,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("CylinderShape3D_body")
 
 [node name="Visual" type="Node3D" parent="." unique_id=1024778311]
-
-[node name="eye" type="MeshInstance3D" parent="Visual" unique_id=457549527]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.3042958, 0.6161619, -0.9745818)
-cast_shadow = 0
-mesh = SubResource("BoxMesh_cny37")
-surface_material_override/0 = SubResource("StandardMaterial3D_rldou")
-
-[node name="eye2" type="MeshInstance3D" parent="Visual" unique_id=8998904]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.29870483, 0.6161619, -0.9745818)
-cast_shadow = 0
-mesh = SubResource("BoxMesh_cny37")
-surface_material_override/0 = SubResource("StandardMaterial3D_rldou")
-
-[node name="EyeGlow" type="MeshInstance3D" parent="Visual" unique_id=311204577]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2858398, 0.5160032, -0.9745818)
-cast_shadow = 0
-mesh = SubResource("QuadMesh_eyeglow")
-surface_material_override/0 = SubResource("StandardMaterial3D_eyeglow")
-
-[node name="EyeGlow2" type="MeshInstance3D" parent="Visual" unique_id=133521734]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2983582, 0.5160032, -0.9745818)
-cast_shadow = 0
-mesh = SubResource("QuadMesh_eyeglow")
-surface_material_override/0 = SubResource("StandardMaterial3D_eyeglow")
 
 [node name="Sprite3D" type="Sprite3D" parent="Visual" unique_id=1868556659]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0.5490232, 0)
@@ -120,6 +99,38 @@ pixel_size = 0.15
 axis = 1
 texture_filter = 0
 texture = ExtResource("1_8vmum")
+
+[node name="Aggro" type="Node3D" parent="Visual" unique_id=1070880653]
+visible = false
+script = ExtResource("4_abalx")
+
+[node name="eye" type="MeshInstance3D" parent="Visual/Aggro" unique_id=457549527]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.3042958, 0.6161619, -0.9745818)
+layers = 2
+cast_shadow = 0
+mesh = SubResource("BoxMesh_cny37")
+surface_material_override/0 = SubResource("StandardMaterial3D_rldou")
+
+[node name="eye2" type="MeshInstance3D" parent="Visual/Aggro" unique_id=8998904]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.29870483, 0.6161619, -0.9745818)
+layers = 2
+cast_shadow = 0
+mesh = SubResource("BoxMesh_cny37")
+surface_material_override/0 = SubResource("StandardMaterial3D_rldou")
+
+[node name="EyeGlow" type="MeshInstance3D" parent="Visual/Aggro" unique_id=311204577]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2858398, 0.5160032, -0.9745818)
+layers = 2
+cast_shadow = 0
+mesh = SubResource("QuadMesh_eyeglow")
+surface_material_override/0 = SubResource("StandardMaterial3D_eyeglow")
+
+[node name="EyeGlow2" type="MeshInstance3D" parent="Visual/Aggro" unique_id=133521734]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2983582, 0.5160032, -0.9745818)
+layers = 2
+cast_shadow = 0
+mesh = SubResource("QuadMesh_eyeglow")
+surface_material_override/0 = SubResource("StandardMaterial3D_eyeglow")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=829769888]
 path_desired_distance = 0.4
@@ -168,6 +179,8 @@ next_state_weights = Array[float]([0.6, 0.4])
 script = ExtResource("7_alert")
 default_duration = 1.0
 sound = ExtResource("7_0s84d")
+relock_duration = 0.5
+relock_sound = ExtResource("12_g0ifm")
 animation = &"roar"
 interrupt_on_detection = false
 vision_angle_override = 360.0

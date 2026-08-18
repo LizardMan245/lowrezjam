@@ -1,5 +1,6 @@
 extends Control
 
+@export_group("Levels")
 @export_range(0, 21, 1) var ram: int
 @export var speeds := [0.0, 2.0, 5.0, 8.0]
 @export var turn_speeds := [0.0, 3.0, 6.0, 8.0]
@@ -9,7 +10,14 @@ extends Control
 @export var echo_radii := [0.0, 14.0, 30.0]
 @export var camera_noise := [0.0, 0.28, 0.12, 0.0]
 
+@export_group("Assets")
 @export var options = Array([], TYPE_NODE_PATH, "", null)
+@export var select_up_sfx: AudioStream
+@export var select_down_sfx: AudioStream
+@export var level_up_sfx: AudioStream
+@export var level_down_sfx: AudioStream
+
+
 var selected: int = 0
 
 var in_menu: bool = false
@@ -26,6 +34,7 @@ func display_ram(obj: TextureRect, val: int) -> void:
 
 func toggle_menu() -> void:
 	if Input.is_action_just_pressed("menu"):
+		$Sfx/ConsoleSfx.play()
 		$Menu.visible = not $Menu.is_visible_in_tree()
 		in_menu = $Menu.is_visible_in_tree()
 
@@ -39,7 +48,8 @@ func option_selection() -> void:
 			selected += 1
 		else:
 			selected = 0
-		
+		$Sfx/SelectSfx.stream = select_down_sfx
+		$Sfx/SelectSfx.play()
 		get_node(options[selected]).select()
 	
 	if Input.is_action_just_pressed("look_up"):
@@ -49,7 +59,8 @@ func option_selection() -> void:
 			selected -= 1
 		else:
 			selected = options_num -1
-		
+		$Sfx/SelectSfx.stream = select_up_sfx
+		$Sfx/SelectSfx.play()
 		get_node(options[selected]).select()
 
 func option_effect(opt) -> void:
@@ -99,7 +110,7 @@ func _process(delta: float) -> void:
 
 func popup_doer(state: String, sprite, dur: float) -> void:
 	var popup_rect = $TextureRect as TextureRect
-
+	$Sfx/ConsoleSfx.play()
 	match state:
 		"up":
 			popup_rect.texture = sprite
@@ -182,3 +193,8 @@ func _tick_success(delta: float) -> void:
 	if text != null:
 		text.visible = false
 		text.text = "DOWNLOADED"
+
+
+func show_interaction(is_on: bool, text: String = "") -> void:
+	$Interaction.text = text
+	$Interaction.visible = is_on
