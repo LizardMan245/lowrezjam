@@ -1,0 +1,117 @@
+[gd_scene format=3 uid="uid://de0csxqb8ufii"]
+
+[ext_resource type="Script" uid="uid://cscqx50akpn3d" path="res://Assets/Map/Scripts/door.gd" id="1_uem52"]
+[ext_resource type="AudioStream" uid="uid://b03dxm2gw3vlt" path="res://Assets/Audio/Sfx/door_open.mp3" id="2_jj83q"]
+[ext_resource type="AudioStream" uid="uid://5jwmotr8pgso" path="res://Assets/Audio/Sfx/door_close.mp3" id="3_gemlu"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_88646"]
+size = Vector3(1.8, 5, 0.6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cctvr"]
+size = Vector3(1.8, 5, 0.6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uem52"]
+albedo_color = Color(0.06719999, 0.48, 0.31487995, 1)
+metallic = 1.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7rnak"]
+size = Vector3(0.2, 5, 0.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_88646"]
+size = Vector3(0.2, 5, 0.8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8spo7"]
+albedo_color = Color(0, 0, 0, 1)
+metallic = 1.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bfjqa"]
+size = Vector3(0.2, 5, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_7rnak"]
+size = Vector3(0.2, 5, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cctvr"]
+albedo_color = Color(0, 0, 0, 1)
+metallic = 1.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4ion3"]
+size = Vector3(4, 5, 3.5)
+
+[node name="Door" type="Node3D" unique_id=811581937]
+script = ExtResource("1_uem52")
+open_sfx = ExtResource("2_jj83q")
+close_sfx = ExtResource("3_gemlu")
+
+[node name="LeftSide" type="RigidBody3D" parent="." unique_id=411654906]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+collision_layer = 8
+collision_mask = 2
+gravity_scale = 0.0
+freeze = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LeftSide" unique_id=1593690897]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0, 0)
+shape = SubResource("BoxShape3D_88646")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LeftSide/CollisionShape3D" unique_id=1277975460]
+mesh = SubResource("BoxMesh_cctvr")
+surface_material_override/0 = SubResource("StandardMaterial3D_uem52")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="LeftSide" unique_id=1021290520]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 0, -0.1)
+shape = SubResource("BoxShape3D_7rnak")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LeftSide/CollisionShape3D2" unique_id=1465430964]
+mesh = SubResource("BoxMesh_88646")
+surface_material_override/0 = SubResource("StandardMaterial3D_8spo7")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="LeftSide" unique_id=262399398]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 0, -0.4)
+shape = SubResource("BoxShape3D_bfjqa")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LeftSide/CollisionShape3D3" unique_id=69276685]
+mesh = SubResource("BoxMesh_7rnak")
+surface_material_override/0 = SubResource("StandardMaterial3D_cctvr")
+
+[node name="RightSide" type="RigidBody3D" parent="." unique_id=1423715584]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+collision_layer = 8
+collision_mask = 2
+gravity_scale = 0.0
+freeze = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RightSide" unique_id=1992529574]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0, 0)
+shape = SubResource("BoxShape3D_88646")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RightSide/CollisionShape3D" unique_id=1396421694]
+mesh = SubResource("BoxMesh_cctvr")
+surface_material_override/0 = SubResource("StandardMaterial3D_uem52")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="RightSide" unique_id=354652191]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 0, 0.1)
+shape = SubResource("BoxShape3D_7rnak")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RightSide/CollisionShape3D2" unique_id=514611790]
+mesh = SubResource("BoxMesh_88646")
+surface_material_override/0 = SubResource("StandardMaterial3D_8spo7")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="RightSide" unique_id=1088579202]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 0, 0.4)
+shape = SubResource("BoxShape3D_bfjqa")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RightSide/CollisionShape3D3" unique_id=577990803]
+mesh = SubResource("BoxMesh_7rnak")
+surface_material_override/0 = SubResource("StandardMaterial3D_cctvr")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1004956618]
+collision_layer = 0
+collision_mask = 6
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1953532353]
+shape = SubResource("BoxShape3D_4ion3")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1135619389]
+
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
+[connection signal="body_exited" from="Area3D" to="." method="_on_area_3d_body_exited"]

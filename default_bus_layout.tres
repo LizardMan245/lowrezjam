@@ -3,6 +3,29 @@
 [sub_resource type="AudioEffectReverb" id="AudioEffectReverb_j3pel"]
 resource_name = "Reverb"
 
+[sub_resource type="AudioEffectCapture" id="AudioEffectCapture_crush"]
+resource_name = "Capture"
+
+[sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_crush"]
+resource_name = "Silence"
+volume_db = -80.0
+
 [resource]
-bus/0/effect/0/effect = SubResource("AudioEffectReverb_j3pel")
-bus/0/effect/0/enabled = true
+bus/1/name = &"Reverb"
+bus/1/solo = false
+bus/1/mute = false
+bus/1/bypass_fx = false
+bus/1/volume_db = 0.0
+bus/1/send = &"Crush"
+bus/1/effect/0/effect = SubResource("AudioEffectReverb_j3pel")
+bus/1/effect/0/enabled = true
+bus/2/name = &"Crush"
+bus/2/solo = false
+bus/2/mute = false
+bus/2/bypass_fx = false
+bus/2/volume_db = 0.0
+bus/2/send = &"Master"
+bus/2/effect/0/effect = SubResource("AudioEffectCapture_crush")
+bus/2/effect/0/enabled = true
+bus/2/effect/1/effect = SubResource("AudioEffectAmplify_crush")
+bus/2/effect/1/enabled = true

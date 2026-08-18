@@ -8,3 +8,8 @@ export_presets.cfg
 # OS/editor junk
 .DS_Store
 Thumbs.db
+
+# thermal capture output
+shots/
+
+Build/

@@ -1,0 +1,242 @@
+[gd_scene format=3 uid="uid://c668sf2ho1lj6"]
+
+[ext_resource type="Texture2D" uid="uid://0dm3o6b258y5" path="res://Assets/Sprites/UI/ram_empty.png" id="1_fyqef"]
+[ext_resource type="Script" uid="uid://dd2qsu6sqrqdl" path="res://Assets/Player/UI/Scripts/ui.gd" id="1_nf4gj"]
+[ext_resource type="Texture2D" uid="uid://nn35dqijpmlk" path="res://Assets/Sprites/UI/menu_bg.png" id="2_2246s"]
+[ext_resource type="AudioStream" uid="uid://icppyxh1f8lb" path="res://Assets/Audio/Sfx/delect_up.mp3" id="2_owcae"]
+[ext_resource type="Texture2D" uid="uid://8nfj6dhp688a" path="res://Assets/Sprites/UI/Camera/cam_off.png" id="3_d42i4"]
+[ext_resource type="Texture2D" uid="uid://bblgxsmm2p1cj" path="res://Assets/Sprites/UI/ram_full.png" id="3_nltto"]
+[ext_resource type="AudioStream" uid="uid://ce00sjv2p5nnt" path="res://Assets/Audio/Sfx/delect_down.mp3" id="3_ptrwr"]
+[ext_resource type="Texture2D" uid="uid://b4md8pfjat110" path="res://Assets/Sprites/UI/Camera/cam_3.png" id="3_q7pk6"]
+[ext_resource type="Texture2D" uid="uid://cjitraa6is57n" path="res://Assets/Sprites/UI/Camera/cam_3_sel.png" id="3_smcll"]
+[ext_resource type="AudioStream" uid="uid://b1cn4diobjtlw" path="res://Assets/Audio/Sfx/turn_up.mp3" id="4_i3pym"]
+[ext_resource type="Texture2D" uid="uid://chpiqf8bjjn2e" path="res://Assets/Sprites/UI/Movement/mov_3.png" id="4_m78vo"]
+[ext_resource type="Script" uid="uid://c1i5mvc5fxind" path="res://Assets/Player/UI/Scripts/menu_option.gd" id="4_smcll"]
+[ext_resource type="AudioStream" uid="uid://btjg7krfthat1" path="res://Assets/Audio/Sfx/turn_down.mp3" id="5_as5xl"]
+[ext_resource type="Texture2D" uid="uid://sq2lkgru3xxn" path="res://Assets/Sprites/UI/Camera/cam_1.png" id="5_fcexb"]
+[ext_resource type="Texture2D" uid="uid://bymm1tvdltoek" path="res://Assets/Sprites/UI/Movement/mov_3_sel.png" id="5_ryf15"]
+[ext_resource type="Texture2D" uid="uid://bq8erkiuhhgnv" path="res://Assets/Sprites/UI/Camera/cam_2.png" id="6_v4f2e"]
+[ext_resource type="Texture2D" uid="uid://d8hfj5fd7bql" path="res://Assets/Sprites/UI/Camera/cam_off_sel.png" id="8_fe2sg"]
+[ext_resource type="Texture2D" uid="uid://d4bklphy5e84f" path="res://Assets/Sprites/UI/Heat vision/hvis_2.png" id="8_g0wmg"]
+[ext_resource type="Texture2D" uid="uid://bfihpq4d0i44x" path="res://Assets/Sprites/UI/Heat vision/hvis_2_sel.png" id="9_4vbiv"]
+[ext_resource type="Texture2D" uid="uid://bvm3qq05hm15w" path="res://Assets/Sprites/UI/Camera/cam_1_sel.png" id="9_jd57c"]
+[ext_resource type="Texture2D" uid="uid://u4ddwpmob4uq" path="res://Assets/Sprites/UI/Echo/echo_2.png" id="10_3r70p"]
+[ext_resource type="Texture2D" uid="uid://b42r54tauqw7p" path="res://Assets/Sprites/UI/Camera/cam_2_sel.png" id="10_85lyl"]
+[ext_resource type="Texture2D" uid="uid://cq4flxbyab56o" path="res://Assets/Sprites/UI/Echo/echo_2_sel.png" id="11_8fs27"]
+[ext_resource type="Texture2D" uid="uid://cw13rlsvjf18j" path="res://Assets/Sprites/UI/Movement/mov_off.png" id="12_mplvk"]
+[ext_resource type="Texture2D" uid="uid://cde1ydbeqmsy1" path="res://Assets/Sprites/UI/Movement/mov_1.png" id="13_pmm21"]
+[ext_resource type="Texture2D" uid="uid://qiu1pl2y5mql" path="res://Assets/Sprites/UI/Movement/mov_2.png" id="14_nbcfj"]
+[ext_resource type="Texture2D" uid="uid://n57pos3875ud" path="res://Assets/Sprites/UI/Movement/mov_off_sel.png" id="16_3g2cg"]
+[ext_resource type="Texture2D" uid="uid://bbe1djk4nku3i" path="res://Assets/Sprites/UI/Movement/mov_1_sel.png" id="17_wc4t8"]
+[ext_resource type="Texture2D" uid="uid://dsldv507ufmy5" path="res://Assets/Sprites/UI/Movement/mov_2_sel.png" id="18_dx4fu"]
+[ext_resource type="Texture2D" uid="uid://bj2wf8hn6egc2" path="res://Assets/Sprites/UI/Heat vision/hvis_off.png" id="20_wc4t8"]
+[ext_resource type="Texture2D" uid="uid://btxqhfjljfixd" path="res://Assets/Sprites/UI/Heat vision/hvis_1.png" id="21_dx4fu"]
+[ext_resource type="Texture2D" uid="uid://chs3wgf71y4nh" path="res://Assets/Sprites/UI/Heat vision/hvis_off_sel.png" id="23_kjfio"]
+[ext_resource type="Texture2D" uid="uid://12xn7x3y4wbc" path="res://Assets/Sprites/UI/Heat vision/hvis_1_sel.png" id="24_0o3wc"]
+[ext_resource type="Texture2D" uid="uid://d1hskjqf3lcqt" path="res://Assets/Sprites/UI/Echo/echo_off.png" id="26_3g2cg"]
+[ext_resource type="Texture2D" uid="uid://c0tcyrowtesuu" path="res://Assets/Sprites/UI/Echo/echo_1.png" id="27_ebfgw"]
+[ext_resource type="Texture2D" uid="uid://e3j4lxrugpeb" path="res://Assets/Sprites/UI/Echo/echo_off_sel.png" id="29_mirbq"]
+[ext_resource type="Texture2D" uid="uid://d1emq7rofx7p7" path="res://Assets/Sprites/UI/Echo/echo_1_sel.png" id="30_ipwe8"]
+[ext_resource type="Texture2D" uid="uid://dbir5bptp5erh" path="res://Assets/Sprites/UI/ram_active.png" id="34_mirbq"]
+[ext_resource type="Texture2D" uid="uid://h5ww3vphncl" path="res://Assets/Sprites/UI/Screens/tv_screen.png" id="35_wmls6"]
+[ext_resource type="FontFile" uid="uid://cd6uoxe0jyqnq" path="res://Assets/Sprites/big-shot.ttf" id="38_mo57o"]
+[ext_resource type="AudioStream" uid="uid://kfdsvc5roye6" path="res://Assets/Audio/Sfx/ping.wav" id="40_3stq4"]
+[ext_resource type="Texture2D" uid="uid://byv04vlnm6j3c" path="res://Assets/Sprites/UI/Screens/useoverlay.png" id="40_a6i80"]
+[ext_resource type="AudioStream" uid="uid://kt4eauevrmsr" path="res://Assets/Audio/Sfx/console.mp3" id="43_0u0jk"]
+[ext_resource type="FontFile" uid="uid://6y3ubcokl4pq" path="res://Assets/Sprites/UI/PxPlus_IBM_BIOS.ttf" id="45_as5xl"]
+[ext_resource type="Texture2D" uid="uid://ddsyb6nbqxr5y" path="res://Assets/Sprites/UI/Held data/data_off_sel.png" id="93_datasel"]
+[ext_resource type="Texture2D" uid="uid://mkvymnoogpep" path="res://Assets/Sprites/UI/Held data/data_on.png" id="95_dataon"]
+[ext_resource type="Texture2D" uid="uid://dyn4mrf7xm7t8" path="res://Assets/Sprites/UI/Held data/data_off.png" id="96_dataoff"]
+[ext_resource type="Script" uid="uid://c5lnh70xnhn1x" path="res://Assets/Player/UI/Scripts/inventory.gd" id="97_inv"]
+[ext_resource type="Script" uid="uid://cf2kjaercmadd" path="res://Assets/Player/UI/Scripts/echo_ping.gd" id="99_echo"]
+
+[node name="UI" type="Control" unique_id=1321854455 groups=["ui"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nf4gj")
+options = Array[NodePath]([NodePath("Menu/Camera"), NodePath("Menu/Movement"), NodePath("Menu/HeatVision"), NodePath("Menu/EchoLocation"), NodePath("Menu/HeldData")])
+select_up_sfx = ExtResource("2_owcae")
+select_down_sfx = ExtResource("3_ptrwr")
+level_up_sfx = ExtResource("4_i3pym")
+level_down_sfx = ExtResource("5_as5xl")
+
+[node name="Menu" type="TextureRect" parent="." unique_id=2113272477]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+texture = ExtResource("2_2246s")
+
+[node name="Camera" type="TextureRect" parent="Menu" unique_id=713838503]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+texture = ExtResource("3_d42i4")
+script = ExtResource("4_smcll")
+levels = 3
+level_val = 1
+base_sprites = [ExtResource("3_d42i4"), ExtResource("5_fcexb"), ExtResource("6_v4f2e"), ExtResource("3_q7pk6")]
+sel_sprites = [ExtResource("8_fe2sg"), ExtResource("9_jd57c"), ExtResource("10_85lyl"), ExtResource("3_smcll")]
+
+[node name="Movement" type="TextureRect" parent="Menu" unique_id=2056300362]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("12_mplvk")
+script = ExtResource("4_smcll")
+levels = 3
+level_val = 1
+base_sprites = [ExtResource("12_mplvk"), ExtResource("13_pmm21"), ExtResource("14_nbcfj"), ExtResource("4_m78vo")]
+sel_sprites = [ExtResource("16_3g2cg"), ExtResource("17_wc4t8"), ExtResource("18_dx4fu"), ExtResource("5_ryf15")]
+
+[node name="HeatVision" type="TextureRect" parent="Menu" unique_id=100513986]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("20_wc4t8")
+script = ExtResource("4_smcll")
+levels = 2
+level_val = 4
+base_sprites = [ExtResource("20_wc4t8"), ExtResource("21_dx4fu"), ExtResource("8_g0wmg")]
+sel_sprites = [ExtResource("23_kjfio"), ExtResource("24_0o3wc"), ExtResource("9_4vbiv")]
+
+[node name="EchoLocation" type="TextureRect" parent="Menu" unique_id=5931996]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("26_3g2cg")
+script = ExtResource("4_smcll")
+levels = 2
+level_val = 2
+base_sprites = [ExtResource("26_3g2cg"), ExtResource("27_ebfgw"), ExtResource("10_3r70p")]
+sel_sprites = [ExtResource("29_mirbq"), ExtResource("30_ipwe8"), ExtResource("11_8fs27")]
+
+[node name="HeldData" type="TextureRect" parent="Menu" unique_id=414400459]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+texture = ExtResource("96_dataoff")
+script = ExtResource("4_smcll")
+base_sprites = [ExtResource("96_dataoff")]
+sel_sprites = [ExtResource("93_datasel")]
+
+[node name="Interaction" type="Label" parent="." unique_id=1704394261]
+visible = false
+layout_mode = 0
+offset_left = 10.0
+offset_top = 56.0
+offset_right = 58.0
+offset_bottom = 64.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("38_mo57o")
+theme_override_font_sizes/font_size = 6
+text = "OPEN CONSOLE"
+
+[node name="Interaction2" type="Label" parent="Interaction" unique_id=1773255823]
+layout_mode = 0
+offset_left = -7.0
+offset_right = 41.0
+offset_bottom = 8.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("38_mo57o")
+theme_override_font_sizes/font_size = 6
+text = "O:"
+
+[node name="Inventory" type="Node" parent="." unique_id=2024670748]
+script = ExtResource("97_inv")
+icon_off = ExtResource("96_dataoff")
+icon_on = ExtResource("95_dataon")
+icon = NodePath("../Menu/HeldData")
+
+[node name="Ram" type="Node" parent="." unique_id=1430664327]
+
+[node name="EmptyRam" type="TextureRect" parent="Ram" unique_id=253096496]
+visible = false
+offset_right = 64.0
+offset_bottom = 64.0
+texture = ExtResource("1_fyqef")
+
+[node name="ActiveRam" type="TextureRect" parent="Ram" unique_id=1867351115]
+visible = false
+offset_left = -63.0
+offset_right = 1.0
+offset_bottom = 64.0
+texture = ExtResource("34_mirbq")
+
+[node name="UsedRam" type="TextureRect" parent="Ram" unique_id=1212638373]
+offset_left = -63.0
+offset_right = 1.0
+offset_bottom = 64.0
+texture = ExtResource("3_nltto")
+
+[node name="Echo" type="Control" parent="." unique_id=2093420793]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("99_echo")
+blip_color = Color(0.9372549, 0, 0, 1)
+
+[node name="Ping" type="AudioStreamPlayer" parent="Echo" unique_id=1203453948]
+stream = ExtResource("40_3stq4")
+volume_db = -7.0
+
+[node name="Download" type="ColorRect" parent="." unique_id=681451032]
+visible = false
+layout_mode = 0
+offset_left = 12.0
+offset_top = 52.0
+offset_right = 52.0
+offset_bottom = 56.0
+color = Color(0.05, 0.09, 0.11, 0.85)
+
+[node name="Fill" type="ColorRect" parent="Download" unique_id=838847601]
+layout_mode = 0
+offset_bottom = 4.0
+color = Color(0.34901962, 1, 0.14509805, 1)
+
+[node name="Success" type="Label" parent="." unique_id=1714751438]
+visible = false
+layout_mode = 0
+offset_top = 16.0
+offset_right = 64.0
+offset_bottom = 79.999954
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("45_as5xl")
+theme_override_font_sizes/font_size = 6
+text = "DOWNLOADED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Prompt" type="TextureRect" parent="." unique_id=1489731220]
+visible = false
+layout_mode = 0
+offset_top = 34.0
+offset_right = 64.0
+offset_bottom = 42.0
+texture = ExtResource("40_a6i80")
+stretch_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1733811465]
+layout_mode = 0
+offset_top = 64.0
+offset_right = 64.0
+offset_bottom = 128.0
+texture = ExtResource("35_wmls6")
+
+[node name="Sfx" type="Node" parent="." unique_id=538810320]
+
+[node name="ConsoleSfx" type="AudioStreamPlayer" parent="Sfx" unique_id=836948900]
+stream = ExtResource("43_0u0jk")
+
+[node name="SelectSfx" type="AudioStreamPlayer" parent="Sfx" unique_id=282457207]
+volume_db = -10.0
+
+[node name="LevelSfx" type="AudioStreamPlayer" parent="Sfx" unique_id=1713477480]
+volume_db = -10.0
