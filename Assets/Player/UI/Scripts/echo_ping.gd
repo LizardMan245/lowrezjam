@@ -1,12 +1,11 @@
 extends Control
 
-@export_range(0.0, 60.0, 0.5) var radius := 0.0 : set = set_radius
+@export_range(0.0, 60.0, 0.5) var radius := 0.0
 @export_range(0.2, 10.0, 0.1) var ping_interval := 2.5
 @export_range(0.1, 4.0, 0.1) var blip_seconds := 0.9
 @export var blip_color := Color(1.0, 0.18, 0.14, 1.0)
 @export_range(1, 8) var blip_size := 2
 @export_range(1, 32) var pool_size := 8
-@export_range(0.0, 1.0, 0.05) var ping_loudness := 0.8
 
 var _blips: Array[ColorRect] = []
 var _life := PackedFloat32Array()
@@ -16,15 +15,6 @@ var _camera: Camera3D
 var _ring: Node3D
 var _speaker: AudioStreamPlayer
 var _waiting: Array[Node3D] = []
-
-
-func set_radius(value: float) -> void:
-	radius = value
-	if not is_inside_tree():
-		return
-	var crush := get_tree().get_first_node_in_group("bitcrush")
-	if crush != null:
-		crush.strength = 0.0 if radius > 0.0 else 1.0
 
 
 func _ready() -> void:
@@ -72,8 +62,6 @@ func ping() -> int:
 			_waiting.append(mob)
 	if _ring != null:
 		_ring.pulse(radius)
-	if _player != null and _player.has_method("make_noise"):
-		_player.make_noise(ping_loudness)
 	if _speaker != null and _speaker.stream != null:
 		_speaker.play()
 	return _waiting.size()

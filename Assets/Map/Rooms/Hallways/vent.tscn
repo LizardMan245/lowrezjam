@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://fl05skn4eb8j" path="res://Assets/Sprites/vent_floor.png" id="1_i4p5n"]
 [ext_resource type="Script" uid="uid://ciucdh5m3h5ie" path="res://Assets/Map/Scripts/vent.gd" id="1_r3hg0"]
 [ext_resource type="Texture2D" uid="uid://c4ymnompmt5rg" path="res://Assets/Sprites/vent_floor_corner.png" id="2_tq5sl"]
+[ext_resource type="AudioStream" uid="uid://b8ynk7cqt14vn" path="res://Assets/Audio/Sfx/vent_closemp3.mp3" id="4_tu0yp"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_88646"]
 size = Vector2(2, 2)
@@ -62,7 +63,7 @@ size = Vector3(2, 5, 0.5)
 size = Vector3(1, 5, 2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_7rnak"]
-size = Vector3(12, 5, 3.8)
+size = Vector3(12, 5, 3.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_l2g5c"]
 size = Vector3(2, 5, 0.5)
@@ -212,7 +213,7 @@ monitoring = false
 shape = SubResource("BoxShape3D_88646")
 
 [node name="Closer" type="Area3D" parent="Areas" unique_id=1743751356]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0.75)
 collision_layer = 0
 collision_mask = 2
 
@@ -223,7 +224,6 @@ shape = SubResource("BoxShape3D_7rnak")
 
 [node name="Wall1" type="StaticBody3D" parent="ClosingWalls" unique_id=272245803]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 2.5, 2.25)
-collision_layer = 128
 collision_mask = 6
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ClosingWalls/Wall1" unique_id=233431430]
@@ -235,7 +235,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_r0ukk")
 
 [node name="Wall2" type="StaticBody3D" parent="ClosingWalls" unique_id=202241555]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.5, 2.25)
-collision_layer = 128
 collision_mask = 6
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ClosingWalls/Wall2" unique_id=192110213]
@@ -248,6 +247,14 @@ surface_material_override/0 = SubResource("StandardMaterial3D_r0ukk")
 [node name="Timer" type="Timer" parent="." unique_id=726891681]
 wait_time = 60.0
 one_shot = true
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1544438586]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 2)
+stream = ExtResource("4_tu0yp")
+
+[node name="AudioStreamPlayer3D2" type="AudioStreamPlayer3D" parent="." unique_id=1783950903]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 2)
+stream = ExtResource("4_tu0yp")
 
 [connection signal="body_entered" from="Areas/TpTurnOn" to="." method="_on_tp_turn_on_body_entered"]
 [connection signal="body_entered" from="Areas/TpTurnOn2" to="." method="_on_tp_turn_on_body_entered"]

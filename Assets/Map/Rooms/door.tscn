@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://de0csxqb8ufii"]
 
 [ext_resource type="Script" uid="uid://cscqx50akpn3d" path="res://Assets/Map/Scripts/door.gd" id="1_uem52"]
+[ext_resource type="AudioStream" uid="uid://b03dxm2gw3vlt" path="res://Assets/Audio/Sfx/door_open.mp3" id="2_jj83q"]
+[ext_resource type="AudioStream" uid="uid://5jwmotr8pgso" path="res://Assets/Audio/Sfx/door_close.mp3" id="3_gemlu"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_88646"]
 size = Vector3(1.8, 5, 0.6)
@@ -37,6 +39,8 @@ size = Vector3(4, 5, 3.5)
 
 [node name="Door" type="Node3D" unique_id=811581937]
 script = ExtResource("1_uem52")
+open_sfx = ExtResource("2_jj83q")
+close_sfx = ExtResource("3_gemlu")
 
 [node name="LeftSide" type="RigidBody3D" parent="." unique_id=411654906]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
@@ -106,6 +110,8 @@ collision_mask = 6
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1953532353]
 shape = SubResource("BoxShape3D_4ion3")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1135619389]
 
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
 [connection signal="body_exited" from="Area3D" to="." method="_on_area_3d_body_exited"]

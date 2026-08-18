@@ -1,8 +1,375 @@
 [gd_scene format=3 uid="uid://3enoqrgngi2g"]
 
-[ext_resource type="Script" uid="uid://dl2t7tw3lsmwn" path="res://Assets/Scripts/screen_nav.gd" id="1_nav"]
+[ext_resource type="Script" uid="uid://wt2k3haathrv" path="res://Assets/Menu/menu.gd" id="1_yk7l8"]
 [ext_resource type="AudioStream" uid="uid://b5p8nejy16x8o" path="res://Assets/Audio/OST/booting_up.mp3" id="2_boot"]
 [ext_resource type="FontFile" uid="uid://6y3ubcokl4pq" path="res://Assets/Sprites/UI/PxPlus_IBM_BIOS.ttf" id="3_7ghhb"]
+[ext_resource type="Texture2D" uid="uid://c6qfd152j3pb6" path="res://Assets/Menu/controls_1.png" id="3_cwlh8"]
+[ext_resource type="Shader" uid="uid://ctwj4jl657eap" path="res://Assets/Shaders/signal_lost.gdshader" id="3_so35q"]
+[ext_resource type="Texture2D" uid="uid://u0nihouu6ydy" path="res://Assets/Menu/stars_1.png" id="3_wrsav"]
+[ext_resource type="Texture2D" uid="uid://ckllq4qkxn1km" path="res://Assets/Menu/controls_2.png" id="4_fwooc"]
+[ext_resource type="Texture2D" uid="uid://def15rqmul1a" path="res://Assets/Menu/stars_2.png" id="4_r6ov2"]
+[ext_resource type="Texture2D" uid="uid://duvtgrcn7nhp8" path="res://Assets/Menu/controls_3.png" id="5_e1lsp"]
+[ext_resource type="Texture2D" uid="uid://5oht2qsq4g4c" path="res://Assets/Menu/stars_3.png" id="5_r6ov2"]
+[ext_resource type="AudioStream" uid="uid://kt4eauevrmsr" path="res://Assets/Audio/Sfx/console.mp3" id="6_e1lsp"]
+[ext_resource type="Texture2D" uid="uid://ihhitreaa6gs" path="res://Assets/Menu/moon.png" id="6_qg0ry"]
+[ext_resource type="Texture2D" uid="uid://rsofhfieu7lh" path="res://Assets/Menu/options.png" id="9_yk7l8"]
+[ext_resource type="AudioStream" uid="uid://cu4p1xhluoyyv" path="res://Assets/Audio/Sfx/game_start.mp3" id="13_fwooc"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gnmj0"]
+shader = ExtResource("3_so35q")
+shader_parameter/noise_amount = 0.2
+shader_parameter/band_speed = 9.0
+shader_parameter/tint = Color(0.75, 0.8, 0.85, 1)
+
+[sub_resource type="Animation" id="Animation_gnmj0"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BackgroundStuff/Title:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BackgroundStuff/Title:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("BackgroundStuff/FadeToWhite:color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.015686275, 0.019607844, 0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("BackgroundStuff/Static:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("BackgroundStuff/Space/Stars1:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("BackgroundStuff/Space/Stars2:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("BackgroundStuff/Space/Stars3:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("BackgroundStuff/Space/Moon:position")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(27.999998, 16.000002)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("BackgroundStuff/Space/Moon:visible")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_so35q"]
+resource_name = "menu_bootup"
+length = 38.400000000000006
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BackgroundStuff/Title:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(1.1690216, 1.2, 1.4, 2.7666662, 2.8, 3, 4.3666663, 4.4, 4.6000004, 5.9666667, 6.0000005, 6.2000003, 33.16902, 33.199997, 33.399998, 34.766663, 34.8, 35, 36.366665, 36.399998, 36.6, 37.966663, 38, 38.199997),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.017453292, 0.0, 0.0, 0.017453292, 0.0, 0.0, 0.017453292, 0.0, 0.0, 0.017453292, 0.0, 0.0, 0.017453292, 0.0, 0.0, 0.017453292, 0.0, 0.0, 0.017453292, 0.0, 0.0, 0.017453292, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BackgroundStuff/Title:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.36902225, 0.4, 1.5666667, 1.6, 1.9666667, 1.9999999, 3.1666667, 3.2, 3.5666666, 3.6, 4.766667, 4.8, 5.1666665, 5.2000003, 25.599998, 25.799683, 31.999998, 32.36902, 32.399998, 33.566666, 33.6, 33.966663, 33.999996, 35.166664, 35.199997, 35.566666, 35.6, 36.766666, 36.8, 37.166664, 37.199997),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.98, 0.98), Vector2(0.9802085, 0.9802085), Vector2(1, 1), Vector2(1, 1), Vector2(0.98, 0.98), Vector2(0.9802085, 0.9802085), Vector2(1, 1), Vector2(1, 1), Vector2(0.98, 0.98), Vector2(0.98021764, 0.98021764), Vector2(1, 1), Vector2(1, 1), Vector2(0.98, 0.98), Vector2(0.98021764, 0.98021764), Vector2(0.995, 0.995), Vector2(0.97, 0.97), Vector2(1, 1), Vector2(0.97, 0.97), Vector2(0.9802085, 0.9802085), Vector2(1, 1), Vector2(1, 1), Vector2(0.98, 0.98), Vector2(0.9802085, 0.9802085), Vector2(1, 1), Vector2(1, 1), Vector2(0.98, 0.98), Vector2(0.98021764, 0.98021764), Vector2(1, 1), Vector2(1, 1), Vector2(0.98, 0.98), Vector2(0.98021764, 0.98021764), Vector2(1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("BackgroundStuff/FadeToWhite:color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(4.8, 6.3999996, 6.4001, 24, 25.6, 32),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Color(0.015686275, 0.019607844, 0, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(0.52924263, 0.53111815, 0.52174056, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("BackgroundStuff/Static:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(6.4, 6.4001, 25.599998),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, false, true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("BackgroundStuff/Space/Stars1:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(6.4000006, 12.799, 12.799924, 25.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, -32)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("BackgroundStuff/Space/Stars2:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(6.4000006, 9.599, 9.6, 12.799, 12.799924, 25.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("BackgroundStuff/Space/Stars3:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(6.4, 7.9989996, 7.9999995, 9.598999, 9.6, 11.199, 11.2, 12.799, 12.799885, 19.199, 19.2, 25.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("BackgroundStuff/Space/Moon:position")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(12.4, 12.8, 25.599998),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(28, -100), Vector2(27.999998, 16.000002), Vector2(28, 28)]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("BackgroundStuff/Space/Moon:visible")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 12.4, 25.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gnmj0"]
+_data = {
+&"RESET": SubResource("Animation_gnmj0"),
+&"menu_bootup": SubResource("Animation_so35q")
+}
+
+[sub_resource type="Animation" id="Animation_wrsav"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BackgroundStuff/Slides:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(-0.06666667),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MusicPlayer:volume_db")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_r6ov2"]
+resource_name = "fade_in"
+length = 3.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BackgroundStuff/FadeToBlack:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 3.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0.0150615545, 0.02129857, 0, 1), Color(0.015686275, 0.019607844, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_cwlh8"]
+resource_name = "fade_out"
+length = 3.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BackgroundStuff/FadeToBlack:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0.015686275, 0.019607844, 0, 0), Color(0.0150615545, 0.02129857, 0, 1)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"game_start"
+}]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("BackgroundStuff/Slides:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("MusicPlayer:volume_db")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, -80.0]
+}
+tracks/4/type = "audio"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Sfx")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("13_fwooc")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/4/use_blend = true
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qg0ry"]
+_data = {
+&"RESET": SubResource("Animation_wrsav"),
+&"fade_in": SubResource("Animation_r6ov2"),
+&"fade_out": SubResource("Animation_cwlh8")
+}
 
 [node name="Menu" type="Control" unique_id=829721155]
 layout_mode = 3
@@ -11,53 +378,128 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_nav")
-starts_game = true
-music = ExtResource("2_boot")
-input_delay = 0.4
+script = ExtResource("1_yk7l8")
+slides = [ExtResource("9_yk7l8"), ExtResource("3_cwlh8"), ExtResource("4_fwooc"), ExtResource("5_e1lsp")]
+slide_shower = NodePath("BackgroundStuff/Slides")
+select_sfx = ExtResource("6_e1lsp")
 
-[node name="Background" type="ColorRect" parent="." unique_id=1385104224]
+[node name="BackgroundStuff" type="Control" parent="." unique_id=705780589]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Background" type="ColorRect" parent="BackgroundStuff" unique_id=905252093]
 layout_mode = 0
 offset_right = 64.0
 offset_bottom = 64.0
 color = Color(0.0150615545, 0.02129857, 0, 1)
 
-[node name="Title" type="Label" parent="." unique_id=1946696529]
+[node name="Space" type="Control" parent="BackgroundStuff" unique_id=1131095817]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Stars1" type="TextureRect" parent="BackgroundStuff/Space" unique_id=99511799]
 layout_mode = 0
 offset_right = 64.0
-offset_bottom = 27.0
+offset_bottom = 64.0
+texture = ExtResource("3_wrsav")
+
+[node name="Stars1" type="TextureRect" parent="BackgroundStuff/Space/Stars1" unique_id=474092935]
+layout_mode = 0
+offset_top = 64.0
+offset_right = 64.0
+offset_bottom = 128.0
+texture = ExtResource("3_wrsav")
+
+[node name="Stars2" type="TextureRect" parent="BackgroundStuff/Space" unique_id=1248755284]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+texture = ExtResource("4_r6ov2")
+
+[node name="Stars2" type="TextureRect" parent="BackgroundStuff/Space/Stars2" unique_id=386608430]
+layout_mode = 0
+offset_top = 64.0
+offset_right = 64.0
+offset_bottom = 128.0
+texture = ExtResource("4_r6ov2")
+
+[node name="Stars3" type="TextureRect" parent="BackgroundStuff/Space" unique_id=1416038493]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+texture = ExtResource("5_r6ov2")
+
+[node name="Stars3" type="TextureRect" parent="BackgroundStuff/Space/Stars3" unique_id=522745450]
+layout_mode = 0
+offset_top = 64.0
+offset_right = 64.0
+offset_bottom = 128.0
+texture = ExtResource("5_r6ov2")
+
+[node name="Moon" type="TextureRect" parent="BackgroundStuff/Space" unique_id=150237811]
+visible = false
+layout_mode = 0
+offset_left = 27.999998
+offset_top = 16.000002
+offset_right = 726.0
+offset_bottom = 728.0
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("6_qg0ry")
+
+[node name="Static" type="ColorRect" parent="BackgroundStuff" unique_id=1361080820]
+material = SubResource("ShaderMaterial_gnmj0")
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+
+[node name="FadeToWhite" type="ColorRect" parent="BackgroundStuff" unique_id=1385104224]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+color = Color(0.015686275, 0.019607844, 0, 0)
+
+[node name="Title" type="Label" parent="BackgroundStuff" unique_id=1946696529]
+layout_mode = 1
+offset_top = 7.0
+offset_right = 64.0
+offset_bottom = 15.0
 theme_override_colors/font_color = Color(0.23333335, 1, 0, 1)
 theme_override_fonts/font = ExtResource("3_7ghhb")
-theme_override_font_sizes/font_size = 7
+theme_override_font_sizes/font_size = 8
 text = "ECHO-212"
 horizontal_alignment = 1
 vertical_alignment = 1
-autowrap_mode = 2
 uppercase = true
 
-[node name="Hint" type="Label" parent="." unique_id=1625281663]
+[node name="Slides" type="TextureRect" parent="BackgroundStuff" unique_id=758958006]
 layout_mode = 0
-offset_left = 4.0
-offset_top = 25.0
-offset_right = 60.0
-offset_bottom = 41.0
-theme_override_colors/font_color = Color(0, 1, 0, 1)
-theme_override_fonts/font = ExtResource("3_7ghhb")
-theme_override_font_sizes/font_size = 4
-text = "//Press 'O'to enter"
-autowrap_mode = 3
-
-[node name="Controls" type="Label" parent="." unique_id=842409363]
-layout_mode = 0
-offset_top = 48.0
 offset_right = 64.0
-offset_bottom = 85.0
-theme_override_colors/font_color = Color(0.3, 0.38, 0.45, 1)
-theme_override_font_sizes/font_size = 4
-text = "WASD MOVE
-ARROWS LOOK
-N ALLOCATE RAM
-E INTERACT"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
+offset_bottom = 64.0
+texture = ExtResource("9_yk7l8")
+
+[node name="FadeToBlack" type="ColorRect" parent="BackgroundStuff" unique_id=38133193]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+color = Color(0.015686275, 0.019607844, 0, 0)
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="." unique_id=893642959]
+stream = ExtResource("2_boot")
+autoplay = true
+parameters/looping = true
+
+[node name="Sfx" type="AudioStreamPlayer" parent="." unique_id=102387070]
+
+[node name="Animators" type="Node" parent="." unique_id=459120332]
+
+[node name="MenuAnimation" type="AnimationPlayer" parent="Animators" unique_id=2070974170]
+root_node = NodePath("../..")
+libraries/ = SubResource("AnimationLibrary_gnmj0")
+autoplay = &"menu_bootup"
+
+[node name="FadeIn" type="AnimationPlayer" parent="Animators" unique_id=1332421580]
+root_node = NodePath("../..")
+libraries/ = SubResource("AnimationLibrary_qg0ry")
+autoplay = &"fade_in"

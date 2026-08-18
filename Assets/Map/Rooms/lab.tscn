@@ -423,6 +423,7 @@ collision_layer = 64
 collision_mask = 64
 script = ExtResource("2_rvfcn")
 slides = [ExtResource("4_ojh5m"), ExtResource("5_gd6hv"), ExtResource("6_mn2cx")]
+interaction_text = "OPEN LAB LOG"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Props/Console/ConsoleInteraction" unique_id=1380135238]
 shape = SubResource("BoxShape3D_41u2f")

@@ -1,56 +1,849 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://lnj240idssty"]
 
-[ext_resource type="Script" uid="uid://dl2t7tw3lsmwn" path="res://Assets/Scripts/screen_nav.gd" id="1_nav"]
+[ext_resource type="Script" uid="uid://cboufgkhd8wvq" path="res://Assets/Scripts/credits.gd" id="1_qt0ea"]
+[ext_resource type="FontFile" uid="uid://gii48b7dyqcp" path="res://Assets/Sprites/deltarune.ttf" id="2_0vm5k"]
+[ext_resource type="Texture2D" uid="uid://u0nihouu6ydy" path="res://Assets/Menu/stars_1.png" id="2_m7sye"]
+[ext_resource type="FontFile" uid="uid://6y3ubcokl4pq" path="res://Assets/Sprites/UI/PxPlus_IBM_BIOS.ttf" id="2_uje04"]
+[ext_resource type="FontFile" uid="uid://cd6uoxe0jyqnq" path="res://Assets/Sprites/big-shot.ttf" id="3_0vm5k"]
+[ext_resource type="Texture2D" uid="uid://def15rqmul1a" path="res://Assets/Menu/stars_2.png" id="3_yw61p"]
+[ext_resource type="AudioStream" uid="uid://c5qako8q6h26l" path="res://Assets/Audio/OST/mission_to_moonlight.mp3" id="4_0vm5k"]
+[ext_resource type="Texture2D" uid="uid://5oht2qsq4g4c" path="res://Assets/Menu/stars_3.png" id="4_wrb3c"]
+[ext_resource type="Texture2D" uid="uid://ihhitreaa6gs" path="res://Assets/Menu/moon.png" id="5_qunn0"]
 
-[node name="Victory" type="Control"]
+[sub_resource type="Animation" id="Animation_qt0ea"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Slides:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_0vm5k"]
+resource_name = "slideshow"
+length = 3.2
+loop_mode = 1
+step = 0.1
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(3.2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"next_slide"
+}]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Slides:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 3.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.992, 0.992), Vector2(0.985, 0.985)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qt0ea"]
+_data = {
+&"RESET": SubResource("Animation_qt0ea"),
+&"slideshow": SubResource("Animation_0vm5k")
+}
+
+[sub_resource type="Animation" id="Animation_m7sye"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeToWhite:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Space:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Space/Stars1:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -32.902813)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Space/Stars2:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -1.9806175)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Space/Stars3:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, -3.962326)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Space/Moon:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(28, 28)]
+}
+
+[sub_resource type="Animation" id="Animation_suu1s"]
+resource_name = "background"
+length = 51.2
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeToWhite:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(22.400002, 25.6, 25.633335, 38.3, 41.466663, 41.5, 48, 49.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Space:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 25.600002),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Space/Stars1:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(25.600002, 31.98, 32, 38.379997, 38.399998, 41.48, 41.499077, 41.5, 54.30008),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, -32.902813), Vector2(0, 0), Vector2(0, -64), Vector2(0, -32)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Space/Stars2:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(25.600002, 28.799002, 28.800003, 31.98, 32, 35.199, 35.2, 38.379997, 38.399998, 41.48, 41.499077, 41.5, 54.30008),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, -1.9806175), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Space/Stars3:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(25.600002, 27.199001, 27.2, 28.799002, 28.800003, 30.399002, 30.400002, 31.98, 32, 33.599, 33.6, 35.198997, 35.2, 36.799, 36.8, 38.379997, 38.399998, 39.998997, 39.999996, 41.48, 41.499077, 41.49996, 47.89908, 47.900078, 54.30008),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, -3.962326), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0), Vector2(0, -64), Vector2(0, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Space/Moon:position")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(41.1, 41.5, 51.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(28, -100), Vector2(27.999998, 16.000002), Vector2(28, 28)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Space/Moon:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(41.1),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/7/type = "method"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("MusicPlayer")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0.0],
+"method": &"play"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ip4mu"]
+_data = {
+&"RESET": SubResource("Animation_m7sye"),
+&"background": SubResource("Animation_suu1s")
+}
+
+[node name="Victory" type="Control" unique_id=499055597]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource("1_nav")
-input_delay = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qt0ea")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=979144058]
 layout_mode = 0
 offset_right = 64.0
 offset_bottom = 64.0
 color = Color(0.02, 0.06, 0.05, 1)
 
-[node name="Title" type="Label" parent="."]
+[node name="Space" type="Control" parent="." unique_id=1213813864]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Stars1" type="TextureRect" parent="Space" unique_id=1144790688]
+layout_mode = 0
+offset_top = -32.902813
+offset_right = 64.0
+offset_bottom = 31.097187
+texture = ExtResource("2_m7sye")
+
+[node name="Stars1" type="TextureRect" parent="Space/Stars1" unique_id=1655475035]
+layout_mode = 0
+offset_top = 64.0
+offset_right = 64.0
+offset_bottom = 128.0
+texture = ExtResource("2_m7sye")
+
+[node name="Stars2" type="TextureRect" parent="Space" unique_id=452753664]
+layout_mode = 0
+offset_top = -1.9806175
+offset_right = 64.0
+offset_bottom = 62.019382
+texture = ExtResource("3_yw61p")
+
+[node name="Stars2" type="TextureRect" parent="Space/Stars2" unique_id=60671649]
+layout_mode = 0
+offset_top = 64.0
+offset_right = 64.0
+offset_bottom = 128.0
+texture = ExtResource("3_yw61p")
+
+[node name="Stars3" type="TextureRect" parent="Space" unique_id=892269023]
+layout_mode = 0
+offset_top = -3.962326
+offset_right = 64.0
+offset_bottom = 60.037674
+texture = ExtResource("4_wrb3c")
+
+[node name="Stars3" type="TextureRect" parent="Space/Stars3" unique_id=984826232]
+layout_mode = 0
+offset_top = 64.0
+offset_right = 64.0
+offset_bottom = 128.0
+texture = ExtResource("4_wrb3c")
+
+[node name="Moon" type="TextureRect" parent="Space" unique_id=1470405923]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 28.0
+offset_right = 726.0
+offset_bottom = 740.0
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("5_qunn0")
+
+[node name="FadeToWhite" type="ColorRect" parent="." unique_id=1166813103]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+color = Color(1, 1, 1, 0)
+
+[node name="Slides" type="Control" parent="." unique_id=510588992]
+layout_mode = 1
+anchors_preset = 0
+
+[node name="Slide1" type="Control" parent="Slides" unique_id=1676817601]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Title" type="Label" parent="Slides/Slide1" unique_id=1780071774]
+layout_mode = 0
+offset_top = -6.0
+offset_right = 64.0
+offset_bottom = 58.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_uje04")
+theme_override_font_sizes/font_size = 8
+text = "ECHO-212"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="Demo" type="Label" parent="Slides/Slide1" unique_id=1933085080]
+layout_mode = 0
+offset_top = 27.0
+offset_right = 64.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "DEMO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slide2" type="Control" parent="Slides" unique_id=646389626]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Title" type="Label" parent="Slides/Slide2" unique_id=49688676]
 layout_mode = 0
 offset_top = 6.0
 offset_right = 64.0
+offset_bottom = 70.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_uje04")
+theme_override_font_sizes/font_size = 8
+text = "Lowrez
+game jam
+2026"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="Demo" type="Label" parent="Slides/Slide2" unique_id=1113005550]
+layout_mode = 0
+offset_top = 3.0
+offset_right = 65.0
+offset_bottom = 26.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "made for the"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slide3" type="Control" parent="Slides" unique_id=1267843446]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Role" type="Label" parent="Slides/Slide3" unique_id=54638868]
+layout_mode = 0
+offset_top = -3.0
+offset_right = 64.0
+offset_bottom = 20.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "MADE BY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="People" type="Label" parent="Slides/Slide3" unique_id=954961082]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 6.0
+offset_right = 57.0
+offset_bottom = 70.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_0vm5k")
+theme_override_font_sizes/font_size = 8
+text = "LizardMan
+Gofrisuto
+FenyBor
+Xanax"
+vertical_alignment = 1
+
+[node name="Slide4" type="Control" parent="Slides" unique_id=818173701]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Role" type="Label" parent="Slides/Slide4" unique_id=84250623]
+layout_mode = 0
+offset_top = 2.0
+offset_right = 64.0
 offset_bottom = 27.0
-theme_override_colors/font_color = Color(0.5, 1, 0.7, 1)
-theme_override_font_sizes/font_size = 7
-text = "ELEVATOR
-ONLINE"
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "lead
+developers"
 horizontal_alignment = 1
 vertical_alignment = 1
-autowrap_mode = 2
 
-[node name="Sub" type="Label" parent="."]
+[node name="People" type="Label" parent="Slides/Slide4" unique_id=1309840673]
 layout_mode = 0
-offset_top = 34.0
-offset_right = 64.0
-offset_bottom = 46.0
-theme_override_colors/font_color = Color(0.6, 0.9, 0.75, 1)
-theme_override_font_sizes/font_size = 4
-text = "YOU MADE IT OUT"
-horizontal_alignment = 1
+offset_left = 8.0
+offset_top = 9.0
+offset_right = 57.0
+offset_bottom = 73.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_0vm5k")
+theme_override_font_sizes/font_size = 8
+text = "LizardMan
+Gofrisuto"
 vertical_alignment = 1
-autowrap_mode = 2
 
-[node name="Tease" type="Label" parent="."]
+[node name="Slide5" type="Control" parent="Slides" unique_id=1137376312]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Role" type="Label" parent="Slides/Slide5" unique_id=851504035]
 layout_mode = 0
-offset_top = 44.0
+offset_top = 9.0
 offset_right = 64.0
-offset_bottom = 59.0
-theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
-theme_override_font_sizes/font_size = 5
-text = "BIG UPDATE
-COMING SOON"
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "game design"
 horizontal_alignment = 1
 vertical_alignment = 1
-autowrap_mode = 2
 
+[node name="People" type="Label" parent="Slides/Slide5" unique_id=682361857]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 11.0
+offset_right = 57.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_0vm5k")
+theme_override_font_sizes/font_size = 8
+text = "LizardMan
+"
+vertical_alignment = 1
+
+[node name="Slide6" type="Control" parent="Slides" unique_id=124419782]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Role" type="Label" parent="Slides/Slide6" unique_id=1586956715]
+layout_mode = 0
+offset_top = 9.0
+offset_right = 64.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "level  design"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="People" type="Label" parent="Slides/Slide6" unique_id=1126235952]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 11.0
+offset_right = 57.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_0vm5k")
+theme_override_font_sizes/font_size = 8
+text = "Gofrisuto
+"
+vertical_alignment = 1
+
+[node name="Slide7" type="Control" parent="Slides" unique_id=957221415]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Role" type="Label" parent="Slides/Slide7" unique_id=2137433247]
+layout_mode = 0
+offset_top = 9.0
+offset_right = 64.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "enemy ai"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="People" type="Label" parent="Slides/Slide7" unique_id=1593206653]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 11.0
+offset_right = 57.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_0vm5k")
+theme_override_font_sizes/font_size = 8
+text = "LizardMan
+"
+vertical_alignment = 1
+
+[node name="Slide8" type="Control" parent="Slides" unique_id=1762577561]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Role" type="Label" parent="Slides/Slide8" unique_id=347431188]
+layout_mode = 0
+offset_top = 9.0
+offset_right = 64.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "player vision"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="People" type="Label" parent="Slides/Slide8" unique_id=1395675235]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 11.0
+offset_right = 57.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_0vm5k")
+theme_override_font_sizes/font_size = 8
+text = "LizardMan
+"
+vertical_alignment = 1
+
+[node name="Slide9" type="Control" parent="Slides" unique_id=1164764249]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Role" type="Label" parent="Slides/Slide9" unique_id=1456527080]
+layout_mode = 0
+offset_top = 9.0
+offset_right = 64.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "ui  design"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="People" type="Label" parent="Slides/Slide9" unique_id=1377178012]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 11.0
+offset_right = 57.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_0vm5k")
+theme_override_font_sizes/font_size = 8
+text = "Gofrisuto
+"
+vertical_alignment = 1
+
+[node name="Slide10" type="Control" parent="Slides" unique_id=972086644]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Role" type="Label" parent="Slides/Slide10" unique_id=861030677]
+layout_mode = 0
+offset_top = 9.0
+offset_right = 64.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "ambience"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="People" type="Label" parent="Slides/Slide10" unique_id=829664105]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 11.0
+offset_right = 57.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_0vm5k")
+theme_override_font_sizes/font_size = 8
+text = "LizardMan
+"
+vertical_alignment = 1
+
+[node name="Slide11" type="Control" parent="Slides" unique_id=941988756]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Role" type="Label" parent="Slides/Slide11" unique_id=1856867516]
+layout_mode = 0
+offset_top = 9.0
+offset_right = 64.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "Soundtrack"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="People" type="Label" parent="Slides/Slide11" unique_id=1693496741]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 11.0
+offset_right = 57.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_0vm5k")
+theme_override_font_sizes/font_size = 8
+text = "Gofrisuto
+"
+vertical_alignment = 1
+
+[node name="Slide12" type="Control" parent="Slides" unique_id=232396206]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Role" type="Label" parent="Slides/Slide12" unique_id=2102153460]
+layout_mode = 0
+offset_top = 9.0
+offset_right = 64.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "sound design"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="People" type="Label" parent="Slides/Slide12" unique_id=518523596]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 11.0
+offset_right = 57.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_0vm5k")
+theme_override_font_sizes/font_size = 8
+text = "Gofrisuto
+"
+vertical_alignment = 1
+
+[node name="Slide13" type="Control" parent="Slides" unique_id=2041165425]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Role" type="Label" parent="Slides/Slide13" unique_id=1771418801]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 64.0
+offset_bottom = 31.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "Monster
+sound design"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="People" type="Label" parent="Slides/Slide13" unique_id=1887116632]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 11.0
+offset_right = 57.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_0vm5k")
+theme_override_font_sizes/font_size = 8
+text = "LizardMan
+Gofrisuto"
+vertical_alignment = 1
+
+[node name="Slide14" type="Control" parent="Slides" unique_id=556511468]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Role" type="Label" parent="Slides/Slide14" unique_id=176794597]
+layout_mode = 0
+offset_top = 9.0
+offset_right = 64.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "main artist"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="People" type="Label" parent="Slides/Slide14" unique_id=2015734039]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 11.0
+offset_right = 57.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_0vm5k")
+theme_override_font_sizes/font_size = 8
+text = "FenyBor
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slide15" type="Control" parent="Slides" unique_id=14918197]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Role" type="Label" parent="Slides/Slide15" unique_id=308781903]
+layout_mode = 0
+offset_top = 9.0
+offset_right = 64.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "co artist"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="People" type="Label" parent="Slides/Slide15" unique_id=140878926]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 11.0
+offset_right = 57.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_0vm5k")
+theme_override_font_sizes/font_size = 8
+text = "Xanax
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slide16" type="Control" parent="Slides" unique_id=1979898251]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Role" type="Label" parent="Slides/Slide16" unique_id=1363799719]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("2_0vm5k")
+theme_override_font_sizes/font_size = 10
+text = "thank you
+for playing"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slide17" type="Control" parent="Slides" unique_id=1188620186]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="People" type="Label" parent="Slides/Slide17" unique_id=619348734]
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_fonts/font = ExtResource("3_0vm5k")
+theme_override_font_sizes/font_size = 8
+text = "Full game
+coming soon"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="." unique_id=37957118]
+stream = ExtResource("4_0vm5k")
+
+[node name="Looper" type="AnimationPlayer" parent="." unique_id=1616443105]
+libraries/ = SubResource("AnimationLibrary_qt0ea")
+autoplay = &"slideshow"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1553311949]
+libraries/ = SubResource("AnimationLibrary_ip4mu")
+autoplay = &"background"

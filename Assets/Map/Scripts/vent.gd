@@ -33,6 +33,8 @@ func _on_tp_turn_on_body_entered(_body: Node3D) -> void:
 	teleporter.monitoring = true
 	tp_turn_off1.monitoring = true
 	tp_turn_off2.monitoring = true
+	$ClosingWalls.position.y = -6
+	$Timer.stop()
 
 
 func _on_tp_turn_off_body_entered(_body: Node3D) -> void:
@@ -42,10 +44,12 @@ func _on_tp_turn_off_body_entered(_body: Node3D) -> void:
 
 
 func _on_closer_body_exited(_body: Node3D) -> void:
+	$AudioStreamPlayer3D.play()
+	$AudioStreamPlayer3D2.play()
 	$ClosingWalls.position.y = 0
-	#get_node(destination).find_child("ClosingWalls").position.y = 0
 	$Timer.start(cooldown_sec)
 
 
 func _on_timer_timeout() -> void:
 	$ClosingWalls.position.y = -6
+	#print("timer over")

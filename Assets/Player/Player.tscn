@@ -1,15 +1,55 @@
 [gd_scene format=3 uid="uid://dcpswo02xtcin"]
 
 [ext_resource type="Script" uid="uid://ba5jaya2x0vdl" path="res://Assets/Player/Scripts/player.gd" id="1_rpqav"]
-[ext_resource type="Texture2D" uid="uid://c4qw0beonlys1" path="res://Assets/Sprites/Placeholders/drones.png" id="2_8ffsa"]
+[ext_resource type="Texture2D" uid="uid://bvkl06aow7s3q" path="res://Assets/Sprites/Player/GameJam_Player1.png" id="2_33wup"]
 [ext_resource type="Script" uid="uid://badm5ftuk8c6x" path="res://Assets/Scripts/camera_rig.gd" id="2_rig"]
+[ext_resource type="Texture2D" uid="uid://c4qw0beonlys1" path="res://Assets/Sprites/Placeholders/drones.png" id="2_u5to8"]
+[ext_resource type="Texture2D" uid="uid://dpq4kt3hko4iy" path="res://Assets/Sprites/Player/GameJam_Player2.png" id="4_x4ggo"]
 [ext_resource type="AudioStream" uid="uid://kfdsvc5roye6" path="res://Assets/Audio/Sfx/ping.wav" id="5_33wup"]
+[ext_resource type="Texture2D" uid="uid://b43m2fns4qyg7" path="res://Assets/Sprites/Player/GameJam_Player3.png" id="5_o1dpk"]
+[ext_resource type="Texture2D" uid="uid://bm60714difyw7" path="res://Assets/Sprites/Player/GameJam_Player4.png" id="6_vewtk"]
+[ext_resource type="Texture2D" uid="uid://cpsfdj0h1uh0p" path="res://Assets/Sprites/Player/GameJam_Player5.png" id="7_a3eu5"]
+[ext_resource type="Texture2D" uid="uid://8gr724amglu3" path="res://Assets/Sprites/Player/GameJam_Player6.png" id="8_dthkx"]
 [ext_resource type="Script" uid="uid://bpskv2g8c5llp" path="res://Assets/Player/Scripts/echo_ring.gd" id="94_ring"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rldou"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_88646"]
 size = Vector3(1, 2, 2)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cny37"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_33wup")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_33wup")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_x4ggo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_o1dpk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_vewtk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_a3eu5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_dthkx")
+}],
+"loop": 1,
+"name": &"move",
+"speed": 5.0
+}]
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_ramdebug"]
 top_radius = 1.0
@@ -39,12 +79,13 @@ shape = SubResource("CapsuleShape3D_rldou")
 
 [node name="Sprite3D" type="Sprite3D" parent="Visual" unique_id=2049362324]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+visible = false
 layers = 2
 pixel_size = 0.1
 axis = 1
 shaded = true
 texture_filter = 0
-texture = ExtResource("2_8ffsa")
+texture = ExtResource("2_u5to8")
 
 [node name="Headlight" type="SpotLight3D" parent="Visual" unique_id=2029659542]
 transform = Transform3D(1, 0, 0, 0, 0.9145442, 0.40448594, 0, -0.40448594, 0.9145442, 0, 2.8, -0.353)
@@ -66,10 +107,20 @@ collision_mask = 64
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1.5)
 shape = SubResource("BoxShape3D_88646")
 
+[node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="Visual" unique_id=916400373]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+visible = false
+layers = 2
+pixel_size = 0.02
+axis = 1
+sprite_frames = SubResource("SpriteFrames_cny37")
+animation = &"idle"
+
 [node name="CameraRig" type="Node3D" parent="." unique_id=116848774]
 script = ExtResource("2_rig")
 look_ahead = 3.5
 glide_speed = 4.0
+look_ahead_multiplier = 2.0
 
 [node name="Camera3D" type="Camera3D" parent="CameraRig" unique_id=638345522 groups=["game_camera"]]
 transform = Transform3D(1, 0, 0, 0, -4.3711385e-08, 0.99999994, 0, -0.99999994, -4.3711385e-08, 0, 10, 0)
@@ -102,5 +153,5 @@ panning_strength = 0.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 script = ExtResource("94_ring")
 ring_color = Color(0, 0.5666666, 1, 1)
-fade_in = 0.19999999999999998
+fade_in = 0.2
 ping = ExtResource("5_33wup")

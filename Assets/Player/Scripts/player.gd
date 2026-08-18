@@ -36,6 +36,7 @@ func _physics_process(delta: float) -> void:
 		velocity.z = input_dir.y * SPEED
 		if not look_dir:
 			_turn_toward(input_dir, delta)
+		
 
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
@@ -43,6 +44,12 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	_noise_burst = maxf(_noise_burst - burst_fade * delta, 0.0)
+	
+func _process(_delta: float) -> void:
+	if view_distance == 0.0:
+		$Visual/AnimatedSprite3D.visible = false
+	else:
+		$Visual/AnimatedSprite3D.visible = true
 
 
 func get_noise_level() -> float:

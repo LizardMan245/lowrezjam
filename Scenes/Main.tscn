@@ -122,7 +122,7 @@ stretch = true
 script = ExtResource("2_bmxlf")
 occluder_mask = 9
 window_mask = 16
-window_shadow = 0.7
+window_shadow = 0.0
 edge_softness_degrees = 13.0
 distance_fade = 10.0
 wall_bleed = 0.0
@@ -158,10 +158,13 @@ collision_layer = 3
 
 [node name="Basicenemy" parent="Render/WorldLayer/World" unique_id=1364594077 instance=ExtResource("8_erwvk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.46782, 0.8731489, -18.034657)
-peripheral_fill_scale = 0.2
-turn_speed = 5.0
-brake_rate = 10.0
-spots_to_try = 15
+vision_angle_degrees = 180.0
+detection_time = 0.6
+detection_decay_rate = 3.0
+peripheral_falloff = 1.6
+turn_speed = 3.0
+max_detour = 1.4
+memory_seconds = 30.0
 
 [node name="ThermalMonster" parent="Render/WorldLayer/World" unique_id=1510847943 instance=ExtResource("14_thermalmob")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.644688, 1.7849227, 7.99621)
@@ -170,11 +173,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.644688, 1.7849227, 7.9962
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54.783974, 0.9966748, -74.64644)
 
 [node name="Blueprint1" parent="Render/WorldLayer/World" unique_id=348216001 instance=ExtResource("17_bp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.4185925, 0, 30.363243)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -50)
 data_name = &"blueprint1"
 
 [node name="Blueprint2" parent="Render/WorldLayer/World" unique_id=1466731204 instance=ExtResource("17_bp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.644636, 0, -80.56535)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, -13)
 data_name = &"blueprint2"
 
 [node name="Blueprint3" parent="Render/WorldLayer/World" unique_id=1438505877 instance=ExtResource("17_bp")]
@@ -183,6 +186,7 @@ data_name = &"blueprint3"
 
 [node name="HeatMarks" type="Node3D" parent="Render/WorldLayer/World" unique_id=865599622]
 script = ExtResource("13_heat")
+mark_size = 0.7
 decay_seconds = 16.0
 ground_offset = 1.5
 start_heat = 0.5
