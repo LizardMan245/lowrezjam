@@ -3,13 +3,25 @@
 [ext_resource type="Shader" uid="uid://bdt3w78h42rk2" path="res://Assets/Shaders/vision_composite.gdshader" id="1_vy5pj"]
 [ext_resource type="Script" uid="uid://2w717bxpil07" path="res://Assets/Scripts/vision_field.gd" id="2_bmxlf"]
 [ext_resource type="Texture2D" uid="uid://bq7n6vc7dy570" path="res://Assets/Shaders/thermal.tres" id="2_h1m7h"]
+[ext_resource type="AudioStream" uid="uid://rimwx2y87llu" path="res://Assets/Audio/OST/ambientslowedreverb.mp3" id="2_sxkr1"]
 [ext_resource type="Script" uid="uid://b3we63lcv60gm" path="res://Assets/Scripts/light_flicker.gd" id="3_4kpch"]
 [ext_resource type="Environment" uid="uid://b3ulhtijha0iy" path="res://Scenes/Environments/env.tres" id="5_h1m7h"]
-[ext_resource type="PackedScene" uid="uid://dxtq2ku2eafoe" path="res://Assets/Map/testmap.tscn" id="6_bmxlf"]
-[ext_resource type="PackedScene" uid="uid://d4ngk1vwbohat" path="res://Assets/Player/Player.tscn" id="7_h1m7h"]
+[ext_resource type="Texture2D" uid="uid://c4ekybrg3gjx3" path="res://Assets/Shaders/tonemap.tres" id="5_hwpts"]
+[ext_resource type="PackedScene" uid="uid://c54do76yh4uvo" path="res://Assets/Map/Rooms/map.tscn" id="6_4kpch"]
+[ext_resource type="PackedScene" uid="uid://dcpswo02xtcin" path="res://Assets/Player/Player.tscn" id="7_h1m7h"]
 [ext_resource type="PackedScene" uid="uid://bcap7bikpxwxw" path="res://Assets/Enemies/BasicEnemy.tscn" id="8_erwvk"]
 [ext_resource type="Script" uid="uid://dmtdlh3v7vxl4" path="res://Assets/Scripts/overlay_camera.gd" id="9_2w5on"]
 [ext_resource type="PackedScene" uid="uid://drv4ivrqednix" path="res://Assets/Debug/DebugMapWindow.tscn" id="10_monitor"]
+[ext_resource type="PackedScene" uid="uid://c668sf2ho1lj6" path="res://Assets/Player/UI/ui.tscn" id="11_grg3l"]
+[ext_resource type="Shader" uid="uid://dd3sacgros6ko" path="res://Assets/Shaders/thermal_composite.gdshader" id="12_thermal"]
+[ext_resource type="Script" uid="uid://gsxv11gjoaii" path="res://Assets/Scripts/Thermal/heat_marks.gd" id="13_heat"]
+[ext_resource type="PackedScene" uid="uid://b08r7yb0erqqt" path="res://Assets/Enemies/ThermalMonster.tscn" id="14_thermalmob"]
+[ext_resource type="PackedScene" uid="uid://b2anna8vfeffi" path="res://Assets/Enemies/RamMonster.tscn" id="15_rammob"]
+[ext_resource type="Texture2D" uid="uid://bf4exglpr3ls3" path="res://Assets/Shaders/thermalenv.tres" id="16_346fj"]
+[ext_resource type="Script" uid="uid://8fmxgr0vb6gb" path="res://Assets/Scripts/game.gd" id="16_game"]
+[ext_resource type="PackedScene" uid="uid://cb8sfa6keg8lo" path="res://Assets/Map/Rooms/blueprint.tscn" id="17_bp"]
+[ext_resource type="Script" uid="uid://cqbunml3y58br" path="res://Assets/Scripts/looping_sound.gd" id="19_loop"]
+[ext_resource type="Script" uid="uid://dvqprihpaqo3b" path="res://Assets/Scripts/bitcrush.gd" id="20_crush"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vision"]
 shader = ExtResource("1_vy5pj")
@@ -23,6 +35,7 @@ shader_parameter/edge_softness = 0.0523599
 shader_parameter/view_distance = 7.0
 shader_parameter/distance_fade = 1.5
 shader_parameter/shadow_softness = 0.25
+shader_parameter/window_shadow = 0.2
 shader_parameter/cam_pos = Vector3(0, 10, 0)
 shader_parameter/cam_right = Vector3(1, 0, 0)
 shader_parameter/cam_up = Vector3(0, 0, -1)
@@ -30,12 +43,45 @@ shader_parameter/cam_forward = Vector3(0, -1, 0)
 shader_parameter/cam_half_extents = Vector2(5, 5)
 shader_parameter/ground_height = 0.0
 shader_parameter/mask_color = Color(0, 0, 0, 1)
-shader_parameter/gradient = ExtResource("2_h1m7h")
+shader_parameter/gradient = ExtResource("5_hwpts")
 shader_parameter/mix_amount = 0.0
+shader_parameter/color_noise = 0.0
 
-[sub_resource type="NavigationMesh" id="NavigationMesh_floor"]
-vertices = PackedVector3Array(-49.4812, 0.51001954, -49.50258, -49.4812, 0.51001954, 49.49742, 49.5188, 0.51001954, 49.49742, 49.5188, 0.51001954, -49.50258)
-polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_thermal"]
+shader = ExtResource("12_thermal")
+shader_parameter/eye_pos = Vector2(0, 0)
+shader_parameter/eye_dir = Vector2(0, 1)
+shader_parameter/eye_right = Vector2(1, 0)
+shader_parameter/aperture_width = 0.6
+shader_parameter/half_angle = 0.3926991
+shader_parameter/fan_half_angle = 0.6544985
+shader_parameter/edge_softness = 0.0523599
+shader_parameter/view_distance = 7.0
+shader_parameter/distance_fade = 1.5
+shader_parameter/shadow_softness = 0.05
+shader_parameter/window_shadow = 0.2
+shader_parameter/cam_pos = Vector3(0, 10, 0)
+shader_parameter/cam_right = Vector3(1, 0, 0)
+shader_parameter/cam_up = Vector3(0, 0, -1)
+shader_parameter/cam_forward = Vector3(0, -1, 0)
+shader_parameter/cam_half_extents = Vector2(5, 5)
+shader_parameter/ground_height = 0.0
+shader_parameter/heat_gradient = ExtResource("2_h1m7h")
+shader_parameter/env_gradient = ExtResource("16_346fj")
+shader_parameter/grain_amount = 0.05
+
+[sub_resource type="Environment" id="Environment_b8igc"]
+background_energy_multiplier = 0.0
+ambient_light_energy = 0.0
+tonemap_exposure = 0.34
+glow_enabled = true
+glow_levels/1 = 4.83
+glow_intensity = 2.05
+glow_strength = 0.52
+glow_bloom = 0.66
+glow_blend_mode = 0
+volumetric_fog_enabled = true
+volumetric_fog_emission = Color(1, 1, 1, 1)
 
 [sub_resource type="Environment" id="Environment_overlay"]
 ambient_light_source = 2
@@ -43,10 +89,28 @@ ambient_light_color = Color(0.002988342, 0.20916215, 0.8318562, 1)
 ambient_light_energy = 0.15
 
 [node name="Main3d" type="Node3D" unique_id=1741938559]
+script = ExtResource("16_game")
+ambience = ExtResource("2_sxkr1")
+
+[node name="ThermalWorld" type="SubViewport" parent="." unique_id=1054434451]
+transparent_bg = true
+handle_input_locally = false
+msaa_3d = 3
+debug_draw = 1
+size = Vector2i(64, 64)
+render_target_update_mode = 4
+
+[node name="ThermalWorldCamera" type="Camera3D" parent="ThermalWorld" unique_id=473365612]
+transform = Transform3D(1, 0, 0, 0, -4.3711385e-08, 0.99999994, 0, -0.99999994, -4.3711385e-08, 0, 10, 0)
+cull_mask = 1
+projection = 1
+current = true
+size = 10.0
+script = ExtResource("9_2w5on")
 
 [node name="Render" type="CanvasLayer" parent="." unique_id=531473880]
 
-[node name="WorldLayer" type="SubViewportContainer" parent="Render" unique_id=85882524]
+[node name="WorldLayer" type="SubViewportContainer" parent="Render" unique_id=85882524 groups=["vision"]]
 material = SubResource("ShaderMaterial_vision")
 anchors_preset = 15
 anchor_right = 1.0
@@ -56,13 +120,18 @@ grow_vertical = 2
 mouse_filter = 2
 stretch = true
 script = ExtResource("2_bmxlf")
-occluder_mask = 16
+occluder_mask = 9
+window_mask = 16
+window_shadow = 0.0
 edge_softness_degrees = 13.0
 distance_fade = 10.0
 wall_bleed = 0.0
 shadow_softness = 1.0
 aperture_width = 1.4
 fan_margin_degrees = 45.0
+thermal_screen = NodePath("../ThermalLayer")
+thermal_world = NodePath("../../ThermalWorld")
+thermal_distance = 14.0
 
 [node name="World" type="SubViewport" parent="Render/WorldLayer" unique_id=1807412844]
 handle_input_locally = false
@@ -77,34 +146,111 @@ light_color = Color(0.79607844, 1, 1, 1)
 light_energy = 0.05
 shadow_blur = 0.5
 script = ExtResource("3_4kpch")
+base_energy = 0.3
 dropout_chance = 0.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Render/WorldLayer/World" unique_id=499222120]
 environment = ExtResource("5_h1m7h")
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Render/WorldLayer/World" unique_id=1244899461]
-navigation_mesh = SubResource("NavigationMesh_floor")
-
-[node name="Floor" parent="Render/WorldLayer/World/NavigationRegion3D" unique_id=1718403227 instance=ExtResource("6_bmxlf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.018798828, 0.020019531, -0.0025787354)
-
 [node name="Player" parent="Render/WorldLayer/World" unique_id=650448909 instance=ExtResource("7_h1m7h")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.30474377, 0, 0.25018883)
-turn_speed = 6.0
-vision_angle_degrees = 110.0
-view_distance = 20.0
-eye_height = 1.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.30474377, 0.41439617, 4.905709)
+collision_layer = 3
 
 [node name="Basicenemy" parent="Render/WorldLayer/World" unique_id=1364594077 instance=ExtResource("8_erwvk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.54718, 0.8731489, 6.9346924)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.46782, 0.8731489, -18.034657)
 vision_angle_degrees = 180.0
 detection_time = 0.6
 detection_decay_rate = 3.0
+peripheral_falloff = 1.6
 turn_speed = 3.0
-brake_rate = 10.0
-spots_to_try = 15
 max_detour = 1.4
 memory_seconds = 30.0
+
+[node name="ThermalMonster" parent="Render/WorldLayer/World" unique_id=1510847943 instance=ExtResource("14_thermalmob")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.644688, 1.7849227, 7.99621)
+
+[node name="RamMonster" parent="Render/WorldLayer/World" unique_id=1794099744 instance=ExtResource("15_rammob")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54.783974, 0.9966748, -74.64644)
+
+[node name="Blueprint1" parent="Render/WorldLayer/World" unique_id=348216001 instance=ExtResource("17_bp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0, -50)
+data_name = &"blueprint1"
+
+[node name="Blueprint2" parent="Render/WorldLayer/World" unique_id=1466731204 instance=ExtResource("17_bp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, -13)
+data_name = &"blueprint2"
+
+[node name="Blueprint3" parent="Render/WorldLayer/World" unique_id=1438505877 instance=ExtResource("17_bp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.12075, 0.5964403, -40.84608)
+data_name = &"blueprint3"
+
+[node name="HeatMarks" type="Node3D" parent="Render/WorldLayer/World" unique_id=865599622]
+script = ExtResource("13_heat")
+mark_size = 0.7
+decay_seconds = 16.0
+ground_offset = 1.5
+start_heat = 0.5
+
+[node name="Map" parent="Render/WorldLayer/World" unique_id=1493392457 instance=ExtResource("6_4kpch")]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Render/WorldLayer/World/Map" unique_id=1749709077]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 23.79827, 17.849308, -38.40979)
+light_color = Color(0.73000014, 0.39999998, 1, 1)
+light_energy = 16.0
+light_bake_mode = 1
+shadow_enabled = true
+spot_range = 62.370335
+spot_angle = 40.353374
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="Render/WorldLayer/World/Map" unique_id=87672033]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 10.408144, 17.849308, -38.40979)
+light_color = Color(0.73000014, 0.39999998, 1, 1)
+light_energy = 16.0
+light_bake_mode = 1
+shadow_enabled = true
+spot_range = 62.370335
+spot_angle = 40.353374
+
+[node name="SpotLight3D3" type="SpotLight3D" parent="Render/WorldLayer/World/Map" unique_id=1151212831]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 37.5878, 17.849308, -38.40979)
+light_color = Color(0.73000014, 0.39999998, 1, 1)
+light_energy = 16.0
+light_bake_mode = 1
+shadow_enabled = true
+spot_range = 62.370335
+spot_angle = 40.353374
+
+[node name="ScreenCopy" type="BackBufferCopy" parent="Render" unique_id=1402733375]
+copy_mode = 2
+
+[node name="ThermalLayer" type="SubViewportContainer" parent="Render" unique_id=244957688]
+material = SubResource("ShaderMaterial_thermal")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+
+[node name="Heat" type="SubViewport" parent="Render/ThermalLayer" unique_id=1024920878]
+transparent_bg = true
+handle_input_locally = false
+msaa_2d = 2
+msaa_3d = 3
+use_taa = true
+use_debanding = true
+size = Vector2i(64, 64)
+render_target_update_mode = 4
+
+[node name="HeatCamera" type="Camera3D" parent="Render/ThermalLayer/Heat" unique_id=1045968794]
+transform = Transform3D(1, 0, 0, 0, -4.3711385e-08, 0.99999994, 0, -0.99999994, -4.3711385e-08, 0, 10, 0)
+cull_mask = 8
+environment = SubResource("Environment_b8igc")
+projection = 1
+current = true
+size = 10.0
+script = ExtResource("9_2w5on")
 
 [node name="PlayerLayer" type="SubViewportContainer" parent="Render" unique_id=696722328]
 anchors_preset = 15
@@ -130,7 +276,23 @@ current = true
 size = 12.0
 script = ExtResource("9_2w5on")
 
+[node name="UI" parent="Render" unique_id=1321854455 instance=ExtResource("11_grg3l")]
+speeds = [0.0, 2.0, 4.0, 6.0]
+heat_angles = [0.0, 40.0, 65.0]
+camera_noise = [0.0, 0.4, 0.13, 0.0]
+
 [node name="DebugMapWindow" parent="." unique_id=276062607 instance=ExtResource("10_monitor")]
+oversampling_override = 1.0
 title = "Enemy Monitor"
 initial_position = 0
-map_extent = 102.206
+map_centre = Vector3(5, 0, -20)
+map_extent = 145.761
+render_layers = 527
+
+[node name="Ambience" type="AudioStreamPlayer" parent="." unique_id=1091507964]
+script = ExtResource("19_loop")
+
+[node name="BitCrush" type="AudioStreamPlayer" parent="." unique_id=2046148075]
+script = ExtResource("20_crush")
+
+[connection signal="resize_ram_radius" from="Render/UI" to="Render/WorldLayer/World/Player" method="_on_ui_resize_ram_radius"]

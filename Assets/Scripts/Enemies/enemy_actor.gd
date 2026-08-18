@@ -3,6 +3,7 @@ extends CharacterBody3D
 const NAVIGATION_WAIT_FRAMES := 120
 const NAVIGATION_SNAP_LIMIT := 4.0
 const UNLIMITED_VIEW_DISTANCE := 1000.0
+const ROOM_SEARCH_STEPS := 4
 
 signal state_changed(previous: StringName, current: StringName)
 signal player_detected
@@ -21,6 +22,10 @@ signal sound_requested(stream: AudioStream)
 @export_range(0.0, 1.0, 0.05) var peripheral_fill_scale := 0.25
 @export_range(0.2, 6.0, 0.1) var peripheral_falloff := 1.6
 
+@export_group("Ram sense")
+@export var ram_sense := false
+@export_range(0.0, 20.0, 0.5) var ram_sense_floor := 2.0
+
 @export_group("Hearing")
 @export_range(0.0, 3.0, 0.05) var hearing_range_scale := 1.0
 @export_range(0.0, 8.0, 0.05) var hearing_sensitivity := 1.4
@@ -33,6 +38,9 @@ signal sound_requested(stream: AudioStream)
 @export_range(1.0, 30.0) var turn_speed := 6.0
 @export_range(1.0, 60.0) var brake_rate := 14.0
 @export_range(0.1, 3.0, 0.05) var arrive_distance := 0.6
+@export_range(0.0, 4.0, 0.05) var repath_distance := 0.6
+@export_range(0.0, 5.0, 0.1) var stuck_patience := 1.2
+@export_range(0.0, 1.0, 0.05) var stuck_progress := 0.5
 
 @export_group("Roaming")
 @export_range(1, 32) var spots_to_try := 12
@@ -43,11 +51,14 @@ signal sound_requested(stream: AudioStream)
 @export_range(0.0, 8.0, 0.1) var roam_pick_sharpness := 1.5
 @export var roam_needs_line_of_sight := true
 @export_range(1.0, 4.0, 0.1) var max_detour := 1.7
+@export_range(0.0, 3.0, 0.05) var roam_clearance := 0.85
 @export_range(0.5, 8.0, 0.5) var memory_cell_size := 2.0
 @export_range(1.0, 180.0, 1.0) var memory_seconds := 45.0
 
 var facing := Vector2(0.0, 1.0)
 var player_visible := false
+var truly_visible := false
+var ram_sensed := false
 var sight_focus := -1.0
 var last_known_player_spot := Vector3.ZERO
 var last_known_player_heading := Vector2(0.0, 1.0)
@@ -66,6 +77,8 @@ var _animator: AnimationPlayer
 var _speaker: AudioStreamPlayer3D
 var _rng := RandomNumberGenerator.new()
 var _sight_query := PhysicsRayQueryParameters3D.new()
+var _room_query := PhysicsShapeQueryParameters3D.new()
+var _room_shape := SphereShape3D.new()
 var _detected_last_frame := false
 var _active_vision_angle := 70.0
 var _active_view_distance := 12.0
@@ -78,6 +91,9 @@ var _notice_cooldown_left := 0.0
 var _visited := {}
 var _last_roam_spot := Vector3.ZERO
 var _came_from := Vector2.ZERO
+var _body_reach := 0.0
+var _stuck_seconds := 0.0
+var _progress_from := Vector3.ZERO
 
 
 func _ready() -> void:
@@ -96,8 +112,11 @@ func _ready() -> void:
 		push_warning("no player found, the enemy will just walk around")
 
 	_rng.randomize()
+	_body_reach = BodySize.of(self)
+	_progress_from = global_position
 	_sight_query.collision_mask = sight_mask
 	_sight_query.exclude = [get_rid()]
+	_room_query.exclude = _bodies_to_ignore()
 	_last_roam_spot = global_position
 	_came_from = -facing
 	reset_senses()
@@ -137,6 +156,18 @@ func _navigation_is_ready() -> bool:
 	if not map.is_valid() or NavigationServer3D.map_get_iteration_id(map) == 0:
 		return false
 	return flat_distance(NavigationServer3D.map_get_closest_point(map, global_position), global_position) < NAVIGATION_SNAP_LIMIT
+
+
+func _bodies_to_ignore() -> Array[RID]:
+	var skip: Array[RID] = [get_rid()]
+	var body := _player as CollisionObject3D
+	if body != null:
+		skip.append(body.get_rid())
+	return skip
+
+
+func reach_distance() -> float:
+	return _body_reach + arrive_distance
 
 
 func reset_senses() -> void:
@@ -179,7 +210,10 @@ func get_hearing_radius() -> float:
 
 func _update_senses(delta: float) -> void:
 	var was_visible := player_visible
-	sight_focus = _measure_sight()
+	var measured := _measure_sight()
+	truly_visible = measured >= 0.0
+	ram_sensed = ram_sense and _ram_sense_reaches_player()
+	sight_focus = 1.0 if (ram_sensed and not truly_visible) else measured
 	player_visible = sight_focus >= 0.0
 
 	if player_visible:
@@ -340,6 +374,22 @@ func get_detection_progress() -> float:
 	return clampf(sight_seconds / detection_time, 0.0, 1.0)
 
 
+func ram_sense_radius() -> float:
+	if not ram_sense or _player == null:
+		return 0.0
+	if _player.has_method("get_ram_radius"):
+		return maxf(ram_sense_floor, _player.get_ram_radius())
+	return ram_sense_floor
+
+
+func _ram_sense_reaches_player() -> bool:
+	return _player != null and flat_distance(global_position, _player.global_position) <= ram_sense_radius()
+
+
+func get_player_spot() -> Vector3:
+	return _player.global_position if _player != null else global_position
+
+
 func get_eye_position() -> Vector3:
 	return global_position + Vector3(0.0, eye_height, 0.0)
 
@@ -351,15 +401,54 @@ func get_state_name() -> StringName:
 
 
 func set_destination(spot: Vector3) -> void:
-	_agent.target_position = spot
+	if flat_distance(_agent.target_position, spot) < repath_distance:
+		return
+	_agent.target_position = spot_with_room(spot)
+	clear_stuck()
+
+
+func spot_with_room(spot: Vector3) -> Vector3:
+	if has_room_at(spot):
+		return spot
+	var back := Vector2(global_position.x - spot.x, global_position.z - spot.z)
+	if back.length() < 0.001:
+		return spot
+	back = back.normalized()
+	for step in range(1, ROOM_SEARCH_STEPS + 1):
+		var pulled := spot + Vector3(back.x, 0.0, back.y) * (float(step) * roam_clearance)
+		var on_mesh := nearest_walkable_point(pulled)
+		if has_room_at(on_mesh):
+			return on_mesh
+	return spot
+
+
+func clear_stuck() -> void:
+	_stuck_seconds = 0.0
+	_progress_from = global_position
+
+
+func is_stuck() -> bool:
+	return stuck_patience > 0.0 and _stuck_seconds >= stuck_patience
 
 
 func is_path_finished() -> bool:
-	return _agent.is_navigation_finished()
+	return _agent.is_navigation_finished() or is_stuck() or has_arrived_at(_agent.target_position)
+
+
+func _watch_progress(speed: float, delta: float) -> void:
+	if stuck_patience <= 0.0 or speed <= 0.0:
+		return
+	var moved := flat_distance(global_position, _progress_from)
+	_progress_from = global_position
+	if moved >= speed * delta * stuck_progress:
+		_stuck_seconds = 0.0
+	else:
+		_stuck_seconds += delta
 
 
 func move_along_path(speed: float, delta: float) -> void:
 	_last_move_speed = speed
+	_watch_progress(speed, delta)
 	var step := _agent.get_next_path_position() - global_position
 	step.y = 0.0
 	if step.length() < 0.001:
@@ -399,7 +488,7 @@ func is_facing(spot: Vector3, tolerance_degrees: float) -> bool:
 
 
 func has_arrived_at(spot: Vector3) -> bool:
-	return flat_distance(spot, global_position) <= arrive_distance
+	return flat_distance(spot, global_position) <= reach_distance()
 
 
 func flat_distance(a: Vector3, b: Vector3) -> float:
@@ -433,7 +522,7 @@ func pick_roam_target(around: Vector3, radius: float) -> Vector3:
 	var reachable: Array = []
 	for _try in spots_to_try:
 		var spot := random_walkable_point(around, radius)
-		if has_arrived_at(spot) or not _path_is_direct(spot):
+		if has_arrived_at(spot) or not has_room_at(spot) or not _path_is_direct(spot):
 			continue
 		var scored := [_score_spot(spot, radius), spot]
 		reachable.append(scored)
@@ -442,6 +531,10 @@ func pick_roam_target(around: Vector3, radius: float) -> Vector3:
 
 	var pool: Array = in_sight if roam_needs_line_of_sight and not in_sight.is_empty() else reachable
 	if pool.is_empty():
+		for _retry in spots_to_try:
+			var loose := random_walkable_point(around, radius)
+			if has_room_at(loose):
+				return loose
 		return random_walkable_point(around, radius)
 	return _pick_weighted(pool)
 
@@ -483,6 +576,16 @@ func _score_spot(spot: Vector3, radius: float) -> float:
 	score -= backtrack_penalty * maxf(_came_from.dot(direction), 0.0)
 	score -= revisit_penalty * _visit_amount(spot)
 	return score
+
+
+func has_room_at(spot: Vector3) -> bool:
+	if roam_clearance <= 0.0:
+		return true
+	_room_shape.radius = roam_clearance
+	_room_query.shape = _room_shape
+	_room_query.collision_mask = collision_mask
+	_room_query.transform = Transform3D(Basis.IDENTITY, spot + Vector3(0.0, roam_clearance + 0.1, 0.0))
+	return get_world_3d().direct_space_state.intersect_shape(_room_query, 1).is_empty()
 
 
 func _path_is_direct(spot: Vector3) -> bool:
