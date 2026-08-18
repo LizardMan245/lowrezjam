@@ -245,6 +245,21 @@ tracks/8/keys = {
 "update": 1,
 "values": [false, true, false]
 }
+tracks/9/type = "audio"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("MusicPlayer")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("2_boot")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/9/use_blend = true
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_gnmj0"]
 _data = {
@@ -483,12 +498,9 @@ texture = ExtResource("9_yk7l8")
 layout_mode = 0
 offset_right = 64.0
 offset_bottom = 64.0
-color = Color(0.015686275, 0.019607844, 0, 0)
+color = Color(0.0150615545, 0.02129857, 0, 1)
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="." unique_id=893642959]
-stream = ExtResource("2_boot")
-autoplay = true
-parameters/looping = true
 
 [node name="Sfx" type="AudioStreamPlayer" parent="." unique_id=102387070]
 
