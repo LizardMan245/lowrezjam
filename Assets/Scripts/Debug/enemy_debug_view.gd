@@ -1,6 +1,6 @@
 extends MeshInstance3D
 
-const EnemyActor = preload("res://Assets/Scripts/Enemies/enemy_actor.gd")
+const EnemyActor = preload("res://Assets/Enemies/Scripts/enemy_actor.gd")
 
 const CONE_SEGMENTS := 24
 const CONE_LIFT := 0.06

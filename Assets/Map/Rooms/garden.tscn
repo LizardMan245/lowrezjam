@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://k73buvcju5dc"]
 
 [ext_resource type="PackedScene" uid="uid://de0csxqb8ufii" path="res://Assets/Map/Rooms/door.tscn" id="1_c7ll4"]
-[ext_resource type="Texture2D" uid="uid://82olymp55g46" path="res://Assets/Sprites/Placeholders/grass.png" id="2_s6fc2"]
+[ext_resource type="Texture2D" uid="uid://82olymp55g46" path="res://Assets/Sprites/+Placeholders+/grass.png" id="2_s6fc2"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_0s8ll"]
 size = Vector2(1, 1)
