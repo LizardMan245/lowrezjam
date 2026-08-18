@@ -312,7 +312,6 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_cwlh8"]
 resource_name = "fade_out"
-length = 3.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -498,7 +497,7 @@ texture = ExtResource("9_yk7l8")
 layout_mode = 0
 offset_right = 64.0
 offset_bottom = 64.0
-color = Color(0.0150615545, 0.02129857, 0, 1)
+color = Color(0.0151656745, 0.021016782, 0, 0.8333334)
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="." unique_id=893642959]
 
