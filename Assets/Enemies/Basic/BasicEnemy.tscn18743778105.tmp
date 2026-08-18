@@ -1,0 +1,334 @@
+[gd_scene format=3 uid="uid://bcap7bikpxwxw"]
+
+[ext_resource type="Texture2D" uid="uid://cmmp6b0pklxv4" path="res://Assets/Sprites/+Placeholders+/enemy.webp" id="1_8vmum"]
+[ext_resource type="Script" uid="uid://hhivxkcywgcs" path="res://Assets/Enemies/StateMachine/enemy_actor.gd" id="2_actor"]
+[ext_resource type="Script" uid="uid://dvircusdp5mr5" path="res://Assets/Scripts/Debug/enemy_debug_view.gd" id="3_debug"]
+[ext_resource type="Script" uid="uid://dgk1r2kilm2e8" path="res://Assets/Enemies/Basic/Scripts/aggro.gd" id="4_tfp7q"]
+[ext_resource type="Texture2D" uid="uid://cuu3spm2k2hhn" path="res://Assets/Enemies/Basic/eye_glow.tres" id="5_tfp7q"]
+[ext_resource type="Script" uid="uid://bm32cghgkj3uu" path="res://Assets/Enemies/StateMachine/enemy_state_machine.gd" id="6_tfp7q"]
+[ext_resource type="AudioStream" uid="uid://bi6tmacm7533m" path="res://Assets/Audio/+Placeholders+/roar.wav" id="7_0s84d"]
+[ext_resource type="Script" uid="uid://cyvrtlfgus5v2" path="res://Assets/Enemies/StateMachine/States/roam_walk_state.gd" id="7_tfp7q"]
+[ext_resource type="Script" uid="uid://4etnb6ep6tdg" path="res://Assets/Enemies/StateMachine/States/roam_idle_state.gd" id="8_5tm6f"]
+[ext_resource type="Script" uid="uid://8v01qveaa76y" path="res://Assets/Enemies/StateMachine/States/glance_state.gd" id="9_m2hyk"]
+[ext_resource type="Script" uid="uid://gxd35utekoik" path="res://Assets/Enemies/StateMachine/States/investigate_state.gd" id="10_mvyc8"]
+[ext_resource type="Script" uid="uid://cgipgc0gtm5px" path="res://Assets/Enemies/StateMachine/States/alert_state.gd" id="11_ali6n"]
+[ext_resource type="AudioStream" uid="uid://dcrhbsk2xu68a" path="res://Assets/Audio/Sfx/monster_scream.mp3" id="12_g0ifm"]
+[ext_resource type="Script" uid="uid://crpahmsxdljhq" path="res://Assets/Enemies/StateMachine/States/chase_state.gd" id="14_l1bjc"]
+[ext_resource type="Script" uid="uid://dtwa2ejd1thq4" path="res://Assets/Enemies/StateMachine/States/catch_up_state.gd" id="15_qv7od"]
+[ext_resource type="Script" uid="uid://bt5bbwk4fpqka" path="res://Assets/Enemies/StateMachine/States/search_state.gd" id="16_00woa"]
+[ext_resource type="Script" uid="uid://dyfkifasi0wbf" path="res://Assets/Enemies/StateMachine/States/scan_state.gd" id="17_2wmxq"]
+[ext_resource type="AudioStream" uid="uid://bck72wxkdxdy" path="res://Assets/Audio/+Placeholders+/breath.mp3" id="20_382ll"]
+[ext_resource type="Script" uid="uid://cjn3pq20gy6k8" path="res://Assets/Enemies/StateMachine/enemy_voice.gd" id="21_tfp7q"]
+[ext_resource type="Shader" uid="uid://b3frnem5n4vhd" path="res://Assets/Shaders/heat_sprite.gdshader" id="92_invert"]
+[ext_resource type="Script" uid="uid://c4p5s1mpxa17b" path="res://Assets/Enemies/Scripts/catcher.gd" id="98_catch"]
+[ext_resource type="Script" uid="uid://d20jhql5sjipp" path="res://Assets/Scripts/Thermal/heat_trail.gd" id="99_trail"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_e27lx"]
+radius = 0.7026367
+height = 2.6
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_heatsprite"]
+render_priority = 0
+shader = ExtResource("92_invert")
+shader_parameter/source = ExtResource("1_8vmum")
+shader_parameter/invert = true
+shader_parameter/flatten = false
+shader_parameter/tint = Color(1, 1, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cny37"]
+size = Vector3(0.18615723, 0.14892578, 0.18269348)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rldou"]
+albedo_color = Color(0, 0, 0, 0)
+emission_enabled = true
+emission = Color(1, 0, 0, 1)
+emission_energy_multiplier = 6.0
+disable_receive_shadows = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_eyeglow"]
+size = Vector2(0.85, 0.85)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eyeglow"]
+transparency = 1
+blend_mode = 1
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(0.54, 0.08099999, 0, 1)
+albedo_texture = ExtResource("5_tfp7q")
+disable_receive_shadows = true
+billboard_mode = 1
+billboard_keep_scale = true
+
+[node name="Basicenemy" type="CharacterBody3D" unique_id=1377881211 groups=["enemy"]]
+collision_layer = 4
+collision_mask = 129
+script = ExtResource("2_actor")
+vision_angle_degrees = 200.0
+view_distance = 10.0
+eye_height = 1.0
+detection_time = 0.3
+peripheral_fill_scale = 0.4
+peripheral_falloff = 1.8
+hearing_range_scale = 2.0
+hearing_sensitivity = 5.25
+loud_noise_threshold = 0.32
+notice_cooldown = 1.0
+turn_speed = 5.0
+brake_rate = 10.0
+spots_to_try = 15
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=215603961]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.5, 0)
+shape = SubResource("CapsuleShape3D_e27lx")
+
+[node name="Visual" type="Node3D" parent="." unique_id=1024778311]
+
+[node name="Sprite3D" type="Sprite3D" parent="Visual" unique_id=1868556659]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0.5490232, 0)
+pixel_size = 0.15
+axis = 1
+shaded = true
+texture_filter = 0
+texture = ExtResource("1_8vmum")
+
+[node name="HeatSprite" type="Sprite3D" parent="Visual" unique_id=974695565]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0.5490232, 0)
+layers = 8
+material_override = SubResource("ShaderMaterial_heatsprite")
+pixel_size = 0.15
+axis = 1
+texture_filter = 0
+texture = ExtResource("1_8vmum")
+
+[node name="Aggro" type="Node3D" parent="Visual" unique_id=1070880653]
+script = ExtResource("4_tfp7q")
+
+[node name="eye" type="MeshInstance3D" parent="Visual/Aggro" unique_id=457549527]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.3042958, 0.6161619, -0.9745818)
+layers = 3
+cast_shadow = 0
+mesh = SubResource("BoxMesh_cny37")
+surface_material_override/0 = SubResource("StandardMaterial3D_rldou")
+
+[node name="eye2" type="MeshInstance3D" parent="Visual/Aggro" unique_id=8998904]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.29870483, 0.6161619, -0.9745818)
+layers = 3
+cast_shadow = 0
+mesh = SubResource("BoxMesh_cny37")
+surface_material_override/0 = SubResource("StandardMaterial3D_rldou")
+
+[node name="EyeGlow" type="MeshInstance3D" parent="Visual/Aggro" unique_id=311204577]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2858398, 0.5160032, -0.9745818)
+layers = 3
+cast_shadow = 0
+mesh = SubResource("QuadMesh_eyeglow")
+surface_material_override/0 = SubResource("StandardMaterial3D_eyeglow")
+
+[node name="EyeGlow2" type="MeshInstance3D" parent="Visual/Aggro" unique_id=133521734]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2983582, 0.5160032, -0.9745818)
+layers = 3
+cast_shadow = 0
+mesh = SubResource("QuadMesh_eyeglow")
+surface_material_override/0 = SubResource("StandardMaterial3D_eyeglow")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=829769888]
+path_desired_distance = 0.4
+target_desired_distance = 0.5
+path_height_offset = 0.5
+radius = 0.4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1466118383]
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1975332894]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6560664, 0)
+bus = &"Reverb"
+
+[node name="StateMachine" type="Node" parent="." unique_id=1119538764]
+script = ExtResource("6_tfp7q")
+initial_state = &"RoamIdle"
+
+[node name="RoamWalk" type="Node" parent="StateMachine" unique_id=1274935182]
+script = ExtResource("7_tfp7q")
+min_speed = 1.8
+max_speed = 3.0
+timeout = null
+animation = &"walk"
+interrupt_on_detection = null
+detection_state = null
+noise_response = null
+glance_state = null
+investigate_state = null
+vision_angle_override = null
+view_distance_override = null
+unlimited_view_distance = null
+detection_rate = null
+next_states = Array[StringName]([&"RoamWalk", &"RoamIdle"])
+next_state_weights = Array[float]([0.7, 0.3])
+
+[node name="RoamIdle" type="Node" parent="StateMachine" unique_id=1810249447]
+script = ExtResource("8_5tm6f")
+min_time = 1.0
+max_time = null
+animation = &"idle"
+interrupt_on_detection = null
+detection_state = null
+noise_response = null
+glance_state = null
+investigate_state = null
+vision_angle_override = null
+view_distance_override = null
+unlimited_view_distance = null
+detection_rate = null
+next_states = Array[StringName]([&"RoamWalk", &"RoamIdle"])
+next_state_weights = Array[float]([0.9, 0.1])
+
+[node name="Glance" type="Node" parent="StateMachine" unique_id=1688732872]
+script = ExtResource("9_m2hyk")
+hold_time = 0.85
+animation = &"glance"
+interrupt_on_detection = null
+detection_state = null
+noise_response = null
+glance_state = null
+investigate_state = null
+vision_angle_override = null
+view_distance_override = null
+unlimited_view_distance = null
+detection_rate = null
+next_states = null
+next_state_weights = null
+
+[node name="Investigate" type="Node" parent="StateMachine" unique_id=1173044821]
+script = ExtResource("10_mvyc8")
+min_speed = 2.0
+max_speed = 3.0
+turn_time = null
+turn_tolerance_degrees = null
+timeout = null
+animation = &"walk"
+interrupt_on_detection = null
+detection_state = null
+noise_response = null
+glance_state = null
+investigate_state = null
+vision_angle_override = null
+view_distance_override = null
+unlimited_view_distance = null
+detection_rate = null
+next_states = Array[StringName]([&"RoamIdle", &"RoamWalk"])
+next_state_weights = Array[float]([0.6, 0.4])
+
+[node name="Alert" type="Node" parent="StateMachine" unique_id=1592043260]
+script = ExtResource("11_ali6n")
+default_duration = 1.0
+sound = ExtResource("7_0s84d")
+relock_duration = 0.5
+relock_sound = ExtResource("12_g0ifm")
+animation = &"roar"
+interrupt_on_detection = false
+vision_angle_override = 360.0
+unlimited_view_distance = true
+
+[node name="Chase" type="Node" parent="StateMachine" unique_id=2038741539]
+script = ExtResource("14_l1bjc")
+start_speed = null
+top_speed = 7.0
+acceleration = 1.0
+lost_grace = null
+lost_state = null
+animation = &"run"
+interrupt_on_detection = false
+detection_state = null
+noise_response = null
+glance_state = null
+investigate_state = null
+vision_angle_override = 360.0
+view_distance_override = null
+unlimited_view_distance = true
+detection_rate = null
+next_states = null
+next_state_weights = null
+
+[node name="CatchUp" type="Node" parent="StateMachine" unique_id=1904772630]
+script = ExtResource("15_qv7od")
+minimum_speed = null
+narrow_to_degrees = null
+timeout = null
+next_state = null
+animation = &"run"
+interrupt_on_detection = null
+detection_state = null
+noise_response = null
+glance_state = null
+investigate_state = null
+vision_angle_override = 360.0
+view_distance_override = null
+unlimited_view_distance = true
+detection_rate = 3.0
+next_states = null
+next_state_weights = null
+
+[node name="Search" type="Node" parent="StateMachine" unique_id=1352220885]
+script = ExtResource("16_00woa")
+minimum_speed = null
+probe_distance = null
+timeout = null
+reprobe_interval = null
+next_state = null
+animation = &"run"
+interrupt_on_detection = null
+detection_state = null
+noise_response = null
+glance_state = null
+investigate_state = null
+vision_angle_override = 270.0
+view_distance_override = null
+unlimited_view_distance = true
+detection_rate = 3.0
+next_states = null
+next_state_weights = null
+
+[node name="Scan" type="Node" parent="StateMachine" unique_id=1042886507]
+script = ExtResource("17_2wmxq")
+glances_min = null
+glances_max = null
+hold_time = null
+sweep_degrees = null
+look_distance = null
+animation = &"glance"
+interrupt_on_detection = null
+detection_state = null
+noise_response = null
+glance_state = null
+investigate_state = null
+vision_angle_override = 180.0
+view_distance_override = 16.0
+unlimited_view_distance = null
+detection_rate = 3.0
+next_states = Array[StringName]([&"RoamIdle", &"RoamWalk"])
+next_state_weights = Array[float]([0.7, 0.3])
+
+[node name="DebugView" type="MeshInstance3D" parent="." unique_id=1590023477]
+layers = 512
+script = ExtResource("3_debug")
+fallback_color = Color(0.31431612, 0.31431612, 0.3143161, 1)
+
+[node name="HeatTrail" type="Node" parent="." unique_id=1613657134]
+script = ExtResource("99_trail")
+
+[node name="Catcher" type="Node" parent="." unique_id=256941044]
+script = ExtResource("98_catch")
+
+[node name="Voice" type="Node3D" parent="." unique_id=1800461441]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("21_tfp7q")
+
+[node name="Rush" type="AudioStreamPlayer3D" parent="Voice" unique_id=457546469]
+unit_size = 14.0
+max_distance = 30.0
+
+[node name="Breath" type="AudioStreamPlayer3D" parent="Voice" unique_id=1549417657]
+stream = ExtResource("20_382ll")
+attenuation_model = 2
+unit_size = 6.0
+bus = &"Reverb"

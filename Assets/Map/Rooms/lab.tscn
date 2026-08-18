@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://d4crj5r1l63jq"]
 
-[ext_resource type="Texture2D" uid="uid://c4qw0beonlys1" path="res://Assets/Sprites/Placeholders/drones.png" id="1_tmn6a"]
+[ext_resource type="Texture2D" uid="uid://c4qw0beonlys1" path="res://Assets/Sprites/+Placeholders+/drones.png" id="1_tmn6a"]
 [ext_resource type="PackedScene" uid="uid://de0csxqb8ufii" path="res://Assets/Map/Rooms/door.tscn" id="2_4lkxg"]
-[ext_resource type="Script" uid="uid://clmnbcxee07qw" path="res://Assets/Player/UI/Scripts/pop_up_screen.gd" id="2_rvfcn"]
-[ext_resource type="Texture2D" uid="uid://cuu3spm2k2hhn" path="res://Assets/Enemies/eye_glow.tres" id="3_xktuw"]
+[ext_resource type="Script" uid="uid://clmnbcxee07qw" path="res://Assets/UI/Scripts/pop_up_screen.gd" id="2_rvfcn"]
+[ext_resource type="Texture2D" uid="uid://cuu3spm2k2hhn" path="res://Assets/Enemies/Basic/eye_glow.tres" id="3_xktuw"]
 [ext_resource type="Texture2D" uid="uid://care817ihxrhy" path="res://Assets/Sprites/UI/Screens/electroby_1.png" id="4_ojh5m"]
 [ext_resource type="Texture2D" uid="uid://bo5w7kselr6gi" path="res://Assets/Sprites/UI/Screens/electroby_2.png" id="5_gd6hv"]
 [ext_resource type="Script" uid="uid://c7ituejwdgcn7" path="res://Assets/Map/Scripts/consoleglow.gd" id="5_ovow2"]
-[ext_resource type="Texture2D" uid="uid://cp470rpqsd8hd" path="res://Assets/Sprites/Placeholders/electroby_placeholder.png" id="6_d03g2"]
+[ext_resource type="Texture2D" uid="uid://cp470rpqsd8hd" path="res://Assets/Sprites/+Placeholders+/electroby_placeholder.png" id="6_d03g2"]
 [ext_resource type="Texture2D" uid="uid://dl1j47u54u7r6" path="res://Assets/Sprites/UI/Screens/electroby_3.png" id="6_mn2cx"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_auyc6"]

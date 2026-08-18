@@ -1,0 +1,188 @@
+[gd_scene format=3 uid="uid://b2anna8vfeffi"]
+
+[ext_resource type="Script" uid="uid://hhivxkcywgcs" path="res://Assets/Enemies/Scripts/enemy_actor.gd" id="2_actor"]
+[ext_resource type="Texture2D" uid="uid://doqeqdsx2c8t8" path="res://Assets/Enemies/RAM/Sprites/electro.png" id="2_cp7yt"]
+[ext_resource type="Script" uid="uid://dvircusdp5mr5" path="res://Assets/Scripts/Debug/enemy_debug_view.gd" id="3_debug"]
+[ext_resource type="Script" uid="uid://bm32cghgkj3uu" path="res://Assets/Enemies/StateMachine/enemy_state_machine.gd" id="4_machine"]
+[ext_resource type="Script" uid="uid://cyvrtlfgus5v2" path="res://Assets/Enemies/StateMachine/States/roam_walk_state.gd" id="5_walk"]
+[ext_resource type="Script" uid="uid://4etnb6ep6tdg" path="res://Assets/Enemies/StateMachine/States/roam_idle_state.gd" id="6_idle"]
+[ext_resource type="Script" uid="uid://cgipgc0gtm5px" path="res://Assets/Enemies/StateMachine/States/alert_state.gd" id="7_alert"]
+[ext_resource type="Script" uid="uid://crpahmsxdljhq" path="res://Assets/Enemies/StateMachine/States/chase_state.gd" id="8_chase"]
+[ext_resource type="Script" uid="uid://bt5bbwk4fpqka" path="res://Assets/Enemies/StateMachine/States/search_state.gd" id="9_search"]
+[ext_resource type="AudioStream" uid="uid://dcrhbsk2xu68a" path="res://Assets/Audio/Sfx/monster_scream.mp3" id="10_cp7yt"]
+[ext_resource type="Script" uid="uid://8v01qveaa76y" path="res://Assets/Enemies/StateMachine/States/glance_state.gd" id="10_glance"]
+[ext_resource type="Script" uid="uid://gxd35utekoik" path="res://Assets/Enemies/StateMachine/States/investigate_state.gd" id="11_investigate"]
+[ext_resource type="Script" uid="uid://dtwa2ejd1thq4" path="res://Assets/Enemies/StateMachine/States/catch_up_state.gd" id="12_catchup"]
+[ext_resource type="Script" uid="uid://dyfkifasi0wbf" path="res://Assets/Enemies/StateMachine/States/scan_state.gd" id="13_scan"]
+[ext_resource type="Script" uid="uid://1gihar2n8xyb" path="res://Assets/Enemies/StateMachine/States/track_state.gd" id="87_track"]
+[ext_resource type="Script" uid="uid://cjn3pq20gy6k8" path="res://Assets/Enemies/Scripts/enemy_voice.gd" id="89_voice"]
+[ext_resource type="Shader" uid="uid://b3frnem5n4vhd" path="res://Assets/Shaders/heat_sprite.gdshader" id="91_heat"]
+[ext_resource type="Script" uid="uid://c4p5s1mpxa17b" path="res://Assets/Enemies/Scripts/catcher.gd" id="98_catch"]
+[ext_resource type="Script" uid="uid://d20jhql5sjipp" path="res://Assets/Scripts/Thermal/heat_trail.gd" id="99_trail"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_mdyh3"]
+radius = 1.0
+height = 3.606
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ramheat"]
+render_priority = 0
+shader = ExtResource("91_heat")
+shader_parameter/source = ExtResource("2_cp7yt")
+shader_parameter/invert = true
+shader_parameter/flatten = false
+shader_parameter/tint = Color(1, 1, 1, 1)
+
+[node name="RamMonster" type="CharacterBody3D" unique_id=965554631 groups=["enemy"]]
+collision_layer = 4
+collision_mask = 129
+script = ExtResource("2_actor")
+vision_angle_degrees = 360.0
+view_distance = 8.0
+eye_height = 1.0
+detection_time = 0.2
+peripheral_fill_scale = 1.0
+peripheral_falloff = 1.0
+ram_sense = true
+ram_sense_floor = 2.5
+loud_noise_threshold = 0.32
+notice_cooldown = 1.6
+roam_clearance = 1.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=920581636]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1.05, 0)
+shape = SubResource("CapsuleShape3D_mdyh3")
+
+[node name="Visual" type="Node3D" parent="." unique_id=1338450263]
+
+[node name="Sprite3D" type="Sprite3D" parent="Visual" unique_id=1827431142]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5490232, 0)
+axis = 1
+shaded = true
+texture_filter = 0
+texture = ExtResource("2_cp7yt")
+
+[node name="HeatSprite" type="Sprite3D" parent="Visual" unique_id=506102710]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5490232, 0)
+layers = 8
+material_override = SubResource("ShaderMaterial_ramheat")
+axis = 1
+texture_filter = 0
+texture = ExtResource("2_cp7yt")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=447989182]
+path_desired_distance = 0.4
+target_desired_distance = 0.5
+path_height_offset = 0.5
+avoidance_enabled = true
+radius = 0.4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2023461009]
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1388561088]
+attenuation_model = 1
+
+[node name="StateMachine" type="Node" parent="." unique_id=245212193]
+script = ExtResource("4_machine")
+initial_state = &"RoamIdle"
+
+[node name="RoamWalk" type="Node" parent="StateMachine" unique_id=2045155258]
+script = ExtResource("5_walk")
+min_speed = 2.0
+max_speed = 2.0
+animation = &"walk"
+next_states = Array[StringName]([&"RoamWalk", &"RoamIdle"])
+next_state_weights = Array[float]([0.7, 0.3])
+
+[node name="RoamIdle" type="Node" parent="StateMachine" unique_id=1300800929]
+script = ExtResource("6_idle")
+min_time = 1.0
+animation = &"idle"
+next_states = Array[StringName]([&"RoamWalk", &"RoamIdle"])
+next_state_weights = Array[float]([0.9, 0.1])
+
+[node name="Glance" type="Node" parent="StateMachine" unique_id=1314167686]
+script = ExtResource("10_glance")
+hold_time = 0.85
+animation = &"glance"
+
+[node name="Investigate" type="Node" parent="StateMachine" unique_id=1828811571]
+script = ExtResource("11_investigate")
+min_speed = 2.0
+max_speed = 2.0
+animation = &"walk"
+next_states = Array[StringName]([&"RoamIdle", &"RoamWalk"])
+next_state_weights = Array[float]([0.6, 0.4])
+
+[node name="Alert" type="Node" parent="StateMachine" unique_id=998987324]
+script = ExtResource("7_alert")
+default_duration = 1.0
+sound = ExtResource("10_cp7yt")
+next_state = &"Tracking"
+animation = &"roar"
+interrupt_on_detection = false
+vision_angle_override = 360.0
+
+[node name="Tracking" type="Node" parent="StateMachine" unique_id=1314579833]
+script = ExtResource("87_track")
+sound = ExtResource("10_cp7yt")
+speed = 2.0
+animation = &"walk"
+interrupt_on_detection = false
+vision_angle_override = 360.0
+detection_rate = 3.0
+
+[node name="Chase" type="Node" parent="StateMachine" unique_id=1639059291]
+script = ExtResource("8_chase")
+start_speed = 3.0
+top_speed = 6.0
+acceleration = 2.0
+sound = ExtResource("10_cp7yt")
+animation = &"run"
+interrupt_on_detection = false
+vision_angle_override = 360.0
+
+[node name="CatchUp" type="Node" parent="StateMachine" unique_id=1602010635]
+script = ExtResource("12_catchup")
+minimum_speed = 4.0
+animation = &"run"
+vision_angle_override = 360.0
+detection_rate = 3.0
+
+[node name="Search" type="Node" parent="StateMachine" unique_id=300937549]
+script = ExtResource("9_search")
+minimum_speed = 3.0
+animation = &"run"
+vision_angle_override = 270.0
+detection_rate = 3.0
+
+[node name="Scan" type="Node" parent="StateMachine" unique_id=587673794]
+script = ExtResource("13_scan")
+animation = &"glance"
+vision_angle_override = 180.0
+view_distance_override = 16.0
+detection_rate = 3.0
+next_states = Array[StringName]([&"RoamIdle", &"RoamWalk"])
+next_state_weights = Array[float]([0.7, 0.3])
+
+[node name="DebugView" type="MeshInstance3D" parent="." unique_id=942580832]
+layers = 512
+script = ExtResource("3_debug")
+fallback_color = Color(0.31431612, 0.31431612, 0.3143161, 1)
+
+[node name="HeatTrail" type="Node" parent="." unique_id=1759006698]
+script = ExtResource("99_trail")
+
+[node name="Catcher" type="Node" parent="." unique_id=260121136]
+script = ExtResource("98_catch")
+
+[node name="Voice" type="Node3D" parent="." unique_id=272764169]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("89_voice")
+
+[node name="Rush" type="AudioStreamPlayer3D" parent="Voice" unique_id=225696372]
+unit_size = 14.0
+max_distance = 30.0
+
+[node name="Breath" type="AudioStreamPlayer3D" parent="Voice" unique_id=1452090226]
+unit_size = 6.0
+max_distance = 14.0
